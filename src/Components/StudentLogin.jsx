@@ -43,7 +43,7 @@ const StudentLogin = () => {
           <label className="form-label">Password</label>
           <input type="password" name="password" value={formData.password} onChange={handleChange} className="form-control" required />
         </div>
-        <button type="submit" className="btn btn-primary w-100">Login</button>
+        <button type="submit" className="btn btn-primary w-100">Login Done</button>
       </form>
     </div>
   );
