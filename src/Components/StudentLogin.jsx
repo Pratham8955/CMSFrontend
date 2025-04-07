@@ -3,8 +3,10 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import "bootstrap/dist/css/bootstrap.min.css";
+import "../css/StudentLogin.css";
+import studentImage from "../assets/LoginImg.png";
 
-const API_BASE_URL = "https://localhost:7133/api";
+const API_BASE_URL = "http://localhost:5291/api";
 
 const StudentLogin = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -32,19 +34,51 @@ const StudentLogin = () => {
   };
 
   return (
-    <div className="d-flex align-items-center justify-content-center" style={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
-      <form onSubmit={handleSubmit} className="p-4 rounded shadow-sm border bg-white" style={{ width: "400px" }}>
-        <h3 className="text-center mb-3 text-primary">Student Login</h3>
-        <div className="mb-3">
-          <label className="form-label">Email</label>
-          <input type="email" name="email" value={formData.email} onChange={handleChange} className="form-control" required />
+    <div className="container-fluid min-vh-100 d-flex align-items-center justify-content-center student-login-container">
+      <div className="row w-100">
+        <div className="col-md-6 d-none d-md-flex align-items-center justify-content-center">
+          <img src={studentImage} alt="Student" className="student-login-img" />
         </div>
-        <div className="mb-3">
-          <label className="form-label">Password</label>
-          <input type="password" name="password" value={formData.password} onChange={handleChange} className="form-control" required />
+
+        <div className="col-md-6 d-flex align-items-center justify-content-center">
+          <form onSubmit={handleSubmit} className="student-login-form">
+            <h2 className="text-center mb-4 text-primary fw-bold">🎓 Student Login</h2>
+
+            <div className="form-group mb-3">
+              <input
+                type="email"
+                name="email"
+                placeholder="Email"
+                value={formData.email}
+                onChange={handleChange}
+                className="form-control student-login-input"
+                required
+              />
+            </div>
+
+            <div className="form-group mb-4">
+              <input
+                type="password"
+                name="password"
+                placeholder="Password"
+                value={formData.password}
+                onChange={handleChange}
+                className="form-control student-login-input"
+                required
+              />
+            </div>
+
+            <button type="submit" className="student-login-button">
+              Sign In
+            </button>
+
+            <div className="student-login-links">
+              <a href="#">Forgot password?</a>
+              <a href="/register">Create an account</a>
+            </div>
+          </form>
         </div>
-        <button type="submit" className="btn btn-primary w-100">Login Done</button>
-      </form>
+      </div>
     </div>
   );
 };

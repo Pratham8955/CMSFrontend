@@ -1,13 +1,14 @@
-import React, { useState ,useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import Registrationimg from "../assets/Registrationimg.png";
 
-const API_BASE_URL = "https://localhost:7133/api"; 
+const API_BASE_URL = "http://localhost:5291/api";
 const STATE_API_URL = "https://api.countrystatecity.in/v1/countries/IN/states";
 const CITY_API_URL = "https://api.countrystatecity.in/v1/countries/IN/states";
-const API_KEY = "T29vSlpCbVFpd1FsN3hoOURUVHFkTXkzZnJjT2VpMzBkWTdTYWljbA=="; // Replace with your API key
+const API_KEY = "T29vSlpCbVFpd1FsN3hoOURUVHFkTXkzZnJjT2VpMzBkWTdTYWljbA==";
 
 const Registration = () => {
   const [formData, setFormData] = useState({
@@ -16,15 +17,13 @@ const Registration = () => {
     password: "",
     dob: "",
     gender: "",
-    address:"",
-    city:"",
-    state:"",
-    phone:"",
-    deptId:"",
-    currentSemester:"",
+    address: "",
+    city: "",
+    state: "",
+    phone: "",
+    deptId: "",
+    currentSemester: "",
   });
-
-  const navigate = useNavigate();
 
   const [otp, setOtp] = useState("");
   const [isOtpSent, setIsOtpSent] = useState(false);
@@ -33,9 +32,11 @@ const Registration = () => {
   const [cities, setCities] = useState([]);
   const [selectedState, setSelectedState] = useState("");
   const [selectedCity, setSelectedCity] = useState("");
+  const [departments, setDepartments] = useState([]);
+  const [semesters, setsemesters] = useState([]);
 
+  const navigate = useNavigate();
 
- //States Api Call Online
   useEffect(() => {
     const fetchStates = async () => {
       try {
@@ -53,14 +54,9 @@ const Registration = () => {
   const handleStateChange = async (event) => {
     const stateCode = event.target.value;
     setSelectedState(stateCode);
-  
-    // Update formData with selected state
-    setFormData((prevData) => ({
-      ...prevData,
-      state: stateCode,
-    }));
-  
-    setSelectedCity(""); // Reset city selection when state changes
+    setFormData((prevData) => ({ ...prevData, state: stateCode }));
+    setSelectedCity("");
+
     try {
       const response = await axios.get(`${CITY_API_URL}/${stateCode}/cities`, {
         headers: { "X-CSCAPI-KEY": API_KEY },
@@ -70,64 +66,42 @@ const Registration = () => {
       console.error("Error fetching cities:", error);
     }
   };
-  
-//Fetch Department
-const [departments, setDepartments] = useState([]);
 
-useEffect(() => {
-  const fetchDepartments = async () => {
-    try {
-      const response = await axios.get("https://localhost:7133/api/Admin/GetDepartment");
-
-      if (response.data.success) {
-        setDepartments(response.data.department); // Use "department" instead of "Department"
-      } else {
-        console.error("Failed to fetch departments:", response.data.message);
+  useEffect(() => {
+    const fetchDepartments = async () => {
+      try {
+        const response = await axios.get(`${API_BASE_URL}/Admin/GetDepartment`);
+        if (response.data.success) {
+          setDepartments(response.data.department);
+        }
+      } catch (error) {
+        console.error("Error fetching departments:", error);
       }
-    } catch (error) {
-      console.error("Error fetching departments:", error);
-    }
-  };
+    };
+    fetchDepartments();
+  }, []);
 
-  fetchDepartments();
-}, []);
-
-
-//FetchSemester
-const [semesters, setsemesters] = useState([]);
-
-useEffect(() => {
-  const fetchSemesters = async () => {
-    try {
-      const response = await axios.get("https://localhost:7133/api/Admin/GetSemester");
-
-      if (response.data.success) {
-        setsemesters(response.data.semsester); 
-      } else {
-        console.error("Failed to fetch departments:", response.data.message);
+  useEffect(() => {
+    const fetchSemesters = async () => {
+      try {
+        const response = await axios.get(`${API_BASE_URL}/Admin/GetSemester`);
+        if (response.data.success) {
+          setsemesters(response.data.semsester);
+        }
+      } catch (error) {
+        console.error("Error fetching semesters:", error);
       }
-    } catch (error) {
-      console.error("Error fetching departments:", error);
-    }
-  };
+    };
+    fetchSemesters();
+  }, []);
 
-  fetchSemesters();
-}, []);
-
-
-  // Handle form input changes
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Send OTP API Call
   const sendOtp = async () => {
     try {
-      const response = await axios.post(`${API_BASE_URL}/Register/send-otp`, 
-        { email: formData.email }, 
-        { withCredentials: true }  // ✅ Ensure cookies are sent
-      );
-  
+      const response = await axios.post(`${API_BASE_URL}/Register/send-otp`, { email: formData.email }, { withCredentials: true });
       if (response.data.success) {
         setIsOtpSent(true);
         Swal.fire("Success", response.data.message, "success");
@@ -135,19 +109,13 @@ useEffect(() => {
         Swal.fire("Error", response.data.message, "error");
       }
     } catch (error) {
-      console.log(error);
       Swal.fire("Error", "Failed to send OTP!", "error");
     }
   };
-  
-  //Verify-otp
+
   const verifyOtp = async () => {
     try {
-      const response = await axios.post(`${API_BASE_URL}/Register/verify-otp`, 
-        { email: formData.email, otp: otp }, 
-        { withCredentials: true }  // ✅ Ensure cookies are sent
-      );
-  
+      const response = await axios.post(`${API_BASE_URL}/Register/verify-otp`, { email: formData.email, otp }, { withCredentials: true });
       if (response.data.success) {
         setIsOtpVerified(true);
         setIsOtpSent(false);
@@ -156,13 +124,10 @@ useEffect(() => {
         Swal.fire("Error", response.data.message, "error");
       }
     } catch (error) {
-      console.log(error);
       Swal.fire("Error", "Invalid or expired OTP!", "error");
     }
   };
-  
 
-  // Register User API Call
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -172,24 +137,16 @@ useEffect(() => {
     }
 
     try {
-      const response = await axios.post(`${API_BASE_URL}/Register/register-student`, {
-        studentName:formData.studentName,
-        email: formData.email,
-        password:formData.password,
-        dob:formData.dob,
-        gender:formData.gender,
-        address:formData.address,
-        city:formData.city,
-        state:formData.state,
-        phone:formData.phone,
-        deptId:formData.deptId,
-        currentSemester:formData.currentSemester,
+      const response = await axios.post(`http://localhost:5291/api/Register/register-student`, {
+        ...formData,
         groupId: 3,
+       
       });
+      console.log(response); 
 
       if (response.data.success) {
-        Swal.fire("Success",response.data.message, "success").then(() => {
-          navigate("/Login"); // Redirect to login page
+        Swal.fire("Success", response.data.message, "success").then(() => {
+          navigate("/Login");
         });
       } else {
         Swal.fire("Error", response.data.message, "error");
@@ -200,231 +157,129 @@ useEffect(() => {
   };
 
   return (
-    <div
-      className="d-flex align-items-center justify-content-center"
-      style={{
-        minHeight: "100vh",
-        backgroundColor: "#f8f9fa",
-      }}
-    >
-      <form
-        onSubmit={handleSubmit}
-        className="p-4 rounded shadow-sm border bg-white"
-        style={{
-          width: "400px",
-          border: "1px solid #ddd",
-        }}
-      >
-        <h3 className="text-center mb-3 text-primary">
-          Student Registration
-        </h3>
-  
-        {/* Username */}
-        <div className="mb-2">
-          <label className="form-label">Student Name</label>
-          <input
-            type="text"
-            name="studentName"
-            value={formData.studentName}
-            onChange={handleChange}
-            className="form-control"
-            required
-          />
+    <div className="d-flex align-items-center justify-content-center" style={{ minHeight: "100vh", background: "linear-gradient(to right, #f8f9fa, #e3f2fd)" }}>
+      <div className="col-md-6 d-none d-md-flex align-items-center justify-content-center">
+        <img src={Registrationimg} alt="Student" className="student-login-img" />
+      </div>
+
+      <form onSubmit={handleSubmit} className="p-4 rounded shadow-sm border bg-white" style={{ width: "600px" }}>
+        <h3 className="text-center mb-4 text-primary">🎓Student Registration</h3>
+
+        {/* Row 1: Name + Phone */}
+        <div className="row mb-3">
+          <div className="col">
+            <label className="form-label">Student Name</label>
+            <input type="text" name="studentName" value={formData.studentName} onChange={handleChange} className="form-control" placeholder="Enter your full name" required />
+          </div>
+          <div className="col">
+            <label className="form-label">Phone</label>
+            <input type="text" name="phone" value={formData.phone} onChange={handleChange} className="form-control" placeholder="Enter your phone number" required />
+          </div>
         </div>
-  
-        {/* Email */}
-        <div className="mb-2">
-          <label className="form-label">Email</label>
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            className="form-control"
-            required
-            disabled={isOtpSent || isOtpVerified}
-          />
+
+        {/* Row 2: Email + Password */}
+        <div className="row mb-3">
+          <div className="col">
+            <label className="form-label">Email</label>
+            <input type="email" name="email" value={formData.email} onChange={handleChange} className="form-control" placeholder="Enter your email address" required disabled={isOtpSent || isOtpVerified} />
+          </div>
+          <div className="col">
+            <label className="form-label">Password</label>
+            <input type="password" name="password" value={formData.password} onChange={handleChange} className="form-control" placeholder="Create a password" required />
+          </div>
         </div>
-  
-        {/* OTP Field */}
+
+        {/* OTP */}
         {isOtpSent && !isOtpVerified && (
-          <div className="mb-2">
+          <div className="mb-3">
             <label className="form-label">Enter OTP</label>
-            <input
-              type="text"
-              value={otp}
-              onChange={(e) => setOtp(e.target.value)}
-              className="form-control"
-              required
-            />
-            <button type="button" className="btn btn-primary w-100 mt-2" onClick={verifyOtp}>
-              Verify OTP
-            </button>
+            <input type="text" value={otp} onChange={(e) => setOtp(e.target.value)} className="form-control" placeholder="Enter OTP sent to your email" required />
+            <button type="button" className="btn btn-primary w-100 mt-2" onClick={verifyOtp}>Verify OTP</button>
           </div>
         )}
-  
-        {/* Password */}
-        <div className="mb-2">
-          <label className="form-label">Password</label>
-          <input
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            className="form-control"
-            required
-          />
+
+        {/* Row 3: DOB + Gender */}
+        <div className="row mb-3">
+          <div className="col">
+            <label className="form-label">Date of Birth</label>
+            <input type="date" name="dob" value={formData.dob} onChange={handleChange} className="form-control" required />
+          </div>
+          <div className="col">
+            <label className="form-label">Gender</label>
+            <select name="gender" value={formData.gender} onChange={handleChange} className="form-control" required>
+              <option value="">Select Gender</option>
+              <option>Male</option>
+              <option>Female</option>
+              <option>Other</option>
+            </select>
+          </div>
         </div>
-  
-        {/* Date of Birth */}
-        <div className="mb-2">
-          <label className="form-label">Date of Birth</label>
-          <input
-            type="date"
-            name="dob"
-            value={formData.dob}
-            onChange={handleChange}
-            className="form-control"
-            required
-          />
-        </div>
-  
-        {/* Gender */}
-        <div className="mb-2">
-          <label className="form-label">Gender</label>
-          <select
-            name="gender"
-            value={formData.gender}
-            onChange={handleChange}
-            className="form-control"
-            required
-          >
-            <option value="">Select Gender</option>
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
-            <option value="Other">Other</option>
-          </select>
-        </div>
-  
+
         {/* Address */}
-        <div className="mb-2">
+        <div className="mb-3">
           <label className="form-label">Address</label>
-          <input
-            type="text"
-            name="address"
-            value={formData.address}
-            onChange={handleChange}
-            className="form-control"
-            required
-          />
+          <input type="text" name="address" value={formData.address} onChange={handleChange} className="form-control" placeholder="Enter your address" required />
         </div>
-  
-        <div className="mb-2">
-          <label className="form-label">State</label>
-          <select className="form-control" value={selectedState} onChange={handleStateChange} required>
-            <option value="">Select State</option>
-            {states.map((state) => (
-              <option key={state.iso2} value={state.iso2}>{state.name}</option>
-            ))}
-          </select>
+
+        {/* Row 4: State + City */}
+        <div className="row mb-3">
+          <div className="col">
+            <label className="form-label">State</label>
+            <select className="form-control" value={selectedState} onChange={handleStateChange} required>
+              <option value="">Select State</option>
+              {states.map((state) => (
+                <option key={state.iso2} value={state.iso2}>{state.name}</option>
+              ))}
+            </select>
+          </div>
+          <div className="col">
+            <label className="form-label">City</label>
+            <select className="form-control" value={selectedCity} onChange={(e) => {
+              setSelectedCity(e.target.value);
+              setFormData((prevData) => ({ ...prevData, city: e.target.value }));
+            }} required disabled={!selectedState}>
+              <option value="">Select City</option>
+              {cities.map((city) => (
+                <option key={city.id} value={city.name}>{city.name}</option>
+              ))}
+            </select>
+          </div>
         </div>
-        <div className="mb-2">
-          <label className="form-label">City</label>
-          <select
-  className="form-control"
-  value={selectedCity}
-  onChange={(e) => {
-    setSelectedCity(e.target.value);
-    setFormData((prevData) => ({
-      ...prevData,
-      city: e.target.value,
-    }));
-  }}
-  required
-  disabled={!selectedState}
->
-  <option value="">Select City</option>
-  {cities.map((city) => (
-    <option key={city.id} value={city.name}>{city.name}</option>
-  ))}
-</select>
 
+        {/* Row 5: Department + Semester */}
+        <div className="row mb-3">
+          <div className="col">
+            <label className="form-label">Department</label>
+            <select name="deptId" value={formData.deptId} onChange={handleChange} className="form-control" required>
+              <option value="">Select Department</option>
+              {departments.map((dept) => (
+                <option key={dept.deptId} value={dept.deptId}>{dept.deptName}</option>
+              ))}
+            </select>
+          </div>
+          <div className="col">
+            <label className="form-label">Current Semester</label>
+            <select name="currentSemester" value={formData.currentSemester} onChange={handleChange} className="form-control" required>
+              <option value="">Select Semester</option>
+              {semesters.map((sem) => (
+                <option key={sem.semId} value={sem.semId}>{sem.semName}</option>
+              ))}
+            </select>
+          </div>
         </div>
-  
-        
-  
-        {/* Phone */}
-        <div className="mb-2">
-          <label className="form-label">Phone</label>
-          <input
-            type="text"
-            name="phone"
-            value={formData.phone}
-            onChange={handleChange}
-            className="form-control"
-            required
-          />
-        </div>
-  
-        {/* Department ID */}
-        <div className="mb-2">
-  <label className="form-label">Department Name</label>
-  <select
-    name="deptId"
-    value={formData.deptId}
-    onChange={handleChange}
-    className="form-control"
-    required
-  >
-    <option value="">Select Department</option>
-    {departments.map((dept) => (
-      <option key={dept.deptId} value={dept.deptId}>
-        {dept.deptName}
-      </option>
-    ))}
-  </select>
-</div>
 
-
-
-  
-        {/* Current Semester Dropdown */}
-<div className="mb-2">
-  <label className="form-label">Current Semester</label>
-  <select
-    name="currentSemester"
-    value={formData.currentSemester}
-    onChange={handleChange}
-    className="form-control"
-    required
-  >
-    <option value="">Select Semester</option>
-    {semesters.map((semester) => (
-      <option key={semester.semId} value={semester.semId}>
-        {semester.semName}
-      </option>
-    ))}
-  </select>
-</div>
-
-  
-        {/* Send OTP Button */}
+        {/* Send OTP */}
         {!isOtpSent && !isOtpVerified && (
-          <button type="button" className="btn btn-outline-primary w-100 mb-2" onClick={sendOtp}>
-            Send OTP
-          </button>
+          <button type="button" className="btn btn-outline-primary w-100 mb-2" onClick={sendOtp}>Send OTP</button>
         )}
-  
-        {/* Register Button (Appears Only After OTP Verification) */}
+
+        {/* Register Button */}
         {isOtpVerified && (
-          <button type="submit" className="btn btn-success w-100">
-            Register
-              </button>
+          <button type="submit" className="btn btn-success w-100">Register</button>
         )}
       </form>
     </div>
   );
-  
 };
 
 export default Registration;

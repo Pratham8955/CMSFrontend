@@ -1,56 +1,111 @@
 /* Navbar Styles */
 .navbar {
-    background: #f8f9fa; /* Light background */
-    padding: 12px 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    position: fixed;
-    width: 100%;
-    top: 0;
-    z-index: 1000;
-  }
-  
+  background: #ffffff;
+  padding: 14px 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  /* position: fixed; */
+  /* width: 100%; */
+  /* top: 0; */
+  /* z-index: 1000; */
+  display: flex;
+  justify-content: center;
+}
+
+.navbar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 95%;
+  max-width: 1200px;
+}
+
+/* Logo */
+.navbar-logo {
+  font-size: 24px;
+  font-weight: 700;
+  color: #007bff;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 0.3s ease-in-out;
+}
+
+.navbar-logo:hover {
+  color: #0056b3;
+}
+
+/* Nav Links */
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-item {
+  color: #343a40;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 20px;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.nav-item:hover {
+  color: #007bff;
+  background-color: rgba(0, 123, 255, 0.1);
+}
+
+/* Auth Toggle Button */
+.auth-toggle {
+  background-color: #f1f3f5;
+  border-radius: 30px;
+  display: flex;
+  padding: 3px;
+  gap: 3px;
+  border: 1px solid #dee2e6;
+}
+
+.auth-btn {
+  border: none;
+  padding: 6px 16px;
+  border-radius: 30px;
+  background-color: transparent;
+  color: #343a40;
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.auth-btn:hover {
+  background-color: rgba(0, 123, 255, 0.1);
+  color: #007bff;
+}
+
+.auth-btn.active {
+  background-color: #007bff;
+  color: white;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+}
+
+/* Responsive (Optional Basic) */
+@media (max-width: 768px) {
   .navbar-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 90%;
-    max-width: 1200px;
+    flex-direction: column;
+    align-items: flex-start;
   }
-  
-  /* Logo */
-  .navbar-logo {
-    font-size: 22px;
-    font-weight: bold;
-    color: #007bff; /* Blue */
-    text-decoration: none;
-    text-transform: uppercase;
-    transition: color 0.3s ease-in-out;
-  }
-  
-  .navbar-logo:hover {
-    color: #0056b3; /* Darker blue on hover */
-  }
-  
-  /* Nav Links */
+
   .nav-links {
-    list-style: none;
-    display: flex;
-    gap: 20px;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 12px;
+    width: 100%;
   }
-  
-  .nav-item {
-    color: #333; /* Dark text */
-    text-decoration: none;
-    font-size: 16px;
-    font-weight: 500;
-    padding: 8px 12px;
-    transition: color 0.3s ease-in-out;
+
+  .auth-toggle {
+    margin-top: 10px;
   }
-  
-  .nav-item:hover {
-    color: #007bff;
-    text-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
-  }
+}

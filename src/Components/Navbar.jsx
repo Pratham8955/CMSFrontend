@@ -1,25 +1,54 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import "../css/Navbar.css"; // Import styles
+import { useNavigate, useLocation } from "react-router-dom";
+import "../css/Navbar.css";
 
 const Navbar = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const isSignUp = location.pathname === "/register";
+
   return (
     <nav className="navbar">
       <div className="navbar-container">
-       
-        <Link to="/" className="navbar-logo">ICT'S HOME</Link>
+        {/* Left Section */}
+        <div className="navbar-left">
+          <div className="navbar-logo" onClick={() => navigate("/")}>
+          🎓 ICT'S HOME
+          </div>
+        </div>
 
-        {/* Navigation Links */}
-        <ul className="nav-links">
-          <li><Link to="/" className="nav-item">Home</Link></li>
-          <li><Link to="/courses" className="nav-item">Courses</Link></li>
-          <li><Link to="/contact" className="nav-item">Contact</Link></li>
-          <li><Link to="/aboutUs" className="nav-item">About Us</Link></li>
-          <li><Link to="/register" className="nav-item">Register</Link></li>
-          <li><Link to="/Login" className="nav-item">Login</Link></li>
-        </ul>
+        {/* Center Section */}
+        <div className="navbar-center">
+          <ul className="nav-links">
+            <li><a href="/" className="nav-item">Home</a></li>
+            <li><a href="/courses" className="nav-item">Courses</a></li>
+            <li><a href="/contact" className="nav-item">Contact</a></li>
+            <li><a href="/aboutUs" className="nav-item">About Us</a></li>
+          </ul>
+        </div>
+
+        {/* Right Section */}
+        <div className="navbar-right">
+          <div className="auth-toggle">
+            <button
+              className={`auth-btn ${!isSignUp ? "active" : ""}`}
+              onClick={() => navigate("/Login")}
+            >
+              Sign In
+            </button>
+            <button
+              className={`auth-btn ${isSignUp ? "active" : ""}`}
+              onClick={() => navigate("/register")}
+            >
+              Sign up
+            </button>
+          </div>
+        </div>
       </div>
+      
     </nav>
+    
   );
 };
 
