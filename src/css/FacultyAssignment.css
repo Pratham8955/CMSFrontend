@@ -1,0 +1,74 @@
+.admin-container {
+    padding: 30px;
+    background-color: #f9f9f9;
+    max-width: 600px;
+    margin: 0 auto;
+    border-radius: 10px;
+  }
+  
+  .admin-title {
+    font-size: 24px;
+    margin-bottom: 20px;
+    font-weight: bold;
+    text-align: center;
+    color: #333;
+  }
+  
+  .form-container {
+    background-color: #ffffff;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  }
+  
+  .form-group {
+    margin-bottom: 18px;
+  }
+  
+  .form-group label {
+    font-weight: 500;
+    display: block;
+    margin-bottom: 6px;
+    color: #333;
+  }
+  
+  .form-select {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 15px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #fff;
+    outline: none;
+    transition: border-color 0.2s ease-in-out;
+  }
+  
+  .form-select:focus {
+    border-color: #3498db;
+  }
+  
+  .button-group {
+    text-align: center;
+    margin-top: 25px;
+  }
+  
+  .admin-button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+  }
+  
+  .admin-button:hover {
+    background-color: #2980b9;
+  }
+  
+  .admin-button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  

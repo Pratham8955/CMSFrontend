@@ -1,0 +1,15 @@
+.admin-page-container {
+    padding: 2rem;
+    background-color: #f8f9fa;
+    min-height: 100vh;
+  }
+  
+  .admin-page-container h2 {
+    margin-bottom: 1rem;
+    color: #333;
+  }
+  
+  .admin-page-container p {
+    color: #555;
+  }
+  

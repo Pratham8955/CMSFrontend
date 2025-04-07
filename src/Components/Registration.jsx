@@ -70,7 +70,7 @@ const Registration = () => {
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
-        const response = await axios.get(`${API_BASE_URL}/Admin/GetDepartment`);
+        const response = await axios.get(`${API_BASE_URL}/Department/GetDepartment`);
         if (response.data.success) {
           setDepartments(response.data.department);
         }
@@ -84,9 +84,9 @@ const Registration = () => {
   useEffect(() => {
     const fetchSemesters = async () => {
       try {
-        const response = await axios.get(`${API_BASE_URL}/Admin/GetSemester`);
+        const response = await axios.get(`${API_BASE_URL}/CommonApi/GetSemester`);
         if (response.data.success) {
-          setsemesters(response.data.semsester);
+          setsemesters(response.data.semester);
         }
       } catch (error) {
         console.error("Error fetching semesters:", error);
@@ -96,7 +96,19 @@ const Registration = () => {
   }, []);
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    if (name === "phone") {
+      if (/^\d{0,10}$/.test(value)) {
+        setFormData({ ...formData, [name]: value });
+      }
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
+  };
+
+  const validatePassword = (password) => {
+    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?#&])[A-Za-z\d@$!%*?#&]{6,}$/;
+    return regex.test(password);
   };
 
   const sendOtp = async () => {
@@ -136,13 +148,16 @@ const Registration = () => {
       return;
     }
 
+    if (!validatePassword(formData.password)) {
+      Swal.fire("Error", "Password must be at least 6 characters long and include uppercase, lowercase, number, and special character.", "error");
+      return;
+    }
+
     try {
-      const response = await axios.post(`http://localhost:5291/api/Register/register-student`, {
+      const response = await axios.post(`${API_BASE_URL}/Register/register-student`, {
         ...formData,
         groupId: 3,
-       
       });
-      console.log(response); 
 
       if (response.data.success) {
         Swal.fire("Success", response.data.message, "success").then(() => {
@@ -156,6 +171,8 @@ const Registration = () => {
     }
   };
 
+  const maxDob = new Date(new Date().setFullYear(new Date().getFullYear() - 17)).toISOString().split("T")[0];
+
   return (
     <div className="d-flex align-items-center justify-content-center" style={{ minHeight: "100vh", background: "linear-gradient(to right, #f8f9fa, #e3f2fd)" }}>
       <div className="col-md-6 d-none d-md-flex align-items-center justify-content-center">
@@ -165,7 +182,6 @@ const Registration = () => {
       <form onSubmit={handleSubmit} className="p-4 rounded shadow-sm border bg-white" style={{ width: "600px" }}>
         <h3 className="text-center mb-4 text-primary">🎓Student Registration</h3>
 
-        {/* Row 1: Name + Phone */}
         <div className="row mb-3">
           <div className="col">
             <label className="form-label">Student Name</label>
@@ -177,7 +193,6 @@ const Registration = () => {
           </div>
         </div>
 
-        {/* Row 2: Email + Password */}
         <div className="row mb-3">
           <div className="col">
             <label className="form-label">Email</label>
@@ -185,11 +200,10 @@ const Registration = () => {
           </div>
           <div className="col">
             <label className="form-label">Password</label>
-            <input type="password" name="password" value={formData.password} onChange={handleChange} className="form-control" placeholder="Create a password" required />
+            <input type="password" name="password" value={formData.password} onChange={handleChange} className="form-control" placeholder="Create a strong password" required />
           </div>
         </div>
 
-        {/* OTP */}
         {isOtpSent && !isOtpVerified && (
           <div className="mb-3">
             <label className="form-label">Enter OTP</label>
@@ -198,11 +212,10 @@ const Registration = () => {
           </div>
         )}
 
-        {/* Row 3: DOB + Gender */}
         <div className="row mb-3">
           <div className="col">
             <label className="form-label">Date of Birth</label>
-            <input type="date" name="dob" value={formData.dob} onChange={handleChange} className="form-control" required />
+            <input type="date" name="dob" value={formData.dob} onChange={handleChange} className="form-control" required max={maxDob} />
           </div>
           <div className="col">
             <label className="form-label">Gender</label>
@@ -215,13 +228,11 @@ const Registration = () => {
           </div>
         </div>
 
-        {/* Address */}
         <div className="mb-3">
           <label className="form-label">Address</label>
           <input type="text" name="address" value={formData.address} onChange={handleChange} className="form-control" placeholder="Enter your address" required />
         </div>
 
-        {/* Row 4: State + City */}
         <div className="row mb-3">
           <div className="col">
             <label className="form-label">State</label>
@@ -246,7 +257,6 @@ const Registration = () => {
           </div>
         </div>
 
-        {/* Row 5: Department + Semester */}
         <div className="row mb-3">
           <div className="col">
             <label className="form-label">Department</label>
@@ -268,12 +278,10 @@ const Registration = () => {
           </div>
         </div>
 
-        {/* Send OTP */}
         {!isOtpSent && !isOtpVerified && (
           <button type="button" className="btn btn-outline-primary w-100 mb-2" onClick={sendOtp}>Send OTP</button>
         )}
 
-        {/* Register Button */}
         {isOtpVerified && (
           <button type="submit" className="btn btn-success w-100">Register</button>
         )}

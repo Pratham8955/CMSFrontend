@@ -1,0 +1,87 @@
+.admin-dashboard-container {
+    display: flex;
+    height: 100vh;
+    font-family: sans-serif;
+  }
+  
+  .sidebar-new {
+    width: 240px;
+    background-color: #1f2937;
+    color: #fff;
+    transition: width 0.3s;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .sidebar-new.collapsed {
+    width: 80px;
+  }
+  
+  .top-section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+  }
+  
+  .logo-area {
+    display: flex;
+    align-items: center;
+  }
+  
+  .logo {
+    font-size: 24px;
+    margin-right: 10px;
+  }
+  
+  .logo-text {
+    font-weight: bold;
+    font-size: 18px;
+    margin-top: 5px;
+    margin-left: 10px;
+  }
+  
+  .menu-toggle {
+    cursor: pointer;
+    font-size: 20px;
+    color: #fff;
+  }
+  
+  .nav-menu {
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+  }
+  
+  .nav-menu li {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  
+  .nav-menu li:hover {
+    background-color: #374151;
+  }
+  
+  .nav-menu .icon {
+    margin-right: 10px;
+    font-size: 18px;
+  }
+  
+  .sidebar-new.collapsed .logo-text,
+  .sidebar-new.collapsed .nav-menu span {
+    display: none;
+  }
+  
+  .main-content {
+    flex-grow: 1;
+    padding: 20px;
+    background-color: #f3f4f6;
+  }
+  
+  .admin-header {
+    margin-bottom: 20px;
+  }
+  

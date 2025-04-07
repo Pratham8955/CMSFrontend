@@ -1,12 +1,28 @@
 import React from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, NavLink } from "react-router-dom";
 import "../css/Navbar.css";
 
 const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const isSignUp = location.pathname === "/register";
+  // Get login status and role
+  const token = localStorage.getItem("token");
+  const roleId = localStorage.getItem("roleId");
+
+  // You can define role mappings if needed
+  const isStudent = roleId === "1";
+  const isFaculty = roleId === "2";
+  const isAdmin = roleId === "3";
+
+  // Routes where Navbar should be hidden
+  const hideNavbarRoutes = ["/studentDashboard", "/facultyDashboard", "/adminDashboard"];
+  const shouldHideNavbar = token && hideNavbarRoutes.includes(location.pathname);
+
+  if (shouldHideNavbar) return null;
+
+  // Highlight Sign Up button for all register routes
+  const isSignUp = location.pathname.includes("register");
 
   return (
     <nav className="navbar">
@@ -14,17 +30,25 @@ const Navbar = () => {
         {/* Left Section */}
         <div className="navbar-left">
           <div className="navbar-logo" onClick={() => navigate("/")}>
-          🎓 ICT'S HOME
+            🎓 ICT'S HOME
           </div>
         </div>
 
         {/* Center Section */}
         <div className="navbar-center">
           <ul className="nav-links">
-            <li><a href="/" className="nav-item">Home</a></li>
-            <li><a href="/courses" className="nav-item">Courses</a></li>
-            <li><a href="/contact" className="nav-item">Contact</a></li>
-            <li><a href="/aboutUs" className="nav-item">About Us</a></li>
+            <li>
+              <NavLink to="/" className="nav-item">Home</NavLink>
+            </li>
+            <li>
+              <NavLink to="/courses" className="nav-item">Courses</NavLink>
+            </li>
+            <li>
+              <NavLink to="/contact" className="nav-item">Contact</NavLink>
+            </li>
+            <li>
+              <NavLink to="/aboutUs" className="nav-item">About Us</NavLink>
+            </li>
           </ul>
         </div>
 
@@ -33,7 +57,7 @@ const Navbar = () => {
           <div className="auth-toggle">
             <button
               className={`auth-btn ${!isSignUp ? "active" : ""}`}
-              onClick={() => navigate("/Login")}
+              onClick={() => navigate("/login")}
             >
               Sign In
             </button>
@@ -41,14 +65,12 @@ const Navbar = () => {
               className={`auth-btn ${isSignUp ? "active" : ""}`}
               onClick={() => navigate("/register")}
             >
-              Sign up
+              Sign Up
             </button>
           </div>
         </div>
       </div>
-      
     </nav>
-    
   );
 };
 

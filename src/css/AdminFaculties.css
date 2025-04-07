@@ -1,0 +1,138 @@
+/* src/css/AdminFaculties.css */
+
+.admin-container {
+    max-width: 2000px;
+    min-width: 1200px;
+    margin: 40px auto;
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  .admin-title {
+    text-align: center;
+    font-size: 28px;
+    margin-bottom: 25px;
+    color: #333;
+  }
+  
+  .admin-button {
+    padding: 10px 18px;
+    font-size: 15px;
+    border-radius: 8px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-right: 10px;
+  }
+  
+  .admin-button:hover {
+    background-color: #218838;
+  }
+  
+  .close-btn {
+    background-color: #dc3545;
+  }
+  
+  .close-btn:hover {
+    background-color: #c82333;
+  }
+  
+  .save-btn {
+    background-color: #007bff;
+  }
+  
+  .save-btn:hover {
+    background-color: #0056b3;
+  }
+  
+  .form-container {
+    margin-top: 20px;
+    margin-bottom: 40px;
+    background-color: #f9f9f9;
+    padding: 25px;
+    border-radius: 12px;
+    border: 1px solid #ddd;
+  }
+  
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+  }
+  
+  .form-group label {
+    margin-bottom: 6px;
+    font-weight: 500;
+    color: #444;
+  }
+  
+  .form-input,
+  .form-select {
+    padding: 10px;
+    font-size: 15px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    outline: none;
+    transition: border-color 0.2s ease;
+  }
+  
+  .form-input:focus,
+  .form-select:focus {
+    border-color: #007bff;
+  }
+  
+  .button-group {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  
+  .table-container {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  .table-container th,
+  .table-container td {
+    padding: 12px 15px;
+    border: 1px solid #e0e0e0;
+    text-align: left;
+  }
+  
+  .table-container th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+  }
+  
+  .table-container tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  .action-buttons {
+    display: flex;
+    gap: 8px;
+  }
+  
+  .edit-btn {
+    background-color: #ffc107;
+  }
+  
+  .edit-btn:hover {
+    background-color: #e0a800;
+  }
+  
+  .delete-btn {
+    background-color: #dc3545;
+  }
+  
+  .delete-btn:hover {
+    background-color: #c82333;
+  }
+  

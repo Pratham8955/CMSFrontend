@@ -1,0 +1,77 @@
+/* Reset some basic styling */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  /* Body takes full height and light background */
+  body, html {
+    /* min-height: 100vh; */
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #f4f6f9;
+    color: #333;
+  }
+  
+  /* Remove list bullets */
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  /* Anchor defaults */
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+  
+  /* Admin layout flex fix */
+  .admin-dashboard-container {
+    display: flex;
+    min-height: 100vh;
+  }
+  
+  /* Make main content take full width minus sidebar */
+  .main-content {
+    flex-grow: 1;
+    padding: 20px;
+    background-color: #fff;
+    overflow-y: auto;
+  }
+  
+  /* Sidebar styles */
+  .sidebar-new {
+    width: 220px;
+    background-color: #1f2937;
+    color: white;
+    min-height: 100vh;
+    padding-top: 20px;
+    transition: width 0.3s ease;
+  }
+  
+  .sidebar-new.collapsed {
+    width: 70px;
+  }
+  
+  .sidebar-new .nav-menu li {
+    padding: 12px 20px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+  
+  .sidebar-new .nav-menu li:hover {
+    background-color: #374151;
+  }
+  
+  .sidebar-new .icon {
+    margin-right: 10px;
+  }
+  
+  /* Header */
+  .admin-header {
+    padding: 10px 0;
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+  }
+  
