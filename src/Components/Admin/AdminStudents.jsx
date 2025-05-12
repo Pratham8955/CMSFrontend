@@ -9,7 +9,7 @@ const AdminStudents = () => {
   useEffect(() => {
     const fetchStudents = async () => {
       try {
-        const response = await axios.get("http://localhost:5291/api/Student/GetStudents");
+        const response = await axios.get("https://localhost:7133/api/Student/GetStudents");
         if (response.data.success) {
           setStudents(response.data.student);
         }

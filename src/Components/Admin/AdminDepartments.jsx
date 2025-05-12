@@ -19,7 +19,7 @@ const AdminDepartments = () => {
 
   const fetchDepartments = () => {
     axios
-      .get("http://localhost:5291/api/Department/GetDepartment")
+      .get("https://localhost:7133/api/Department/GetDepartment")
       .then((res) => {
         if (res.data.success) {
           setDepartments(res.data.department || []);
@@ -35,7 +35,7 @@ const AdminDepartments = () => {
 
   const fetchFaculties = () => {
     axios
-      .get("http://localhost:5291/api/Faculties/GetFaculties")
+      .get("https://localhost:7133/api/Faculties/GetFaculties")
       .then((res) => {
         if (res.data?.success && Array.isArray(res.data.faculty)) {
           setFacultyList(res.data.faculty);
@@ -51,23 +51,23 @@ const AdminDepartments = () => {
 
     const data = {
       deptName: deptName.trim(),
-      headOfDept: headOfDept || null,
+      headOfDept: headOfDept ? parseInt(headOfDept) : null,
     };
 
     try {
       if (isEditing && editingId !== null) {
         const res = await axios.post(
-          `http://localhost:5291/api/Department/UpdateDepartment/${editingId}`,
+          `https://localhost:7133/api/Department/UpdateDepartment/${editingId}`,
           data
         );
-        if (res.data.success) {
+        if (res.data.success || res.status === 204) {
           Swal.fire("Success", "Department updated successfully!", "success");
         } else {
           Swal.fire("Error", "Failed to update department.", "error");
         }
       } else {
         const res = await axios.post(
-          "http://localhost:5291/api/Department/AddDepartment",
+          "https://localhost:7133/api/Department/AddDepartment",
           { deptId: 0, ...data }
         );
         if (res.data.success) {
@@ -77,6 +77,7 @@ const AdminDepartments = () => {
         }
       }
 
+      // Reset form
       setDeptName("");
       setHeadOfDept("");
       setShowForm(false);
@@ -104,7 +105,7 @@ const AdminDepartments = () => {
 
     try {
       const res = await axios.delete(
-        `http://localhost:5291/api/Department/DeleteDepartment`,
+        `https://localhost:7133/api/Department/DeleteDepartment`,
         { params: { id: deptId } }
       );
       if (res.data.success) {
@@ -121,7 +122,7 @@ const AdminDepartments = () => {
 
   const handleEdit = (dept) => {
     setDeptName(dept.deptName);
-    setHeadOfDept(dept.headOfDept || "");
+    setHeadOfDept(dept.headOfDept?.toString() || "");
     setEditingId(dept.deptId);
     setIsEditing(true);
     setShowForm(true);
@@ -158,8 +159,8 @@ const AdminDepartments = () => {
               className="form-select"
             >
               <option value="">-- None --</option>
-              {facultyList.map((faculty, index) => (
-                <option key={index} value={faculty.facultyName}>
+              {facultyList.map((faculty) => (
+                <option key={faculty.facultyId} value={faculty.facultyId}>
                   {faculty.facultyName}
                 </option>
               ))}
@@ -207,7 +208,12 @@ const AdminDepartments = () => {
             departments.map((dept, index) => (
               <tr key={index}>
                 <td>{dept.deptName}</td>
-                <td>{dept.headOfDept || "N/A"}</td>
+                <td>
+                  {
+                    facultyList.find((f) => f.facultyId === dept.headOfDept)
+                      ?.facultyName || "N/A"
+                  }
+                </td>
                 <td>
                   <button
                     className="admin-button edit-btn"

@@ -6,7 +6,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "../css/AdminandFacultyLogin.css";
 import facultyImage from "../assets/facultylogin.png";
 
-const API_BASE_URL = "http://localhost:5291/api";
+const API_BASE_URL = "https://localhost:7133/api";
 
 const AdminandFacultyLogin = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });

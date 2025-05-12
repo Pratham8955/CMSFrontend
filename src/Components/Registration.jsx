@@ -23,6 +23,7 @@ const Registration = () => {
     phone: "",
     deptId: "",
     currentSemester: "",
+    image: null,
   });
 
   const [otp, setOtp] = useState("");
@@ -33,7 +34,7 @@ const Registration = () => {
   const [selectedState, setSelectedState] = useState("");
   const [selectedCity, setSelectedCity] = useState("");
   const [departments, setDepartments] = useState([]);
-  const [semesters, setsemesters] = useState([]);
+  const [semesters, setSemesters] = useState([]);
 
   const navigate = useNavigate();
 
@@ -71,8 +72,11 @@ const Registration = () => {
     const fetchDepartments = async () => {
       try {
         const response = await axios.get(`${API_BASE_URL}/Department/GetDepartment`);
+        console.log("Department API Response:", response); // Debugging: Log the API response
         if (response.data.success) {
           setDepartments(response.data.department);
+        } else {
+          console.error("Failed to fetch departments:", response.data.message);
         }
       } catch (error) {
         console.error("Error fetching departments:", error);
@@ -80,13 +84,16 @@ const Registration = () => {
     };
     fetchDepartments();
   }, []);
-
+  
   useEffect(() => {
     const fetchSemesters = async () => {
       try {
         const response = await axios.get(`${API_BASE_URL}/CommonApi/GetSemester`);
+        console.log("Semester API Response:", response); // Debugging: Log the API response
         if (response.data.success) {
-          setsemesters(response.data.semester);
+          setSemesters(response.data.semester);
+        } else {
+          console.error("Failed to fetch semesters:", response.data.message);
         }
       } catch (error) {
         console.error("Error fetching semesters:", error);
@@ -94,12 +101,18 @@ const Registration = () => {
     };
     fetchSemesters();
   }, []);
+  
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     if (name === "phone") {
       if (/^\d{0,10}$/.test(value)) {
         setFormData({ ...formData, [name]: value });
+      }
+    } else if (name === "image") {
+      const file = e.target.files[0];
+      if (file) {
+        setFormData({ ...formData, image: file });
       }
     } else {
       setFormData({ ...formData, [name]: value });
@@ -153,11 +166,24 @@ const Registration = () => {
       return;
     }
 
+    const formDataToSubmit = new FormData();
+    formDataToSubmit.append("studentName", formData.studentName);
+    formDataToSubmit.append("email", formData.email);
+    formDataToSubmit.append("password", formData.password);
+    formDataToSubmit.append("dob", formData.dob);
+    formDataToSubmit.append("gender", formData.gender);
+    formDataToSubmit.append("address", formData.address);
+    formDataToSubmit.append("city", formData.city);
+    formDataToSubmit.append("state", formData.state);
+    formDataToSubmit.append("phone", formData.phone);
+    formDataToSubmit.append("deptId", formData.deptId);
+    formDataToSubmit.append("currentSemester", formData.currentSemester);
+    if (formData.image) {
+      formDataToSubmit.append("image", formData.image);
+    }
+
     try {
-      const response = await axios.post(`${API_BASE_URL}/Register/register-student`, {
-        ...formData,
-        groupId: 3,
-      });
+      const response = await axios.post(`${API_BASE_URL}/Register/register-student`, formDataToSubmit, { headers: { "Content-Type": "multipart/form-data" } });
 
       if (response.data.success) {
         Swal.fire("Success", response.data.message, "success").then(() => {
@@ -233,58 +259,56 @@ const Registration = () => {
           <input type="text" name="address" value={formData.address} onChange={handleChange} className="form-control" placeholder="Enter your address" required />
         </div>
 
-        <div className="row mb-3">
-          <div className="col">
-            <label className="form-label">State</label>
-            <select className="form-control" value={selectedState} onChange={handleStateChange} required>
-              <option value="">Select State</option>
-              {states.map((state) => (
-                <option key={state.iso2} value={state.iso2}>{state.name}</option>
-              ))}
-            </select>
-          </div>
-          <div className="col">
-            <label className="form-label">City</label>
-            <select className="form-control" value={selectedCity} onChange={(e) => {
-              setSelectedCity(e.target.value);
-              setFormData((prevData) => ({ ...prevData, city: e.target.value }));
-            }} required disabled={!selectedState}>
-              <option value="">Select City</option>
-              {cities.map((city) => (
-                <option key={city.id} value={city.name}>{city.name}</option>
-              ))}
-            </select>
-          </div>
+        <div className="mb-3">
+          <label className="form-label">State</label>
+          <select name="state" value={selectedState} onChange={handleStateChange} className="form-control" required>
+            <option value="">Select State</option>
+            {states.map((state) => (
+              <option key={state.isoCode} value={state.isoCode}>{state.name}</option>
+            ))}
+          </select>
         </div>
 
-        <div className="row mb-3">
-          <div className="col">
-            <label className="form-label">Department</label>
-            <select name="deptId" value={formData.deptId} onChange={handleChange} className="form-control" required>
-              <option value="">Select Department</option>
-              {departments.map((dept) => (
-                <option key={dept.deptId} value={dept.deptId}>{dept.deptName}</option>
-              ))}
-            </select>
-          </div>
-          <div className="col">
-            <label className="form-label">Current Semester</label>
-            <select name="currentSemester" value={formData.currentSemester} onChange={handleChange} className="form-control" required>
-              <option value="">Select Semester</option>
-              {semesters.map((sem) => (
-                <option key={sem.semId} value={sem.semId}>{sem.semName}</option>
-              ))}
-            </select>
-          </div>
+        <div className="mb-3">
+          <label className="form-label">City</label>
+          <select name="city" value={selectedCity} onChange={handleChange} className="form-control" required>
+            <option value="">Select City</option>
+            {cities.map((city) => (
+              <option key={city.name} value={city.name}>{city.name}</option>
+            ))}
+          </select>
         </div>
 
-        {!isOtpSent && !isOtpVerified && (
-          <button type="button" className="btn btn-outline-primary w-100 mb-2" onClick={sendOtp}>Send OTP</button>
+        <div className="mb-3">
+          <label className="form-label">Department</label>
+          <select name="deptId" value={formData.deptId} onChange={handleChange} className="form-control" required>
+            <option value="">Select Department</option>
+            {departments.map((department) => (
+              <option key={department.id} value={department.id}>{department.name}</option>
+            ))}
+          </select>
+        </div>
+
+        <div className="mb-3">
+          <label className="form-label">Current Semester</label>
+          <select name="currentSemester" value={formData.currentSemester} onChange={handleChange} className="form-control" required>
+            <option value="">Select Semester</option>
+            {semesters.map((semester) => (
+              <option key={semester.id} value={semester.id}>{semester.name}</option>
+            ))}
+          </select>
+        </div>
+
+        <div className="mb-3">
+          <label className="form-label">Profile Image</label>
+          <input type="file" name="image" onChange={handleChange} className="form-control" />
+        </div>
+
+        {!isOtpSent && (
+          <button type="button" className="btn btn-primary w-100" onClick={sendOtp}>Send OTP</button>
         )}
 
-        {isOtpVerified && (
-          <button type="submit" className="btn btn-success w-100">Register</button>
-        )}
+        <button type="submit" className="btn btn-success w-100 mt-3" disabled={!isOtpVerified}>Register</button>
       </form>
     </div>
   );

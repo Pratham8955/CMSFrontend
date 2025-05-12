@@ -1,7 +1,13 @@
 // src/App.js
 import React from "react";
-import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
-import './css/global.css';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+  matchPath,
+} from "react-router-dom";
+import "./css/global.css";
 
 // Public Components
 import Home from "./Components/Home";
@@ -28,6 +34,15 @@ import FacultyAssignment from "./Components/Admin/FacultyAssignment";
 
 // Protected Route Wrapper
 import ProtectedRoute from "./Components/ProtectedRoute";
+import Unauthorize from "./Components/Unauthorize";
+import Profile from "./Components/Student/Profile";
+import StudentLayout from "./Components/Student/StudentLayout";
+import Fees from "./Components/Student/Fees";
+import FeePayment from "./Components/Student/FeePayment";
+import FacultyLayout from "./Components/Faculty/FacultyLayout";
+import FacultyProfile from "./Components/Faculty/FacultyProfile";
+import AssignedSubjects from "./Components/Faculty/AssignedSubjects";
+import ContentUpload from "./Components/Faculty/ContentUpload";
 
 // AppWrapper handles conditional Navbar/Footer
 const AppWrapper = () => {
@@ -35,18 +50,24 @@ const AppWrapper = () => {
 
   const hiddenRoutes = [
     "/student/Studentdashboard",
+    "/student/profile",
+    "/student/fees",
+    "/student/payment",
     "/faculty/facultydashboard",
+    "/faculty/profile",
+    "/faculty/AssignedSubjects",
+    "/faculty/ContentUpload",
     "/admin/AdminDashboard",
     "/admin/departments",
     "/admin/faculties",
     "/admin/students",
     "/admin/faculty-assignment",
-   
   ];
 
-  const shouldHideNavbar = hiddenRoutes.includes(location.pathname);
-  const shouldHideFooter = hiddenRoutes.includes(location.pathname);
-
+  const shouldHideNavbar = hiddenRoutes.some((route) =>
+    matchPath({ path: route, end: true }, location.pathname)
+  );
+  const shouldHideFooter = shouldHideNavbar;
   return (
     <>
       {!shouldHideNavbar && <Navbar />}
@@ -59,27 +80,42 @@ const AppWrapper = () => {
         <Route path="/aboutUs" element={<AboutUS />} />
         <Route path="/Login" element={<StudentLogin />} />
         <Route path="/register" element={<Registration />} />
-        <Route path="/AdminandFacultyLogin" element={<AdminandFacultyLogin />} />
+        <Route path="/unauthorized" element={<Unauthorize />} />
+        <Route
+          path="/AdminandFacultyLogin"
+          element={<AdminandFacultyLogin />}
+        />
 
         {/* Student Dashboard */}
         <Route
-          path="/student/Studentdashboard"
+          path="/student"
           element={
             <ProtectedRoute allowedRole="3">
-              <Studentdashboard />
+              <StudentLayout />
             </ProtectedRoute>
           }
-        />
+        >
+          <Route path="profile" element={<Profile />} />
+          <Route path="fees" element={<FeePayment />} />
+          <Route path="payment" element={<Fees />} />
+          <Route path="Studentdashboard" element={<Studentdashboard />} />
+        </Route>
 
         {/* Faculty Dashboard */}
         <Route
-          path="/faculty/facultydashboard"
+          path="/faculty"
           element={
             <ProtectedRoute allowedRole="2">
-              <FacultyDashboard />
+              <FacultyLayout />
             </ProtectedRoute>
           }
-        />
+          facultydashboard
+        >
+          <Route path="profile" element={<FacultyProfile />} />
+          <Route path="AssignedSubjects" element={<AssignedSubjects />} />
+          <Route path="ContentUpload" element={<ContentUpload />} />
+          <Route path="facultydashboard" element={<FacultyDashboard />} />
+        </Route>
 
         {/* Admin Layout with Nested Routes */}
         <Route

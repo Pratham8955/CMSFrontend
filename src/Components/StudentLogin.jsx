@@ -6,7 +6,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "../css/StudentLogin.css";
 import studentImage from "../assets/LoginImg.png";
 
-const API_BASE_URL = "http://localhost:5291/api";
+const API_BASE_URL = "https://localhost:7133/api";
 
 const StudentLogin = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -85,7 +85,7 @@ const StudentLogin = () => {
             </button>
 
             <div className="student-login-links mt-3 d-flex justify-content-between">
-              <a href="#">Forgot password?</a>
+              <a href="">Forgot password?</a>
               <a href="/register">Create an account</a>
             </div>
           </form>

@@ -27,7 +27,7 @@ const AdminFaculties = () => {
 
   const fetchFaculties = async () => {
     try {
-      const res = await axios.get("http://localhost:5291/api/Faculties/GetFaculties");
+      const res = await axios.get("https://localhost:7133/api/Faculties/GetFaculties");
       if (res.data.success) {
         setFaculties(res.data.faculty || res.data.Faculty);
       } else {
@@ -41,7 +41,7 @@ const AdminFaculties = () => {
 
   const fetchDepartments = async () => {
     try {
-      const res = await axios.get("http://localhost:5291/api/Department/GetDepartment");
+      const res = await axios.get("https://localhost:7133/api/Department/GetDepartment");
       if (res.data.success) {
         setDepartments(res.data.department || []);
       }
@@ -60,7 +60,7 @@ const AdminFaculties = () => {
     try {
       if (isEditing) {
         const res = await axios.post(
-          `http://localhost:5291/api/Faculties/UpdateFaculty/${editingId}`,
+          `https://localhost:7133/api/Faculties/UpdateFaculty/${editingId}`,
           formData
         );
 
@@ -71,7 +71,7 @@ const AdminFaculties = () => {
         }
       } else {
         const res = await axios.post(
-          "http://localhost:5291/api/Faculties/AddFaculty",
+          "https://localhost:7133/api/Faculties/AddFaculty",
           formData
         );
 
@@ -124,7 +124,7 @@ const AdminFaculties = () => {
 
     try {
       const res = await axios.delete(
-        `http://localhost:5291/api/Faculties/DeleteFaculty`,
+        `https://localhost:7133/api/Faculties/DeleteFaculty`,
         { params: { id: facultyId } }
       );
 

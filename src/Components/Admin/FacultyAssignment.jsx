@@ -15,14 +15,14 @@ const FacultyAssignment = () => {
   const [selectedFaculty, setSelectedFaculty] = useState('');
 
   useEffect(() => {
-    axios.get('http://localhost:5291/api/Department/GetDepartment')
+    axios.get('https://localhost:7133/api/Department/GetDepartment')
       .then(res => {
         if (res.data.success) {
           setDepartments(res.data.department);
         }
       });
 
-    axios.get('http://localhost:5291/api/CommonApi/GetSemester')
+    axios.get('https://localhost:7133/api/CommonApi/GetSemester')
       .then(res => {
         if (res.data.success) {
           setSemesters(res.data.semester);
@@ -32,7 +32,7 @@ const FacultyAssignment = () => {
 
   useEffect(() => {
     if (selectedDepartment) {
-      axios.get(`http://localhost:5291/api/FacultySubject/GetFacultyByDepartment/${selectedDepartment}`)
+      axios.get(`https://localhost:7133/api/FacultySubject/GetFacultyByDepartment/${selectedDepartment}`)
         .then(res => {
           if (res.data.success) {
             setFaculties(res.data.faculty);
@@ -45,7 +45,7 @@ const FacultyAssignment = () => {
 
   useEffect(() => {
     if (selectedDepartment && selectedSemester) {
-      axios.get(`http://localhost:5291/api/FacultySubject/GetSubjectsByDepartmentAndSemester/${selectedDepartment}/${selectedSemester}`)
+      axios.get(`https://localhost:7133/api/FacultySubject/GetSubjectsByDepartmentAndSemester/${selectedDepartment}/${selectedSemester}`)
         .then(res => {
           if (res.data.success) {
             setSubjects(res.data.subjects);
@@ -83,7 +83,7 @@ const FacultyAssignment = () => {
       cancelButtonText: 'Cancel',
     }).then(result => {
       if (result.isConfirmed) {
-        axios.post('http://localhost:5291/api/FacultySubject/AssignFacultySubject', payload)
+        axios.post('https://localhost:7133/api/FacultySubject/AssignFacultySubject', payload)
           .then(res => {
             if (res.data.success) {
               Swal.fire({
