@@ -43,6 +43,10 @@ import FacultyLayout from "./Components/Faculty/FacultyLayout";
 import FacultyProfile from "./Components/Faculty/FacultyProfile";
 import AssignedSubjects from "./Components/Faculty/AssignedSubjects";
 import ContentUpload from "./Components/Faculty/ContentUpload";
+import StudentForgetPass from "./Components/StudentForgetPass";
+import FacultyForgetPass from "./Components/FacultyForgetPass";
+import Material from "./Components/Student/Material";
+import FeeStatus from "./Components/Faculty/FeeStatus";
 
 // AppWrapper handles conditional Navbar/Footer
 const AppWrapper = () => {
@@ -53,7 +57,9 @@ const AppWrapper = () => {
     "/student/profile",
     "/student/fees",
     "/student/payment",
+    "/student/material",
     "/faculty/facultydashboard",
+    "/faculty/Fees-Status",
     "/faculty/profile",
     "/faculty/AssignedSubjects",
     "/faculty/ContentUpload",
@@ -62,6 +68,8 @@ const AppWrapper = () => {
     "/admin/faculties",
     "/admin/students",
     "/admin/faculty-assignment",
+    "/studentForgetPassword",
+    "/facultyForgetPassword",
   ];
 
   const shouldHideNavbar = hiddenRoutes.some((route) =>
@@ -76,6 +84,8 @@ const AppWrapper = () => {
         {/* Public Routes */}
         <Route path="/" element={<Home />} />
         <Route path="/courses" element={<Courses />} />
+        <Route path="/studentForgetPassword" element={<StudentForgetPass />} />
+        <Route path="/facultyForgetPassword" element={<FacultyForgetPass />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/aboutUs" element={<AboutUS />} />
         <Route path="/Login" element={<StudentLogin />} />
@@ -98,6 +108,7 @@ const AppWrapper = () => {
           <Route path="profile" element={<Profile />} />
           <Route path="fees" element={<FeePayment />} />
           <Route path="payment" element={<Fees />} />
+          <Route path="material" element={<Material />} />
           <Route path="Studentdashboard" element={<Studentdashboard />} />
         </Route>
 
@@ -115,6 +126,7 @@ const AppWrapper = () => {
           <Route path="AssignedSubjects" element={<AssignedSubjects />} />
           <Route path="ContentUpload" element={<ContentUpload />} />
           <Route path="facultydashboard" element={<FacultyDashboard />} />
+          <Route path="Fees-Status" element={<FeeStatus />} />
         </Route>
 
         {/* Admin Layout with Nested Routes */}

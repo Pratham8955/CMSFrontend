@@ -151,9 +151,20 @@ const Fees = () => {
     { label: "Internal Examination", amount: feeType?.internalExam },
   ];
 
-  const tableData = feeItems
-    .filter((item) => item.amount != null)
-    .map((item, index) => [index + 1, item.label, item.amount.toFixed(2)]);
+  const filteredItems = feeItems.filter((item) => item.amount != null);
+
+  const tableData = filteredItems.map((item, index) => [
+    index + 1,
+    item.label,
+    item.amount.toFixed(2),
+  ]);
+
+  // Add Total row to the table
+  tableData.push([
+    { content: "", colSpan: 1, styles: { cellPadding: 0 } },
+    { content: "Total (Rs):", styles: { halign: "right", fontStyle: "bold" } },
+    { content: paidAmount.toFixed(2), styles: { halign: "right", fontStyle: "bold" } },
+  ]);
 
   autoTable(doc, {
     startY: yStart + 3 * lineHeight + 6,
@@ -169,21 +180,18 @@ const Fees = () => {
     },
   });
 
-  const totalY = doc.lastAutoTable.finalY + 10;
-
-  // Total Amount
-  doc.setFont("helvetica", "bold");
-  doc.text("Total (Rs.):", 150, totalY);
-  doc.text(paidAmount.toFixed(2), 190, totalY, null, null, "right");
+  const afterTableY = doc.lastAutoTable.finalY + 10;
 
   // Mode of Payment
-  doc.text("Mode of Payment :", 15, totalY + 10);
+  doc.setFont("helvetica", "bold");
+  doc.text("Mode of Payment :", 15, afterTableY);
   doc.setFont("helvetica", "normal");
-  doc.text("Online", 55, totalY + 10);
+  doc.text("Online", 55, afterTableY);
 
   // Save PDF
   doc.save("Fee_Receipt.pdf");
 };
+
 
 
 

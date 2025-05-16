@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate, Outlet, useLocation } from "react-router-dom";
+import { useNavigate, Outlet } from "react-router-dom";
 import {
   FaUserGraduate,
   FaSignOutAlt,
@@ -9,14 +9,13 @@ import {
 
 const StudentLayout = () => {
   const navigate = useNavigate();
-  const location = useLocation();
   const [isSidebarOpen, setSidebarOpen] = useState(true);
 
   const toggleSidebar = () => setSidebarOpen(!isSidebarOpen);
 
   const handleLogout = () => {
     localStorage.clear();
-    navigate("/StudentLogin");
+    navigate("/login");
   };
 
   return (
@@ -47,6 +46,10 @@ const StudentLayout = () => {
           <li onClick={() => navigate("/student/fees")}>
             <FaUserGraduate className="icon" />
             {isSidebarOpen && <span>Fees</span>}
+          </li>
+          <li onClick={() => navigate("/student/material")}>
+            <FaUserGraduate className="icon" />
+            {isSidebarOpen && <span>Materials</span>}
           </li>
           <li onClick={handleLogout}>
             <FaSignOutAlt className="icon" />

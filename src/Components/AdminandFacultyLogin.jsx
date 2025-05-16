@@ -98,6 +98,9 @@ const AdminandFacultyLogin = () => {
            
              
             </div>
+            <div className="student-login-links mt-3 d-flex justify-content-between">
+              <a href="/facultyForgetPassword">Forgot password?</a>
+            </div>
           </form>
         </div>
       </div>

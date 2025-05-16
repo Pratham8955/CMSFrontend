@@ -1,0 +1,44 @@
+
+.fee-status-container {
+  width: 90%;
+  margin: 20px auto;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.fee-status-title {
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+.fee-status-error {
+  color: red;
+  margin: 20px;
+}
+
+.fee-status-table {
+  width: 100%;
+  border-collapse: collapse;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.fee-status-table th,
+.fee-status-table td {
+  border: 1px solid #ddd;
+  padding: 12px 15px;
+  text-align: left;
+}
+
+.fee-status-table th {
+  background-color: #4caf50;
+  color: white;
+  font-weight: 600;
+}
+
+.fee-status-table tbody tr:nth-child(odd) {
+  background-color: #fafafa;
+}
+
+.fee-status-table tbody tr:hover {
+  background-color: #f1f1f1;
+}
