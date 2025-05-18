@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import {jwtDecode} from "jwt-decode";
-import "../../css/FeeStatus.css";
+import "../../css/Faculty/FeeStatus.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const FeeStatus = () => {
   const [feeData, setFeeData] = useState([]);
@@ -53,17 +54,27 @@ const FeeStatus = () => {
     fetchFeeStatus();
   }, []);
 
-  if (loading) return <div className="fee-status-container">Loading fee status...</div>;
-  if (error) return <div className="fee-status-error">Error: {error}</div>;
+  if (loading)
+    return (
+      <div className="loading-message">
+        <div className="spinner-border text-primary" role="status">
+          <span className="sr-only">Loading...</span>
+        </div>
+      </div>
+    );
+
+  if (error)
+    return <div className="fee-status-error alert alert-danger">{error}</div>;
 
   return (
     <div className="fee-status-container">
       <h2 className="fee-status-title">Fee Status</h2>
-      <table className="fee-status-table">
-        <thead>
+      <table className="fee-status-table table table-striped table-bordered">
+        <thead className="thead-dark">
           <tr>
             <th>Student ID</th>
             <th>Name</th>
+            <th>Semester</th>
             <th>Status</th>
             <th>Amount</th>
             <th>Transaction ID</th>
@@ -71,20 +82,40 @@ const FeeStatus = () => {
           </tr>
         </thead>
         <tbody>
-          {feeData.map((student) => (
-            <tr key={student.studentId}>
-              <td>{student.studentId}</td>
-              <td>{student.studentName}</td>
-              <td>{student.fees ? student.fees.status : "Not Paid"}</td>
-              <td>{student.fees ? student.fees.totalAmount : "-"}</td>
-              <td>{student.fees ? student.fees.transactionId : "-"}</td>
-              <td>
-                {student.fees
-                  ? new Date(student.fees.paymentDate).toLocaleDateString()
-                  : "-"}
-              </td>
-            </tr>
-          ))}
+          {feeData.map((student) => {
+            const hasFees = student.fees && student.fees.length > 0;
+            const fee = hasFees ? student.fees[0] : null;
+
+            return (
+              <tr key={student.studentId}>
+                <td>{student.studentId}</td>
+                <td>{student.studentName}</td>
+                <td>{student.currentSemester}</td>
+                <td
+                  className={
+                    hasFees && fee.status === "Paid"
+                      ? "text-primary"
+                      : "text-danger"
+                  }
+                  style={{
+                    color:
+                      hasFees && fee.status === "Paid"
+                        ? "#1E90FF"
+                        : "#FF4C4C",
+                  }}
+                >
+                  {hasFees ? fee.status : "Not Paid"}
+                </td>
+                <td>{hasFees ? fee.totalAmount : "-"}</td>
+                <td>{hasFees ? fee.transactionId : "-"}</td>
+                <td>
+                  {hasFees
+                    ? new Date(fee.paymentDate).toLocaleDateString()
+                    : "-"}
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>

@@ -1,0 +1,90 @@
+/* Main Container */
+.fee-status-container {
+  padding: 20px;
+  margin: auto;
+  max-width: 1100px;
+  background-color: #f9fbfd;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Title */
+.fee-status-title {
+  font-size: 2rem;
+  margin-bottom: 20px;
+  color: #007bff;
+  text-align: center;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Table Styling */
+.fee-status-table {
+  width: 100%;
+  border-collapse: collapse;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.fee-status-table thead {
+  background-color: #007bff;
+  color: white;
+}
+
+.fee-status-table th,
+.fee-status-table td {
+  padding: 15px;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+}
+
+.fee-status-table tbody tr:nth-child(even) {
+  background-color: #f2f6fc;
+}
+
+.fee-status-table tbody tr:hover {
+  background-color: #e9f3ff;
+  cursor: pointer;
+}
+
+/* Status Styling */
+.text-primary {
+  color: #1e90ff !important;
+  font-weight: 500;
+}
+
+.text-danger {
+  color: #d9534f !important;
+  font-weight: 500;
+}
+
+/* Error Message */
+.fee-status-error {
+  color: #dc3545;
+  font-size: 1.2rem;
+  text-align: center;
+  margin-top: 15px;
+}
+
+/* Loading Spinner */
+.loading-message {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+}
+
+/* Scrollbar Customization */
+.fee-status-table::-webkit-scrollbar {
+  width: 8px;
+}
+
+.fee-status-table::-webkit-scrollbar-thumb {
+  background-color: #007bff;
+  border-radius: 4px;
+}
+
+.fee-status-table::-webkit-scrollbar-thumb:hover {
+  background-color: #0056b3;
+}

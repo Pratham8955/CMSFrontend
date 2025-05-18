@@ -47,6 +47,7 @@ import StudentForgetPass from "./Components/StudentForgetPass";
 import FacultyForgetPass from "./Components/FacultyForgetPass";
 import Material from "./Components/Student/Material";
 import FeeStatus from "./Components/Faculty/FeeStatus";
+import Notifications from "./Components/Faculty/Notifications";
 
 // AppWrapper handles conditional Navbar/Footer
 const AppWrapper = () => {
@@ -63,6 +64,7 @@ const AppWrapper = () => {
     "/faculty/profile",
     "/faculty/AssignedSubjects",
     "/faculty/ContentUpload",
+    "/faculty/notification",
     "/admin/AdminDashboard",
     "/admin/departments",
     "/admin/faculties",
@@ -127,6 +129,7 @@ const AppWrapper = () => {
           <Route path="ContentUpload" element={<ContentUpload />} />
           <Route path="facultydashboard" element={<FacultyDashboard />} />
           <Route path="Fees-Status" element={<FeeStatus />} />
+          <Route path="notification" element={<Notifications />} />
         </Route>
 
         {/* Admin Layout with Nested Routes */}

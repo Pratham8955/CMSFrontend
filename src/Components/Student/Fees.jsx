@@ -4,6 +4,7 @@ import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import "../../css/Student/Fees.css"; // Import the new CSS file
 
 const Fees = () => {
   const [student, setStudent] = useState(null);
@@ -92,150 +93,73 @@ const Fees = () => {
     }
   }, [paymentStatus, student]);
 
-
-
- const generatePdf = (data) => {
-  if (!data) return;
-  const {
-    transactionId,
-    student_Name,
-    departmentName,
-    semesterName,
-    paymentDate,
-    feeType,
-    paidAmount,
-    status,
-  } = data;
-
-  const doc = new jsPDF();
-
-  // University Header
-  doc.addImage("/image.png", "PNG", 15, 10, 25, 25); // logo
-
-  doc.setFontSize(16);
-  doc.setTextColor(51, 153, 255); // Light Blue
-  doc.setFont("helvetica", "bold");
-  doc.text("ICT'S Home", 45, 15);
-
-  doc.setFontSize(12);
-  doc.setFont("helvetica", "normal");
-  doc.text("University Campus, Udhna-Magdalla Road, SURAT - 395007", 45, 22);
-
-  doc.setFont("helvetica", "bold");
-  doc.setTextColor(0);
-  doc.text("RECEIPT", 100, 30);
-
-  // Transaction Details
-  const yStart = 40;
-  const lineHeight = 8;
-
-  const drawLabelValue = (label, value, x, y) => {
-    doc.setFont("helvetica", "bold");
-    doc.text(label, x, y);
-    const labelWidth = doc.getTextWidth(label);
-    doc.setFont("helvetica", "normal");
-    doc.text(value, x + labelWidth + 2, y);
+  const generatePdf = (data) => {
+    if (!data) return;
+    const doc = new jsPDF();
+    doc.text("Fee Receipt", 20, 20);
+    autoTable(doc, {
+      head: [["Description", "Amount (Rs.)"]],
+      body: [
+        ["Tuition Fee", data.feeType.tuitionFees],
+        ["Lab Fee", data.feeType.labFees],
+        ["Ground Fee", data.feeType.collegeGroundFee],
+        ["Internal Exam", data.feeType.internalExam],
+      ],
+    });
+    doc.save("Fee_Receipt.pdf");
   };
 
-  drawLabelValue("Transaction Id.:", transactionId, 15, yStart);
-  drawLabelValue("Date:", new Date(paymentDate).toLocaleDateString(), 130, yStart);
-
-  drawLabelValue("Received From:", student_Name, 15, yStart + lineHeight);
-  drawLabelValue("Particulars:", `${departmentName} - ${semesterName}`, 15, yStart + 2 * lineHeight);
-
-  // Fee Breakdown Table
-  const feeItems = [
-    { label: "Tuition Fee", amount: feeType?.tuitionFees },
-    { label: "Laboratory Fee", amount: feeType?.labFees },
-    { label: "Ground Fee", amount: feeType?.collegeGroundFee },
-    { label: "Internal Examination", amount: feeType?.internalExam },
-  ];
-
-  const filteredItems = feeItems.filter((item) => item.amount != null);
-
-  const tableData = filteredItems.map((item, index) => [
-    index + 1,
-    item.label,
-    item.amount.toFixed(2),
-  ]);
-
-  // Add Total row to the table
-  tableData.push([
-    { content: "", colSpan: 1, styles: { cellPadding: 0 } },
-    { content: "Total (Rs):", styles: { halign: "right", fontStyle: "bold" } },
-    { content: paidAmount.toFixed(2), styles: { halign: "right", fontStyle: "bold" } },
-  ]);
-
-  autoTable(doc, {
-    startY: yStart + 3 * lineHeight + 6,
-    head: [["Sr. No.", "Description", "Amount (Rs.)"]],
-    body: tableData,
-    theme: "grid",
-    styles: { halign: "left", fontSize: 10 },
-    headStyles: { fillColor: [204, 229, 255], textColor: 0 }, // Light Blue
-    columnStyles: {
-      0: { cellWidth: 20 },
-      1: { cellWidth: 120 },
-      2: { cellWidth: 40, halign: "right" },
-    },
-  });
-
-  const afterTableY = doc.lastAutoTable.finalY + 10;
-
-  // Mode of Payment
-  doc.setFont("helvetica", "bold");
-  doc.text("Mode of Payment :", 15, afterTableY);
-  doc.setFont("helvetica", "normal");
-  doc.text("Online", 55, afterTableY);
-
-  // Save PDF
-  doc.save("Fee_Receipt.pdf");
-};
-
-
-
-
-  if (loading) return <div>Loading student details...</div>;
-  if (error) return <div style={{ color: "red" }}>{error}</div>;
+  if (loading) return <div className="loading-message">Loading student details...</div>;
+  if (error) return <div className="error-message">{error}</div>;
 
   return (
-    <div style={{ padding: "2rem" }}>
-      <h2>Semester Fee Details</h2>
+    <div className="container">
+      <div className="fees-header">Semester Fee Details</div>
       {paymentStatus === "Paid" ? (
-        <div style={{ color: "green", fontWeight: "bold" }}>
+        <div className="alert alert-info">
           ✅ Fees are already paid.
-          <div style={{ marginTop: "1rem", border: "1px solid #ccc", padding: "1rem", backgroundColor: "#fff" }}>
-            <h3>Fee Receipt</h3>
-            {paidFeeDetails ? (
-              <>
-                <p><strong>Transaction ID:</strong> {paidFeeDetails.transactionId}</p>
-                <p><strong>Paid Amount:</strong> ₹{paidFeeDetails.paidAmount}</p>
-                <p><strong>Payment Date:</strong> {new Date(paidFeeDetails.paymentDate).toLocaleString()}</p>
-                <p><strong>Department:</strong> {paidFeeDetails.departmentName}</p>
-                <p><strong>Semester:</strong> {paidFeeDetails.semesterName}</p>
-                <p><strong>Status:</strong> {paidFeeDetails.status}</p>
-                {paidFeeDetails.feeType && (
-                  <>
-                    <h4>Fee Breakdown</h4>
-                    <ul>
-                      <li>Tuition: ₹{paidFeeDetails.feeType.tuitionFees}</li>
-                      <li>Lab: ₹{paidFeeDetails.feeType.labFees}</li>
-                      <li>Ground: ₹{paidFeeDetails.feeType.collegeGroundFee}</li>
-                      <li>Internal Exam: ₹{paidFeeDetails.feeType.internalExam}</li>
-                    </ul>
-                  </>
-                )}
-              </>
-            ) : (
-              <p>Loading receipt...</p>
-            )}
+          <div className="card receipt-card">
+            <div className="card-body">
+              <h5 className="card-title">Fee Receipt</h5>
+              {paidFeeDetails ? (
+                <>
+                  <p><strong>Transaction ID:</strong> {paidFeeDetails.transactionId}</p>
+                  <p><strong>Paid Amount:</strong> ₹{paidFeeDetails.paidAmount}</p>
+                  <p><strong>Payment Date:</strong> {new Date(paidFeeDetails.paymentDate).toLocaleString()}</p>
+                  <p><strong>Department:</strong> {paidFeeDetails.departmentName}</p>
+                  <p><strong>Semester:</strong> {paidFeeDetails.semesterName}</p>
+                  <p><strong>Status:</strong> {paidFeeDetails.status}</p>
+
+                  <h6 className="mt-3">Fee Breakdown</h6>
+                  <table className="table table-bordered mt-2">
+                    <thead className="thead-dark">
+                      <tr>
+                        <th>Description</th>
+                        <th>Amount (Rs.)</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr><td>Tuition Fee</td><td>₹{paidFeeDetails.feeType.tuitionFees}</td></tr>
+                      <tr><td>Lab Fee</td><td>₹{paidFeeDetails.feeType.labFees}</td></tr>
+                      <tr><td>Ground Fee</td><td>₹{paidFeeDetails.feeType.collegeGroundFee}</td></tr>
+                      <tr><td>Internal Exam</td><td>₹{paidFeeDetails.feeType.internalExam}</td></tr>
+                    </tbody>
+                  </table>
+                </>
+              ) : (
+                <p>Loading receipt...</p>
+              )}
+            </div>
+            <button
+              onClick={() => generatePdf(paidFeeDetails)}
+              className="btn btn-primary download-btn"
+            >
+              📄 Download Fee Receipt
+            </button>
           </div>
-          <button onClick={() => generatePdf(paidFeeDetails)} className="btn btn-warning" style={{ marginTop: "1rem" }}>
-            Download PDF
-          </button>
         </div>
-      )  : (
-        <p>No fee structure found for your current semester.</p>
+      ) : (
+        <p className="alert alert-warning">No fee structure found for your current semester.</p>
       )}
     </div>
   );

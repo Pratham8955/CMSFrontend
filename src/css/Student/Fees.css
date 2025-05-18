@@ -1,0 +1,108 @@
+/* Main Container */
+.container {
+  margin-top: 2rem;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Header Styling */
+.fees-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #004080; /* Dark Blue */
+  font-weight: bold;
+  font-size: 1.8rem;
+  text-transform: uppercase;
+  border-bottom: 2px solid #004080;
+  display: inline-block;
+  padding-bottom: 5px;
+}
+
+/* Card Styling */
+.receipt-card {
+  margin-top: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid #b0c4de; /* Light Steel Blue */
+  box-shadow: 0px 4px 12px rgba(0, 0, 128, 0.2); /* Navy Blue Shadow */
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.receipt-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0px 8px 20px rgba(0, 0, 128, 0.25);
+}
+
+/* Card Title Styling */
+.card-title {
+  font-size: 1.4rem;
+  color: #1e3a8a; /* Indigo Blue */
+  margin-bottom: 15px;
+}
+
+/* Field Labels and Values */
+.card-body p {
+  margin: 5px 0;
+  font-size: 1.1rem;
+}
+
+.card-body p strong {
+  font-weight: bold;
+  color: #003366; /* Darker Blue */
+}
+
+/* Alert Styling */
+.alert {
+  margin-top: 1rem;
+  font-size: 1.1rem;
+  background-color: #e6f0ff;
+  color: #004080;
+  border-color: #004080;
+}
+
+/* Button Styling */
+.download-btn {
+  width: 100%;
+  margin-top: 15px;
+  background-color: #1e40af; /* Dark Blue */
+  color: white;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  transition: background-color 0.2s ease;
+}
+
+.download-btn:hover {
+  background-color: #1e3a8a; /* Indigo Blue */
+}
+
+/* Loading and Error Messages */
+.loading-message,
+.error-message {
+  text-align: center;
+  margin-top: 2rem;
+  font-size: 1.2rem;
+}
+
+.loading-message {
+  color: #1e40af; /* Dark Blue */
+}
+
+.error-message {
+  color: #dc3545;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    margin-top: 1rem;
+    padding: 0 1rem;
+  }
+
+  .fees-header {
+    font-size: 1.5rem;
+  }
+
+  .card-body p {
+    font-size: 1rem;
+  }
+}

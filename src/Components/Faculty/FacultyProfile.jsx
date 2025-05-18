@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { jwtDecode } from "jwt-decode";
+import {jwtDecode} from "jwt-decode"; // fixed import (no curly braces)
 import axios from "axios";
-import "../../css/AdminDashboard.css";
-import { FaUserCircle } from "react-icons/fa";
+import "../../css/Faculty/FacultyProfile.css";
 
 const FacultyProfile = () => {
   const [faculty, setFaculty] = useState(null);
@@ -32,39 +31,44 @@ const FacultyProfile = () => {
   }, []);
 
   return (
-    <div className="admin-dashboard-container">
-      <div className="dashboard-header">
-        <h1>
-          <FaUserCircle style={{ marginRight: "10px" }} />
-          Faculty Profile
-        </h1>
-      </div>
-
+    <div className="facl container py-5">
       {faculty ? (
-        <div className="faculty-profile card p-4 mt-3">
-          {faculty.facultyImg && (
+        <div className="faculty-profile">
+          <div className="faculty-header text-center">
             <img
-              src={`https://localhost:7133/Uploads/Faculty/${faculty.facultyImg}`}
-              alt="Faculty"
-              style={{
-                width: "150px",
-                height: "150px",
-                borderRadius: "50%",
-                objectFit: "cover",
-                marginBottom: "20px",
-              }}
+              src={
+                faculty.facultyImg
+                  ? `https://localhost:7133/Uploads/Faculty/${faculty.facultyImg}`
+                  : "/default-faculty.png"
+              }
+              alt={faculty.facultyName}
+              className="faculty-img mb-3"
             />
-          )}
-          <h2>👋 Hello, {faculty.facultyName}</h2>
-          <p><strong>Email:</strong> {faculty.email}</p>
-          <p><strong>Gender:</strong> {faculty.gender}</p>
-          <p><strong>Qualification:</strong> {faculty.qualification}</p>
-          <p><strong>Experience:</strong> {faculty.experience} years</p>
-          <p><strong>Date of Joining:</strong> {faculty.doj}</p>
-          <p><strong>Department Name:</strong> {faculty.depname}</p>
+            <h2 className="faculty-name">{faculty.facultyName}</h2>
+          </div>
+
+          <div className="faculty-grid">
+            <div className="profile-card border-info">
+              <h4 className="profile-section-title text-info mb-2">Contact Details</h4>
+              <p><strong>Email:</strong> {faculty.email}</p>
+              <p><strong>Gender:</strong> {faculty.gender}</p>
+            </div>
+
+            <div className="profile-card border-success">
+              <h4 className="profile-section-title text-success mb-2">Education & Experience</h4>
+              <p><strong>Qualification:</strong> {faculty.qualification}</p>
+              <p><strong>Experience:</strong> {faculty.experience} years</p>
+            </div>
+
+            <div className="profile-card border-warning">
+              <h4 className="profile-section-title text-warning mb-2">Professional Details</h4>
+              <p><strong>Date of Joining:</strong> {faculty.doj}</p>
+              <p><strong>Department Name:</strong> {faculty.depname}</p>
+            </div>
+          </div>
         </div>
       ) : (
-        <p>Loading faculty profile...</p>
+        <p className="loading-message text-center">Loading faculty profile...</p>
       )}
     </div>
   );

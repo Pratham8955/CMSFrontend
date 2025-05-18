@@ -10,7 +10,6 @@ import {
 } from "react-icons/fa";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
-
 const FacultyLayout = () => {
   const navigate = useNavigate();
   const [isSidebarOpen, setSidebarOpen] = useState(true);
@@ -94,6 +93,12 @@ const FacultyLayout = () => {
             <li onClick={() => navigate("/faculty/Fees-Status")}>
               <FaBell className="icon" />
               {isSidebarOpen && <span>Fees Status</span>}
+            </li>
+          )}
+          {isHod && (
+            <li onClick={() => navigate("/faculty/notification")}>
+              <FaBell className="icon" />
+              {isSidebarOpen && <span>Notifications</span>}
             </li>
           )}
           <li onClick={handleLogout}>
