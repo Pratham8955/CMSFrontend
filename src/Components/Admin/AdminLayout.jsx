@@ -1,13 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, Outlet, useLocation } from "react-router-dom";
-import {
-  FaUniversity,
-  FaChalkboardTeacher,
-  FaUserGraduate,
-  FaSignOutAlt,
-  FaBars,
-  FaTachometerAlt,
-} from "react-icons/fa";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "../../css/Admin/AdminLayout.css";
 
 const AdminLayout = () => {
   const navigate = useNavigate();
@@ -21,56 +15,62 @@ const AdminLayout = () => {
     navigate("/AdminandFacultyLogin");
   };
 
+  const menuItems = [
+    { label: "Dashboard", icon: <i className="bi bi-speedometer2"></i>, path: "/admin/AdminDashboard" },
+    { label: "Departments", icon: <i className="bi bi-building"></i>, path: "/admin/departments" },
+    { label: "Faculties", icon: <i className="bi bi-person-badge"></i>, path: "/admin/faculties" },
+    { label: "Students", icon: <i className="bi bi-mortarboard"></i>, path: "/admin/students" },
+    { label: "Faculty Assignment", icon: <i className="bi bi-journal-bookmark"></i>, path: "/admin/faculty-assignment" },
+  ];
+
   return (
-    <div
-      className="admin-dashboard-container"
-      style={{ display: "flex", minHeight: "600vh", backgroundColor: "#f1f3f5" }}
-    >
+    <div className="d-flex admin-layout">
       {/* Sidebar */}
-      <div className={`sidebar-new ${isSidebarOpen ? "open" : "collapsed"}`}>
-        <div className="top-section">
-          <div className="logo-area">
-            <div className="menu-toggle" onClick={toggleSidebar}>
-              <FaBars />
-            </div>
-            {isSidebarOpen && <div className="logo-text">Admin Panel</div>}
-          </div>
+      <nav className={`sidebar d-flex flex-column ${isSidebarOpen ? "open" : "collapsed"}`}>
+        <div className="logo-area d-flex align-items-center justify-content-between px-3 py-2">
+          {isSidebarOpen && <h4 className="text-white m-0">Admin Panel</h4>}
+          <button
+            className="btn btn-link text-white p-0 toggle-btn"
+            onClick={toggleSidebar}
+            aria-label="Toggle Sidebar"
+            title={isSidebarOpen ? "Collapse Sidebar" : "Expand Sidebar"}
+          >
+            <i className="bi bi-list fs-4"></i>
+          </button>
         </div>
 
-        <ul className="nav-menu">
-          <li onClick={() => navigate("/admin/AdminDashboard")}>
-            <FaTachometerAlt className="icon" />
-            <span>Dashboard</span>
-          </li>
-          <li onClick={() => navigate("/admin/departments")}>
-            <FaUniversity className="icon" />
-            <span>Departments</span>
-          </li>
-          <li onClick={() => navigate("/admin/faculties")}>
-            <FaChalkboardTeacher className="icon" />
-            <span>Faculties</span>
-          </li>
-          <li onClick={() => navigate("/admin/students")}>
-            <FaUserGraduate className="icon" />
-            <span>Students</span>
-          </li>
-          <li onClick={() => navigate("/admin/faculty-assignment")}>
-            <FaChalkboardTeacher className="icon" />
-            <span>Faculty Assignment</span>
-          </li>
-          <li onClick={handleLogout}>
-            <FaSignOutAlt className="icon" />
-            <span>Logout</span>
+        <ul className="nav flex-column px-2 mt-3">
+          {menuItems.map((item, idx) => (
+            <li
+              key={idx}
+              className={`nav-item mb-1 rounded ${location.pathname === item.path ? "active-link" : ""}`}
+              onClick={() => navigate(item.path)}
+              title={isSidebarOpen ? "" : item.label}
+            >
+              <button className="btn nav-btn d-flex align-items-center w-100 text-start text-white">
+                <span className="me-3 icon fs-5">{item.icon}</span>
+                {isSidebarOpen && <span className="flex-grow-1">{item.label}</span>}
+              </button>
+            </li>
+          ))}
+
+          <li
+            className="nav-item mt-auto mb-3 rounded logout-btn"
+            onClick={handleLogout}
+            title={isSidebarOpen ? "" : "Logout"}
+          >
+            <button className="btn nav-btn d-flex align-items-center w-100 text-start text-danger fw-semibold">
+              <span className="me-3 icon fs-5"><i className="bi bi-box-arrow-right"></i></span>
+              {isSidebarOpen && <span>Logout</span>}
+            </button>
           </li>
         </ul>
-      </div>
+      </nav>
 
       {/* Main Content */}
-      <div className="main-content" style={{ flex: 1, display: "flex", flexDirection: "column" }}>
-        <div className="dashboard-content" style={{ flex: 1, padding: "20px" }}>
-          <Outlet /> 
-        </div>
-      </div>
+      <main className="flex-grow-1 p-4 bg-light min-vh-100">
+        <Outlet />
+      </main>
     </div>
   );
 };

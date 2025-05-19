@@ -1,20 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, Outlet } from "react-router-dom";
-import {
-  FaChalkboardTeacher,
-  FaSignOutAlt,
-  FaBars,
-  FaTachometerAlt,
-  FaBookOpen,
-  FaBell,
-} from "react-icons/fa";
-import { jwtDecode } from "jwt-decode";
+import { useNavigate, Outlet, useLocation } from "react-router-dom";
+import { FaChalkboardTeacher, FaSignOutAlt, FaBars, FaTachometerAlt, FaBookOpen, FaBell,FaRupeeSign } from "react-icons/fa";
+import {jwtDecode} from "jwt-decode";
 import axios from "axios";
+import "../../css/Faculty/FacultyLayout.css";
+
 const FacultyLayout = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [isSidebarOpen, setSidebarOpen] = useState(true);
   const [isHod, setIsHod] = useState(false);
-  const [loading, setLoading] = useState(true); // Prevent rendering before API completes
+  const [loading, setLoading] = useState(true);
 
   const toggleSidebar = () => setSidebarOpen(!isSidebarOpen);
 
@@ -33,16 +29,12 @@ const FacultyLayout = () => {
         const facultyId = Number(decoded.FacultyUserId);
 
         const response = await axios.get(`https://localhost:7133/api/Department/GetDepartmentByFacultyId/${facultyId}`);
-        console.log("API Response:", response.data);
-
         const department = response.data?.department?.[0];
         if (department?.headOfDept === facultyId) {
           setIsHod(true);
-        } else {
-          console.log("This user is NOT HoD.");
         }
       } catch (err) {
-        console.error("Error in HoD check:", err);
+        console.error("Error checking HoD status:", err);
       } finally {
         setLoading(false);
       }
@@ -51,68 +43,71 @@ const FacultyLayout = () => {
     checkIfHod();
   }, []);
 
-  if (loading) {
-    return null; 
-  }
+  if (loading) return null;
+
+  const menuItems = [
+    ...(isHod ? [{ label: "Dashboard", icon: <FaTachometerAlt />, path: "/faculty/facultydashboard" }] : []),
+    { label: "Profile", icon: <FaChalkboardTeacher />, path: "/faculty/profile" },
+    { label: "Subjects", icon: <FaBookOpen />, path: "/faculty/AssignedSubjects" },
+    { label: "Content", icon: <FaBookOpen />, path: "/faculty/ContentUpload" },
+    ...(isHod
+      ? [
+          { label: "Fees Status", icon: <FaRupeeSign  />, path: "/faculty/Fees-Status" },
+          { label: "Notifications", icon: <FaBell />, path: "/faculty/notification" },
+        ]
+      : []),
+  ];
 
   return (
-    <div
-      className="faculty-dashboard-container"
-      style={{ display: "flex", minHeight: "100vh", backgroundColor: "#f1f3f5" }}
-    >
-      <div className={`sidebar-new ${isSidebarOpen ? "open" : "collapsed"}`}>
-        <div className="top-section">
-          <div className="logo-area">
-            <div className="menu-toggle" onClick={toggleSidebar}>
-              <FaBars />
-            </div>
-            {isSidebarOpen && <div className="logo-text">Faculty Panel</div>}
-          </div>
+    <div className="d-flex admin-layout">
+      {/* Sidebar */}
+      <nav className={`sidebar d-flex flex-column ${isSidebarOpen ? "open" : "collapsed"}`}>
+        <div className="logo-area d-flex align-items-center justify-content-between px-3 py-2">
+          {isSidebarOpen && <h4 className="text-white m-0">Faculty Panel</h4>}
+          <button
+            className="btn btn-link text-white p-0 toggle-btn"
+            onClick={toggleSidebar}
+            aria-label="Toggle Sidebar"
+            title={isSidebarOpen ? "Collapse Sidebar" : "Expand Sidebar"}
+          >
+            <FaBars size={24} />
+          </button>
         </div>
 
-        <ul className="nav-menu">
-          {isHod && (
-            <li onClick={() => navigate("/faculty/facultydashboard")}>
-              <FaTachometerAlt className="icon" />
-              {isSidebarOpen && <span>Dashboard</span>}
+        <ul className="nav flex-column px-2 mt-3">
+          {menuItems.map((item, idx) => (
+            <li
+              key={idx}
+              className={`nav-item mb-1 rounded ${location.pathname === item.path ? "active-link" : ""}`}
+              onClick={() => navigate(item.path)}
+              title={isSidebarOpen ? "" : item.label}
+            >
+              <button className="btn nav-btn d-flex align-items-center w-100 text-start text-white">
+                <span className="me-3 icon fs-5">{item.icon}</span>
+                {isSidebarOpen && <span className="flex-grow-1">{item.label}</span>}
+              </button>
             </li>
-          )}
-          <li onClick={() => navigate("/faculty/profile")}>
-            <FaChalkboardTeacher className="icon" />
-            {isSidebarOpen && <span>Profile</span>}
-          </li>
-          <li onClick={() => navigate("/faculty/AssignedSubjects")}>
-            <FaTachometerAlt className="icon" />
-            {isSidebarOpen && <span>Subjects</span>}
-          </li>
-          <li onClick={() => navigate("/faculty/ContentUpload")}>
-            <FaBookOpen className="icon" />
-            {isSidebarOpen && <span>Content</span>}
-          </li>
-          {isHod && (
-            <li onClick={() => navigate("/faculty/Fees-Status")}>
-              <FaBell className="icon" />
-              {isSidebarOpen && <span>Fees Status</span>}
-            </li>
-          )}
-          {isHod && (
-            <li onClick={() => navigate("/faculty/notification")}>
-              <FaBell className="icon" />
-              {isSidebarOpen && <span>Notifications</span>}
-            </li>
-          )}
-          <li onClick={handleLogout}>
-            <FaSignOutAlt className="icon" />
-            {isSidebarOpen && <span>Logout</span>}
+          ))}
+
+          <li
+            className="nav-item mt-auto mb-3 rounded logout-btn"
+            onClick={handleLogout}
+            title={isSidebarOpen ? "" : "Logout"}
+          >
+            <button className="btn nav-btn d-flex align-items-center w-100 text-start text-danger fw-semibold">
+              <span className="me-3 icon fs-5">
+                <FaSignOutAlt />
+              </span>
+              {isSidebarOpen && <span>Logout</span>}
+            </button>
           </li>
         </ul>
-      </div>
+      </nav>
 
-      <div className="main-content" style={{ flex: 1, display: "flex", flexDirection: "column" }}>
-        <div className="dashboard-content" style={{ flex: 1, padding: "20px" }}>
-          <Outlet />
-        </div>
-      </div>
+      {/* Main Content */}
+      <main className="flex-grow-1 p-4 bg-light min-vh-100">
+        <Outlet />
+      </main>
     </div>
   );
 };

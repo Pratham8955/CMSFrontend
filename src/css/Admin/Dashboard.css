@@ -1,18 +1,13 @@
 /* Dashboard.css */
 .dashboard-container {
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  justify-content: center;
   padding: 20px;
 }
 
 .dashboard-cards {
   display: flex;
   gap: 20px;
-  flex-wrap: wrap;
-  justify-content: center;
-  width: 100%;
-  max-width: 1000px;
 }
 
 .dashboard-card {
@@ -25,7 +20,6 @@
   justify-content: space-between;
   align-items: center;
   transition: transform 0.2s;
-  cursor: default;
 }
 
 .dashboard-card:hover {

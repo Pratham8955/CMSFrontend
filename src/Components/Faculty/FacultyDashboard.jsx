@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { jwtDecode } from 'jwt-decode';
+import {jwtDecode} from 'jwt-decode';  // fixed import to default import
 import axios from 'axios';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import '../../css/Faculty/FacultyDashboard.css';
+import '../../css/Faculty/FacultyDashboard.css';  // import your custom CSS
 
 const FacultyDashboard = () => {
   const [counts, setCounts] = useState(null);
@@ -40,7 +39,7 @@ const FacultyDashboard = () => {
   }, []);
 
   return (
-    <div className="container mt-5">
+    <div className="dashboard-container">
       <h1 className="text-center mb-4">Faculty Dashboard Overview</h1>
 
       {loading ? (
@@ -50,22 +49,19 @@ const FacultyDashboard = () => {
           </div>
         </div>
       ) : counts ? (
-        <div className="row g-4">
+        <div className="dashboard-cards">
           {[
-            { title: "Faculty Count", value: counts.countFaculty, color: "primary" },
-            { title: "Student Count", value: counts.countStudent, color: "success" },
-            { title: "Paid Students", value: counts.paidCount, color: "warning" },
-            { title: "Unpaid Students", value: counts.unpaidCount, color: "danger" },
+            { title: "Faculty Count", value: counts.countFaculty, icon: "👩‍🏫" },
+            { title: "Student Count", value: counts.countStudent, icon: "🎓" },
+            { title: "Paid Students", value: counts.paidCount, icon: "💰" },
+            { title: "Unpaid Students", value: counts.unpaidCount, icon: "⚠️" },
           ].map((item, index) => (
-            <div className="col-md-3" key={index}>
-              <div className={`card border-${item.color} h-100`}>
-                <div className={`card-header bg-${item.color} text-white`}>
-                  {item.title}
-                </div>
-                <div className="card-body d-flex align-items-center justify-content-center">
-                  <h2 className="card-text">{item.value}</h2>
-                </div>
+            <div className="dashboard-card" key={index}>
+              <div className="card-content">
+                <h4>{item.title}</h4>
+                <h2>{item.value}</h2>
               </div>
+              <div className="card-icon">{item.icon}</div>
             </div>
           ))}
         </div>
