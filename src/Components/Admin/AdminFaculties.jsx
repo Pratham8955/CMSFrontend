@@ -258,6 +258,7 @@ const AdminFaculties = () => {
               {isEditing ? "Update Faculty" : "Save Faculty"}
             </button>
             <button type="button" onClick={resetForm} className="admin-button close-btn">
+              
               Cancel
             </button>
           </div>

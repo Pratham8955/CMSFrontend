@@ -31,7 +31,9 @@ import AdminFaculties from "./Components/Admin/AdminFaculties";
 import AdminStudents from "./Components/Admin/AdminStudents";
 import AdminLayout from "./Components/Admin/AdminLayout";
 import FacultyAssignment from "./Components/Admin/FacultyAssignment";
-
+import Admision from "./Components/Admin/Admision";
+import SubjectManagement from "./Components/Admin/SubjectManagement";
+import FeeStructureManagement from "./Components/Admin/FeeStructureManagement"
 // Protected Route Wrapper
 import ProtectedRoute from "./Components/ProtectedRoute";
 import Unauthorize from "./Components/Unauthorize";
@@ -72,6 +74,9 @@ const AppWrapper = () => {
     "/admin/faculty-assignment",
     "/studentForgetPassword",
     "/facultyForgetPassword",
+    "/admin/admision",
+    "/admin/subjectManagement",
+    "/admin/feeStructureManagement"
   ];
 
   const shouldHideNavbar = hiddenRoutes.some((route) =>
@@ -145,6 +150,10 @@ const AppWrapper = () => {
           <Route path="departments" element={<AdminDepartments />} />
           <Route path="faculties" element={<AdminFaculties />} />
           <Route path="students" element={<AdminStudents />} />
+          <Route path="admision" element={<Admision />} />
+          <Route path="subjectManagement" element={<SubjectManagement />} />
+          <Route path="feeStructureManagement" element={<FeeStructureManagement />} />
+
           <Route path="faculty-assignment" element={<FacultyAssignment />} />
         </Route>
       </Routes>

@@ -8,8 +8,12 @@ const AdminDepartments = () => {
   const [deptName, setDeptName] = useState("");
   const [headOfDept, setHeadOfDept] = useState("");
   const [facultyList, setFacultyList] = useState([]);
-  const [showForm, setShowForm] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
+
+  // Modal control
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+
+  // Editing
   const [editingId, setEditingId] = useState(null);
 
   useEffect(() => {
@@ -46,8 +50,39 @@ const AdminDepartments = () => {
       });
   };
 
+  // Open Add Modal & reset form
+  const openAddModal = () => {
+    setDeptName("");
+    setHeadOfDept("");
+    setEditingId(null);
+    setShowAddModal(true);
+  };
+
+  // Open Edit Modal with data
+  const openEditModal = (dept) => {
+    setDeptName(dept.deptName);
+    setHeadOfDept(dept.headOfDept?.toString() || "");
+    setEditingId(dept.deptId);
+    setShowEditModal(true);
+  };
+
+  // Close modals and reset form
+  const closeModals = () => {
+    setDeptName("");
+    setHeadOfDept("");
+    setEditingId(null);
+    setShowAddModal(false);
+    setShowEditModal(false);
+  };
+
+  // Submit handler for both add and edit
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!deptName.trim()) {
+      Swal.fire("Warning", "Department name is required.", "warning");
+      return;
+    }
 
     const data = {
       deptName: deptName.trim(),
@@ -55,7 +90,8 @@ const AdminDepartments = () => {
     };
 
     try {
-      if (isEditing && editingId !== null) {
+      if (editingId !== null) {
+        // Update department
         const res = await axios.post(
           `https://localhost:7133/api/Department/UpdateDepartment/${editingId}`,
           data
@@ -66,6 +102,7 @@ const AdminDepartments = () => {
           Swal.fire("Error", "Failed to update department.", "error");
         }
       } else {
+        // Add department
         const res = await axios.post(
           "https://localhost:7133/api/Department/AddDepartment",
           { deptId: 0, ...data }
@@ -77,12 +114,7 @@ const AdminDepartments = () => {
         }
       }
 
-      // Reset form
-      setDeptName("");
-      setHeadOfDept("");
-      setShowForm(false);
-      setIsEditing(false);
-      setEditingId(null);
+      closeModals();
       fetchDepartments();
     } catch (error) {
       Swal.fire("Error", "Error submitting department.", "error");
@@ -120,72 +152,112 @@ const AdminDepartments = () => {
     }
   };
 
-  const handleEdit = (dept) => {
-    setDeptName(dept.deptName);
-    setHeadOfDept(dept.headOfDept?.toString() || "");
-    setEditingId(dept.deptId);
-    setIsEditing(true);
-    setShowForm(true);
-  };
-
   return (
     <div className="admin-container">
       <h2 className="admin-title">Departments Management</h2>
 
-      {!showForm && (
-        <button onClick={() => setShowForm(true)} className="admin-button">
-          Add New Department
-        </button>
+      <button onClick={openAddModal} className="admin-button">
+        Add New Department
+      </button>
+
+      {/* Add Department Modal */}
+      {showAddModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h3>Add New Department</h3>
+            <form onSubmit={handleSubmit} className="form-container">
+              <div className="form-group">
+                <label>Department Name:</label>
+                <input
+                  type="text"
+                  value={deptName}
+                  onChange={(e) => setDeptName(e.target.value)}
+                  required
+                  className="form-input"
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Head of Department (Optional):</label>
+                <select
+                  value={headOfDept}
+                  onChange={(e) => setHeadOfDept(e.target.value)}
+                  className="form-select"
+                >
+                  <option value="">-- None --</option>
+                  {facultyList.map((faculty) => (
+                    <option key={faculty.facultyId} value={faculty.facultyId}>
+                      {faculty.facultyName}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="button-group">
+                <button type="submit" className="admin-button save-btn">
+                  Save Department
+                </button>
+                <button
+                  type="button"
+                  onClick={closeModals}
+                  className="admin-button close-btn"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
       )}
 
-      {showForm && (
-        <form onSubmit={handleSubmit} className="form-container">
-          <div className="form-group">
-            <label>Department Name:</label>
-            <input
-              type="text"
-              value={deptName}
-              onChange={(e) => setDeptName(e.target.value)}
-              required
-              className="form-input"
-            />
-          </div>
+      {/* Edit Department Modal */}
+      {showEditModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h3>Edit Department</h3>
+            <form onSubmit={handleSubmit} className="form-container">
+              <div className="form-group">
+                <label>Department Name:</label>
+                <input
+                  type="text"
+                  value={deptName}
+                  onChange={(e) => setDeptName(e.target.value)}
+                  required
+                  className="form-input"
+                />
+              </div>
 
-          <div className="form-group">
-            <label>Head of Department (Optional):</label>
-            <select
-              value={headOfDept}
-              onChange={(e) => setHeadOfDept(e.target.value)}
-              className="form-select"
-            >
-              <option value="">-- None --</option>
-              {facultyList.map((faculty) => (
-                <option key={faculty.facultyId} value={faculty.facultyId}>
-                  {faculty.facultyName}
-                </option>
-              ))}
-            </select>
-          </div>
+              <div className="form-group">
+                <label>Head of Department (Optional):</label>
+                <select
+                  value={headOfDept}
+                  onChange={(e) => setHeadOfDept(e.target.value)}
+                  className="form-select"
+                >
+                  <option value="">-- None --</option>
+                  {facultyList.map((faculty) => (
+                    <option key={faculty.facultyId} value={faculty.facultyId}>
+                      {faculty.facultyName}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-          <div className="button-group">
-            <button type="submit" className="admin-button save-btn">
-              {isEditing ? "Update Department" : "Save Department"}
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setShowForm(false);
-                setIsEditing(false);
-                setEditingId(null);
-                setDeptName("");
-                setHeadOfDept("");
-              }}
-              className="admin-button close-btn"
-            >
-              Cancel
-            </button>
+              <div className="button-group">
+                <button type="submit" className="admin-button save-btn">
+                  Update Department
+                </button>
+                <button
+                  type="button"
+                  onClick={closeModals}
+                  className="admin-button close-btn"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
           </div>
-        </form>
+        </div>
       )}
 
       <h3 style={{ marginTop: "40px" }}>Existing Departments</h3>
@@ -205,8 +277,8 @@ const AdminDepartments = () => {
               </td>
             </tr>
           ) : (
-            departments.map((dept, index) => (
-              <tr key={index}>
+            departments.map((dept) => (
+              <tr key={dept.deptId}>
                 <td>{dept.deptName}</td>
                 <td>
                   {
@@ -217,7 +289,7 @@ const AdminDepartments = () => {
                 <td>
                   <button
                     className="admin-button edit-btn"
-                    onClick={() => handleEdit(dept)}
+                    onClick={() => openEditModal(dept)}
                   >
                     Edit
                   </button>

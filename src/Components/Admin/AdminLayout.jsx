@@ -11,17 +11,23 @@ const AdminLayout = () => {
   const toggleSidebar = () => setSidebarOpen(!isSidebarOpen);
 
   const handleLogout = () => {
-    localStorage.clear();
-    navigate("/AdminandFacultyLogin");
+    if (window.confirm("Are you sure you want to logout?")) {
+      localStorage.clear();
+      navigate("/AdminandFacultyLogin");
+    }
   };
 
   const menuItems = [
-    { label: "Dashboard", icon: <i className="bi bi-speedometer2"></i>, path: "/admin/AdminDashboard" },
-    { label: "Departments", icon: <i className="bi bi-building"></i>, path: "/admin/departments" },
-    { label: "Faculties", icon: <i className="bi bi-person-badge"></i>, path: "/admin/faculties" },
-    { label: "Students", icon: <i className="bi bi-mortarboard"></i>, path: "/admin/students" },
-    { label: "Faculty Assignment", icon: <i className="bi bi-journal-bookmark"></i>, path: "/admin/faculty-assignment" },
-  ];
+  { label: "Dashboard", icon: <i className="bi bi-speedometer2"></i>, path: "/admin/AdminDashboard" },
+  { label: "Departments", icon: <i className="bi bi-building"></i>, path: "/admin/departments" },
+  { label: "Faculties", icon: <i className="bi bi-person-badge"></i>, path: "/admin/faculties" },
+  { label: "Students", icon: <i className="bi bi-mortarboard"></i>, path: "/admin/students" },
+  { label: "Admission", icon: <i className="bi bi-person-plus-fill"></i>, path: "/admin/admision" },
+  { label: "Subject", icon: <i className="bi bi-book"></i>, path: "/admin/subjectManagement" },
+  { label: "FeeStructure", icon: <i className="bi bi-currency-rupee"></i>, path: "/admin/feeStructureManagement" },
+  { label: "Faculty Assignment", icon: <i className="bi bi-journal-bookmark"></i>, path: "/admin/faculty-assignment" },
+];
+
 
   return (
     <div className="d-flex admin-layout">
