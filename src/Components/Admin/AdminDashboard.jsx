@@ -13,39 +13,71 @@ const Dashboard = () => {
     fetchDepartmentCount();
     fetchFacultyCount();
   }, []);
-
-  const fetchStudentCount = async () => {
-    try {
-      const res = await axios.get("https://localhost:7133/api/Students/GetStudents");
-      if (res.data.success) {
-        setStudentCount(res.data.students.length);
-      }
-    } catch (error) {
-      console.error(error);
+const fetchStudentCount = async () => {
+  try {
+    const res = await axios.get("https://localhost:7133/api/Student/GetStudents");
+    console.log("Student API Response:", res.data);  // <-- આ ઉમેરો
+    if (res.data.success && Array.isArray(res.data.student)) {
+      setStudentCount(res.data.student.length);
+    } else {
+      console.warn("Unexpected student data structure", res.data);
     }
-  };
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 
   const fetchDepartmentCount = async () => {
-    try {
-      const res = await axios.get("https://localhost:7133/api/Department/GetDepartment");
-      if (res.data.success) {
-        setDepartmentCount(res.data.department.length);
-      }
-    } catch (error) {
-      console.error(error);
+  try {
+    const res = await axios.get("https://localhost:7133/api/Department/GetDepartment");
+    if (res.data.success && Array.isArray(res.data.department)) {
+      setDepartmentCount(res.data.department.length);
+    } else {
+      console.warn("Unexpected department data structure", res.data);
     }
-  };
+  } catch (error) {
+    console.error(error);
+  }
+};
 
-  const fetchFacultyCount = async () => {
-    try {
-      const res = await axios.get("https://localhost:7133/api/Faculties/GetFaculties");
-      if (res.data.success) {
-        setFacultyCount(res.data.faculty.length || res.data.Faculty.length);
-      }
-    } catch (error) {
-      console.error(error);
+const fetchFacultyCount = async () => {
+  try {
+    const res = await axios.get("https://localhost:7133/api/Faculties/GetFaculties");
+    if (res.data.success && (Array.isArray(res.data.faculty) || Array.isArray(res.data.Faculty))) {
+      setFacultyCount(
+        (res.data.faculty && res.data.faculty.length) ||
+        (res.data.Faculty && res.data.Faculty.length) || 0
+      );
+    } else {
+      console.warn("Unexpected faculty data structure", res.data);
     }
-  };
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+  // const fetchDepartmentCount = async () => {
+  //   try {
+  //     const res = await axios.get("https://localhost:7133/api/Department/GetDepartment");
+  //     if (res.data.success) {
+  //       setDepartmentCount(res.data.department.length);
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
+
+  // const fetchFacultyCount = async () => {
+  //   try {
+  //     const res = await axios.get("https://localhost:7133/api/Faculties/GetFaculties");
+  //     if (res.data.success) {
+  //       setFacultyCount(res.data.faculty.length || res.data.Faculty.length);
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
 
   return (
     <div className="dashboard-container">

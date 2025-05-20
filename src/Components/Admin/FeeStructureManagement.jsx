@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
+import axios from "axios";
 import "../../css/Admin/FeeStructureManagement.css"
 const FeeStructureManagement = () => {
   const [departments, setDepartments] = useState([]);
@@ -20,11 +21,67 @@ const FeeStructureManagement = () => {
   const [editSemId, setEditSemId] = useState("");
   const [editAmount, setEditAmount] = useState("");
 
+  const [feeStructuresfortype, setFeeStructuresfortype] = useState([]);
+  const [selectedFeeStructureId, setSelectedFeeStructureId] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [submitMessage, setSubmitMessage] = useState('');
+
   useEffect(() => {
     fetchDepartments();
     fetchSemesters();
     fetchFeeStructures();
   }, []);
+
+
+   useEffect(() => {
+    const feeStructuresfortype = async () => {
+      try {
+        const response = await axios.get('https://localhost:7133/api/FeeStructure/getUnassignedFeeStructures');
+        if (response.data.success) {
+          setFeeStructuresfortype(response.data.data);
+        }
+      } catch (error) {
+        console.error('Error fetching fee structures:', error);
+      }
+    };
+
+    feeStructuresfortype();
+  }, []);
+
+const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!selectedFeeStructureId) {
+      setSubmitMessage('Please select a fee structure');
+      return;
+    }
+
+    setLoading(true);
+    setSubmitMessage('');
+
+    try {
+      const payload = {
+        feeStructureId: parseInt(selectedFeeStructureId, 10)
+      };
+
+      const response = await axios.post(
+        'http://localhost:5291/api/StudentFeesType/addStudentFeeType',
+        payload
+      );
+
+      if (response.data.success) {
+        setSubmitMessage('Fee added successfully!');
+      } else {
+        setSubmitMessage('Failed to add fee: ' + response.data.message);
+      }
+    } catch (error) {
+      console.error('Submit error:', error);
+      setSubmitMessage('An error occurred while submitting.');
+    }
+
+    setLoading(false);
+  };
+
 
   const fetchDepartments = () => {
     fetch("https://localhost:7133/api/Department/GetDepartment")
@@ -449,8 +506,53 @@ const FeeStructureManagement = () => {
     
   
   )} 
-   <div>
-<h2 className="admin-title">Fees Type</h2>   </div>
+<div className="p-4">
+  <div className="card shadow-sm p-4" style={{ maxWidth: '500px' }}>
+    <h3 className="mb-4">Add Fee Type</h3>
+    <form onSubmit={handleSubmit}>
+      <div className="mb-3">
+        <label htmlFor="feeStructureSelect" className="form-label">
+          Select Fee Structure
+        </label>
+        <select
+          id="feeStructureSelect"
+          className="form-select"
+          value={selectedFeeStructureId}
+          onChange={(e) => setSelectedFeeStructureId(e.target.value)}
+        >
+          <option value="">-- Select --</option>
+          {feeStructuresfortype.map((fs) => (
+            <option key={fs.feeStructureId} value={fs.feeStructureId}>
+              {fs.feeStructureDescription}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <button
+        type="submit"
+        className="btn btn-primary"
+        disabled={loading}
+      >
+        {loading ? (
+          <>
+            <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+            Submitting...
+          </>
+        ) : (
+          'Add Fee'
+        )}
+      </button>
+
+      {submitMessage && (
+        <div className="alert alert-info mt-3" role="alert">
+          {submitMessage}
+        </div>
+      )}
+    </form>
+  </div>
+</div>
+
 
 </div>
 
