@@ -1,60 +1,206 @@
-/* Container card */
-.assigned-subjects-card {
-  max-width: 720px;
-  background: #f9fbff;
-  box-shadow: 0 8px 24px rgba(0, 123, 255, 0.12);
-  border-radius: 14px;
-  transition: box-shadow 0.3s ease-in-out;
+/* General Layout */
+.container {
+  width: 85%;
+  padding: 0;
+  margin: 0;
 }
 
-.assigned-subjects-card:hover {
-  box-shadow: 0 12px 36px rgba(0, 123, 255, 0.2);
+/* Card wrapping the table — remove excessive padding */
+.card {
+  background-color: #ffffff;
+  border-radius: 1rem;
+  padding: 0; /* Removed inner padding */
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  overflow-x: auto;
+  width: 100%;
 }
 
-/* Title style */
-.title-text {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+/* Make table 100% width and remove spacing */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 0;
+  margin: 0;
+  font-size: 15px;
+}
+
+/* Table Head Styling */
+.table thead {
+  background-color: #d6e6ff;
+}
+
+.table th,
+.table td {
+  padding: 12px 16px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+/* First column (title) bold */
+.table td:first-child {
   font-weight: 700;
-  color: #0d6efd;
-  letter-spacing: 1.4px;
+  color: #113f67;
 }
 
-/* Input focus style */
-.form-control:focus,
-.form-select:focus {
-  border-color: #0d6efd;
-  box-shadow: 0 0 12px rgba(13, 110, 253, 0.45);
-  outline: none;
+/* Remove shadows and gaps at bottom */
+.card,
+.table {
+  border-radius: 0;
+  box-shadow: none;
 }
 
-/* Button style */
-.upload-btn {
-  background: linear-gradient(90deg, #0d6efd 0%, #0056b3 100%);
-  border: none;
+/* Button adjustments remain the same */
+.btn {
+  padding: 6px 14px;
+  font-size: 14px;
   border-radius: 8px;
-  font-size: 1.15rem;
-  transition: background 0.3s ease;
-  box-shadow: 0 5px 15px rgba(13, 110, 253, 0.4);
-}
-
-.upload-btn:hover {
-  background: linear-gradient(90deg, #0056b3 0%, #003580 100%);
-  box-shadow: 0 8px 25px rgba(0, 53, 128, 0.6);
-}
-
-/* Alert style */
-.alert {
   font-weight: 600;
-  font-size: 1rem;
+  transition: all 0.2s ease-in-out;
 }
 
-/* Responsive tweaks */
-@media (max-width: 576px) {
-  .assigned-subjects-card {
-    padding: 2rem 1.5rem;
+.btn-warning {
+  background-color: #ffc107;
+  color: #000;
+  border: none;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+}
+
+.btn-outline-primary {
+  border: 1px solid #4f46e5;
+  color: #4f46e5;
+  background-color: transparent;
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+.btn-outline-primary:hover {
+  background-color: #4f46e5;
+  color: white;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .table {
+    font-size: 13px;
   }
 
-  .upload-btn {
-    font-size: 1rem;
+  .btn {
+    padding: 5px 10px;
+    font-size: 13px;
+  }
+
+  .btn-outline-primary {
+    padding: 4px 10px;
   }
 }
+
+
+.btn {
+  border-radius: 0.5rem;
+}
+
+.btn-success {
+  background-color: #198754;
+  border: none;
+}
+
+.btn-success:hover {
+  background-color: #157347;
+}
+
+.btn-warning {
+  background-color: #ffc107;
+  color: #000;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+}
+
+/* Table Styling */
+.table {
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+
+.table th,
+.table td {
+  vertical-align: middle;
+}
+
+/* ============================ */
+/* SweetAlert2 Modal Form Style */
+/* ============================ */
+/* Only target modal form layout */
+.swal-form-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem; /* Reduced spacing between fields */
+  padding: 10px 5px;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+/* Form groups in modal */
+.swal-form-wrapper .form-group {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+/* Form labels */
+.swal-form-wrapper label {
+  font-weight: 500;
+  margin-bottom: 4px;
+  font-size: 14px;
+  color: #333;
+}
+
+/* Input and textarea fields */
+.swal-form-wrapper .form-control,
+.swal2-popup .swal2-input,
+.swal2-popup .swal2-textarea {
+  padding: 7px 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+/* Modal Title */
+.swal2-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  text-align: left;
+}
+
+/* Modal button styles */
+.swal2-popup .swal2-confirm,
+.swal2-popup .swal2-cancel {
+  font-size: 0.95rem;
+  padding: 8px 18px;
+  border-radius: 6px !important;
+  margin: 0 6px;
+}
+
+.swal2-popup .swal2-confirm {
+  background-color: #6c63ff !important;
+  color: white !important;
+}
+
+.swal2-popup .swal2-cancel {
+  background-color: #6c757d !important;
+  color: white !important;
+}
+
+/* Only resize the modal, not your main card */
+.swal2-popup {
+  width: 480px !important;
+}
+

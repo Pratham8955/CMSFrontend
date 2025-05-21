@@ -5,7 +5,11 @@ import {
   FaSignOutAlt,
   FaBars,
   FaTachometerAlt,
+  FaMoneyBillAlt,
+  FaBookOpen
 } from "react-icons/fa";
+import Swal from "sweetalert2"; // SweetAlert2
+import "../../css/Student/StudentLayout.css"
 
 const StudentLayout = () => {
   const navigate = useNavigate();
@@ -14,8 +18,21 @@ const StudentLayout = () => {
   const toggleSidebar = () => setSidebarOpen(!isSidebarOpen);
 
   const handleLogout = () => {
-    localStorage.clear();
-    navigate("/login");
+    Swal.fire({
+      title: "Are you sure?",
+      text: "Do you want to logout?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, logout",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        localStorage.clear();
+        navigate("/login");
+        Swal.fire("Logged out!", "You have been logged out.", "success");
+      }
+    });
   };
 
   return (
@@ -44,18 +61,22 @@ const StudentLayout = () => {
             {isSidebarOpen && <span>Profile</span>}
           </li>
           <li onClick={() => navigate("/student/fees")}>
-            <FaUserGraduate className="icon" />
+            <FaMoneyBillAlt className="icon" />
             {isSidebarOpen && <span>Fees</span>}
           </li>
           <li onClick={() => navigate("/student/material")}>
-            <FaUserGraduate className="icon" />
+            <FaBookOpen className="icon" />
             {isSidebarOpen && <span>Materials</span>}
           </li>
-          <li onClick={handleLogout}>
+        </ul>
+
+        {/* Logout Button at Bottom */}
+        <div className="logout-container">
+          <li className="logout-btn" onClick={handleLogout}>
             <FaSignOutAlt className="icon" />
             {isSidebarOpen && <span>Logout</span>}
           </li>
-        </ul>
+        </div>
       </div>
 
       {/* Main Content */}

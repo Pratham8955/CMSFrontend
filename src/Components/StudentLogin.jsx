@@ -86,7 +86,7 @@ const StudentLogin = () => {
 
             <div className="student-login-links mt-3 d-flex justify-content-between">
               <a href="/studentForgetPassword">Forgot password?</a>
-              <a href="/register">Create an account</a>
+              
             </div>
           </form>
         </div>

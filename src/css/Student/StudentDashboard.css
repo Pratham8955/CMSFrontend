@@ -1,0 +1,59 @@
+/* StudentDashboard.css */
+
+.student-info-card {
+  background: #f8f9fa;
+  border-radius: 10px;
+  transition: box-shadow 0.3s ease;
+}
+.student-info-card:hover {
+  box-shadow: 0 0 15px rgba(0, 123, 255, 0.25);
+}
+
+.student-img {
+  width: 90px;
+  height: 90px;
+  object-fit: cover;
+}
+
+.placeholder-img {
+  width: 90px;
+  height: 90px;
+  background-color: #0d6efd;
+}
+
+.popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1050;
+  padding: 1rem;
+}
+
+.popup-card {
+  width: 360px;
+  border-radius: 12px;
+  background-color: white;
+}
+
+.table-hover tbody tr:hover {
+  background-color: #e9f5ff;
+}
+
+.table-primary {
+  background-color: #0d6efd !important;
+  color: white;
+}
+
+@media (max-width: 576px) {
+  .student-info-card {
+    flex-direction: column;
+    align-items: center !important;
+    text-align: center;
+  }
+  .student-info-card > div {
+    margin-top: 1rem;
+  }
+  .popup-card {
+    width: 100%;
+  }
+}

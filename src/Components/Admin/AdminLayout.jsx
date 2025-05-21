@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, Outlet, useLocation } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
+import Swal from "sweetalert2";
 import "../../css/Admin/AdminLayout.css";
 
 const AdminLayout = () => {
@@ -11,23 +12,32 @@ const AdminLayout = () => {
   const toggleSidebar = () => setSidebarOpen(!isSidebarOpen);
 
   const handleLogout = () => {
-    if (window.confirm("Are you sure you want to logout?")) {
-      localStorage.clear();
-      navigate("/AdminandFacultyLogin");
-    }
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You will be logged out from the Admin Panel.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, log me out",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        localStorage.clear();
+        navigate("/AdminandFacultyLogin");
+      }
+    });
   };
 
   const menuItems = [
-  { label: "Dashboard", icon: <i className="bi bi-speedometer2"></i>, path: "/admin/AdminDashboard" },
-  { label: "Departments", icon: <i className="bi bi-building"></i>, path: "/admin/departments" },
-  { label: "Faculties", icon: <i className="bi bi-person-badge"></i>, path: "/admin/faculties" },
-  { label: "Students", icon: <i className="bi bi-mortarboard"></i>, path: "/admin/students" },
-  { label: "Admission", icon: <i className="bi bi-person-plus-fill"></i>, path: "/admin/admision" },
-  { label: "Subject", icon: <i className="bi bi-book"></i>, path: "/admin/subjectManagement" },
-  { label: "FeeStructure", icon: <i className="bi bi-currency-rupee"></i>, path: "/admin/feeStructureManagement" },
-  { label: "Faculty Assignment", icon: <i className="bi bi-journal-bookmark"></i>, path: "/admin/faculty-assignment" },
-];
-
+    { label: "Dashboard", icon: <i className="bi bi-speedometer2"></i>, path: "/admin/AdminDashboard" },
+    { label: "Departments", icon: <i className="bi bi-building"></i>, path: "/admin/departments" },
+    { label: "Faculties", icon: <i className="bi bi-person-badge"></i>, path: "/admin/faculties" },
+    { label: "Students", icon: <i className="bi bi-mortarboard"></i>, path: "/admin/students" },
+    { label: "Admission", icon: <i className="bi bi-person-plus-fill"></i>, path: "/admin/admision" },
+    { label: "Subject", icon: <i className="bi bi-book"></i>, path: "/admin/subjectManagement" },
+    { label: "FeeStructure", icon: <i className="bi bi-currency-rupee"></i>, path: "/admin/feeStructureManagement" },
+    { label: "Faculty Assignment", icon: <i className="bi bi-journal-bookmark"></i>, path: "/admin/faculty-assignment" },
+  ];
 
   return (
     <div className="d-flex admin-layout">

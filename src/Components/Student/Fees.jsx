@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { jwtDecode } from "jwt-decode";
+import {jwtDecode} from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
-import "../../css/Student/Fees.css"; // Import the new CSS file
+import "../../css/Student/Fees.css";
 
 const Fees = () => {
   const [student, setStudent] = useState(null);
@@ -93,69 +93,152 @@ const Fees = () => {
     }
   }, [paymentStatus, student]);
 
-  const generatePdf = (data) => {
-    if (!data) return;
-    const doc = new jsPDF();
-    doc.text("Fee Receipt", 20, 20);
-    autoTable(doc, {
-      head: [["Description", "Amount (Rs.)"]],
-      body: [
-        ["Tuition Fee", data.feeType.tuitionFees],
-        ["Lab Fee", data.feeType.labFees],
-        ["Ground Fee", data.feeType.collegeGroundFee],
-        ["Internal Exam", data.feeType.internalExam],
-      ],
-    });
-    doc.save("Fee_Receipt.pdf");
-  };
+ const generatePdf = (data) => {
+  if (!data) return;
+  const doc = new jsPDF();
+
+  doc.setFontSize(16);
+  doc.setTextColor(41, 98, 255);
+  doc.text("ICT'S Home", 105, 20, null, null, "center");
+
+  doc.setFontSize(11);
+  doc.setTextColor(0, 0, 0);
+  doc.text("University Campus, Udhna-Magdalla Road, SURAT - 395007", 105, 28, null, null, "center");
+
+  doc.setFontSize(14);
+  doc.text("RECEIPT", 105, 38, null, null, "center");
+
+  doc.setFontSize(11);
+  doc.text(`Transaction Id.:  ${data.transactionId}`, 15, 50);
+  doc.text(`Date:  ${new Date(data.paymentDate).toLocaleDateString()}`, 150, 50);
+
+  doc.text(`Received From:  ${data.studentName || "N/A"}`, 15, 60);
+  doc.text(`Particulars:  ${data.semesterName}`, 15, 70);
+
+  autoTable(doc, {
+    startY: 80,
+    head: [["Sr. No.", "Description", "Amount (Rs.)"]],
+    body: [
+      ["1", "Tuition Fee", data.feeType.tuitionFees],
+      ["2", "Laboratory Fee", data.feeType.labFees],
+      ["3", "Ground Fee", data.feeType.collegeGroundFee],
+      ["4", "Internal Examination", data.feeType.internalExam],
+    ],
+    styles: { halign: 'center' },
+    headStyles: {
+      fillColor: [200, 220, 255],
+      textColor: 0,
+      fontStyle: 'bold',
+    },
+    columnStyles: {
+      0: { halign: 'left' },
+      1: { halign: 'left' },
+      2: { halign: 'right' },
+    },
+  });
+
+  const total = [
+    Number(data.feeType.tuitionFees),
+    Number(data.feeType.labFees),
+    Number(data.feeType.collegeGroundFee),
+    Number(data.feeType.internalExam),
+  ].reduce((a, b) => a + b, 0);
+
+  doc.setTextColor(0, 0, 0); // Black text
+  doc.setFont("helvetica", "bold");
+  doc.text(`Total (Rs.):  ${total.toFixed(2)}`, 180, doc.lastAutoTable.finalY + 10, { align: "right" });
+  doc.setFont("helvetica", "normal");
+  doc.text(`Mode of Payment :  Online`, 15, doc.lastAutoTable.finalY + 20);
+
+  doc.save("Fee_Receipt.pdf");
+};
 
   if (loading) return <div className="loading-message">Loading student details...</div>;
   if (error) return <div className="error-message">{error}</div>;
 
   return (
     <div className="container">
-      <div className="fees-header">Semester Fee Details</div>
       {paymentStatus === "Paid" ? (
-        <div className="alert alert-info">
-          ✅ Fees are already paid.
-          <div className="card receipt-card">
-            <div className="card-body">
-              <h5 className="card-title">Fee Receipt</h5>
-              {paidFeeDetails ? (
-                <>
-                  <p><strong>Transaction ID:</strong> {paidFeeDetails.transactionId}</p>
-                  <p><strong>Paid Amount:</strong> ₹{paidFeeDetails.paidAmount}</p>
-                  <p><strong>Payment Date:</strong> {new Date(paidFeeDetails.paymentDate).toLocaleString()}</p>
-                  <p><strong>Department:</strong> {paidFeeDetails.departmentName}</p>
-                  <p><strong>Semester:</strong> {paidFeeDetails.semesterName}</p>
-                  <p><strong>Status:</strong> {paidFeeDetails.status}</p>
+        <div>
+          <div className="receipt-box">
+            {paidFeeDetails ? (
+              <>
+                <div className="receipt-header">
+                  <h4>ICT'S Home</h4>
+                  <div className="sub-address">University Campus, Udhna-Magdalla Road, SURAT - 395007</div>
+                  <h5>RECEIPT</h5>
+                </div>
 
-                  <h6 className="mt-3">Fee Breakdown</h6>
-                  <table className="table table-bordered mt-2">
-                    <thead className="thead-dark">
+                <div className="receipt-body">
+                  <div className="receipt-row">
+                    <span className="label">Transaction Id.:</span>
+                    <span className="value">{paidFeeDetails.transactionId || "N/A"}</span>
+                  </div>
+                  <div className="receipt-row">
+                    <span className="label">Received From:</span>
+                    <span className="value">{paidFeeDetails.studentName || "N/A"}</span>
+                  </div>
+                  <div className="receipt-row">
+                    <span className="label">Particulars:</span>
+                    <span className="value">{paidFeeDetails.semesterName || "N/A"}</span>
+                  </div>
+
+                  <table className="table table-bordered receipt-table mt-3">
+                    <thead className="thead-light">
                       <tr>
+                        <th>Sr. No.</th>
                         <th>Description</th>
-                        <th>Amount (Rs.)</th>
+                        <th className="text-right">Amount (Rs.)</th>
                       </tr>
                     </thead>
                     <tbody>
-                      <tr><td>Tuition Fee</td><td>₹{paidFeeDetails.feeType.tuitionFees}</td></tr>
-                      <tr><td>Lab Fee</td><td>₹{paidFeeDetails.feeType.labFees}</td></tr>
-                      <tr><td>Ground Fee</td><td>₹{paidFeeDetails.feeType.collegeGroundFee}</td></tr>
-                      <tr><td>Internal Exam</td><td>₹{paidFeeDetails.feeType.internalExam}</td></tr>
+                      <tr>
+                        <td>1</td>
+                        <td>Tuition Fee</td>
+                        <td className="text-right">₹{paidFeeDetails.feeType.tuitionFees}</td>
+                      </tr>
+                      <tr>
+                        <td>2</td>
+                        <td>Laboratory Fee</td>
+                        <td className="text-right">₹{paidFeeDetails.feeType.labFees}</td>
+                      </tr>
+                      <tr>
+                        <td>3</td>
+                        <td>Ground Fee</td>
+                        <td className="text-right">₹{paidFeeDetails.feeType.collegeGroundFee}</td>
+                      </tr>
+                      <tr>
+                        <td>4</td>
+                        <td>Internal Examination</td>
+                        <td className="text-right">₹{paidFeeDetails.feeType.internalExam}</td>
+                      </tr>
                     </tbody>
+                    <tfoot>
+                      <tr>
+                        <td colSpan="2" className="text-right">
+                          <strong>Total (Rs.):</strong>
+                        </td>
+                        <td className="text-right">
+                          <strong>₹{Number(paidFeeDetails.paidAmount).toFixed(2)}</strong>
+                        </td>
+                      </tr>
+                    </tfoot>
                   </table>
-                </>
-              ) : (
-                <p>Loading receipt...</p>
-              )}
-            </div>
-            <button
-              onClick={() => generatePdf(paidFeeDetails)}
-              className="btn btn-primary download-btn"
-            >
-              📄 Download Fee Receipt
-            </button>
+
+                  <div className="mt-2">
+                    <strong>Mode of Payment:</strong> Online
+                  </div>
+                </div>
+
+                <div className="text-right mt-3">
+                  <button onClick={() => generatePdf(paidFeeDetails)} className="btn btn-primary">
+                    📄 Download Fee Receipt
+                  </button>
+                </div>
+              </>
+            ) : (
+              <p>Loading receipt...</p>
+            )}
           </div>
         </div>
       ) : (

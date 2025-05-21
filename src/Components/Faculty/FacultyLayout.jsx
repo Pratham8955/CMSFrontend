@@ -1,8 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react"; 
 import { useNavigate, Outlet, useLocation } from "react-router-dom";
-import { FaChalkboardTeacher, FaSignOutAlt, FaBars, FaTachometerAlt, FaBookOpen, FaBell,FaRupeeSign } from "react-icons/fa";
+import { 
+  FaChalkboardTeacher, 
+  FaSignOutAlt, 
+  FaBars, 
+  FaTachometerAlt, 
+  FaBookOpen, 
+  FaBell,
+  FaRupeeSign,
+  FaFileAlt
+} from "react-icons/fa";
 import {jwtDecode} from "jwt-decode";
 import axios from "axios";
+import Swal from "sweetalert2";
 import "../../css/Faculty/FacultyLayout.css";
 
 const FacultyLayout = () => {
@@ -15,8 +25,22 @@ const FacultyLayout = () => {
   const toggleSidebar = () => setSidebarOpen(!isSidebarOpen);
 
   const handleLogout = () => {
-    localStorage.clear();
-    navigate("/AdminandFacultyLogin");
+     Swal.fire({
+          title: "Are you sure?",
+          text: "Do you want to logout?",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, logout",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            localStorage.clear();
+            navigate("/AdminandFacultyLogin");
+            Swal.fire("Logged out!", "You have been logged out.", "success");
+          }
+        });
+ 
   };
 
   useEffect(() => {
@@ -46,14 +70,14 @@ const FacultyLayout = () => {
   if (loading) return null;
 
   const menuItems = [
-    ...(isHod ? [{ label: "Dashboard", icon: <FaTachometerAlt />, path: "/faculty/facultydashboard" }] : []),
-    { label: "Profile", icon: <FaChalkboardTeacher />, path: "/faculty/profile" },
-    { label: "Subjects", icon: <FaBookOpen />, path: "/faculty/AssignedSubjects" },
-    { label: "Content", icon: <FaBookOpen />, path: "/faculty/ContentUpload" },
+    ...(isHod ? [{ label: "Dashboard", icon: FaTachometerAlt, path: "/faculty/facultydashboard" }] : []),
+    { label: "Profile", icon: FaChalkboardTeacher, path: "/faculty/profile" },
+    { label: "Subjects", icon: FaBookOpen, path: "/faculty/AssignedSubjects" },
+    { label: "Content", icon: FaFileAlt, path: "/faculty/ContentUpload" },
     ...(isHod
       ? [
-          { label: "Fees Status", icon: <FaRupeeSign  />, path: "/faculty/Fees-Status" },
-          { label: "Notifications", icon: <FaBell />, path: "/faculty/notification" },
+          { label: "Fees Status", icon: FaRupeeSign, path: "/faculty/Fees-Status" },
+          { label: "Notifications", icon: FaBell, path: "/faculty/notification" },
         ]
       : []),
   ];
@@ -75,19 +99,24 @@ const FacultyLayout = () => {
         </div>
 
         <ul className="nav flex-column px-2 mt-3">
-          {menuItems.map((item, idx) => (
-            <li
-              key={idx}
-              className={`nav-item mb-1 rounded ${location.pathname === item.path ? "active-link" : ""}`}
-              onClick={() => navigate(item.path)}
-              title={isSidebarOpen ? "" : item.label}
-            >
-              <button className="btn nav-btn d-flex align-items-center w-100 text-start text-white">
-                <span className="me-3 icon fs-5">{item.icon}</span>
-                {isSidebarOpen && <span className="flex-grow-1">{item.label}</span>}
-              </button>
-            </li>
-          ))}
+          {menuItems.map((item, idx) => {
+            const IconComponent = item.icon;
+            return (
+              <li
+                key={idx}
+                className={`nav-item mb-1 rounded ${location.pathname === item.path ? "active-link" : ""}`}
+                onClick={() => navigate(item.path)}
+                title={isSidebarOpen ? "" : item.label}
+              >
+                <button className="btn nav-btn d-flex align-items-center w-100 text-start text-white">
+                  <span className="me-3 icon fs-5">
+                    <IconComponent />
+                  </span>
+                  {isSidebarOpen && <span className="flex-grow-1">{item.label}</span>}
+                </button>
+              </li>
+            );
+          })}
 
           <li
             className="nav-item mt-auto mb-3 rounded logout-btn"

@@ -1,0 +1,104 @@
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto&display=swap');
+
+.fee-payment-wrapper {
+  background: linear-gradient(135deg, #f0f4ff 0%, #d9e4ff 100%);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  font-family: 'Roboto', sans-serif;
+}
+
+.fee-payment-card {
+  background: #fff;
+  border-radius: 1rem;
+  padding: 3rem 2.5rem;
+  max-width: 520px;
+  width: 100%;
+  box-shadow: 0 15px 30px rgba(14, 92, 173, 0.15);
+  text-align: center;
+}
+
+.title {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  font-size: 2.25rem;
+  color: #0e5cad;
+}
+
+.fee-table {
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgb(14 92 173 / 0.1);
+}
+
+.fee-table thead th {
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 0.04em;
+  background-color: #0e5cad;
+  color: #fff;
+  border: none;
+}
+
+.fee-table tbody tr:hover {
+  background-color: #e8f0fe;
+  transition: background-color 0.3s ease;
+}
+
+.fee-table tbody td {
+  font-size: 1rem;
+  vertical-align: middle;
+  border-top: 1px solid #e1e7ff;
+}
+
+.total-row {
+  background: linear-gradient(90deg, #0e5cad, #084c8d);
+  color: white !important;
+  font-size: 1.1rem;
+  letter-spacing: 0.02em;
+}
+
+.payment-info p {
+  font-size: 0.95rem;
+  color: #333;
+  text-align: left;
+  margin: 0.25rem 0;
+  font-weight: 500;
+}
+
+.payment-info strong {
+  color: #0e5cad;
+}
+
+.btn-gradient {
+  background: linear-gradient(45deg, #0e5cad, #084c8d);
+  color: #fff;
+  font-weight: 600;
+  border: none;
+  border-radius: 0.75rem;
+  padding: 0.75rem;
+  font-size: 1.1rem;
+  box-shadow: 0 6px 15px rgba(14, 92, 173, 0.3);
+  transition: background 0.4s ease, box-shadow 0.3s ease;
+}
+
+.btn-gradient:hover,
+.btn-gradient:focus {
+  background: linear-gradient(45deg, #084c8d, #0e5cad);
+  box-shadow: 0 8px 20px rgba(8, 76, 141, 0.5);
+  outline: none;
+}
+
+.payment-success .success-icon {
+  font-size: 4rem;
+  color: #28a745;
+}
+
+.loading-state p {
+  font-size: 1.1rem;
+  color: #0e5cad;
+  margin-top: 1rem;
+}

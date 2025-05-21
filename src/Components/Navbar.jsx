@@ -61,12 +61,7 @@ const Navbar = () => {
             >
               Sign In
             </button>
-            <button
-              className={`auth-btn ${isSignUp ? "active" : ""}`}
-              onClick={() => navigate("/register")}
-            >
-              Sign Up
-            </button>
+           
           </div>
         </div>
       </div>

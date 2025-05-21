@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import axios from 'axios';
-
+import "../../css/Student/Material.css"
 const Material = () => {
-  const [deptId, setDeptId] = useState(null);
-  const [currentSemester, setCurrentSemester] = useState(null);
+  
   const [subjects, setSubjects] = useState([]);
   const [studentId, setStudentId] = useState(null);
   const [courseContents, setCourseContents] = useState([]);
@@ -24,21 +23,13 @@ const Material = () => {
         const studentData = studentRes.data?.student?.[0];
 
         if (studentData) {
-          const deptId = studentData.deptId;
-          const currentSem = studentData.currentSemester;
-
-          setDeptId(deptId);
-          setCurrentSemester(currentSem);
-
           const subjectRes = await axios.get(
-            `https://localhost:7133/api/Subject/GetSubjectsByStudent/${deptId}/${currentSem}`
+            `https://localhost:7133/api/Subject/GetSubjectsByStudent/${studentData.deptId}/${studentData.currentSemester}`
           );
-
-          const subjectList = subjectRes.data?.subject || [];
-          setSubjects(subjectList);
+          setSubjects(subjectRes.data?.subject || []);
         }
       } catch (error) {
-        console.error('Error fetching student/subjects:', error);
+        console.error('Error:', error);
       }
     };
 
@@ -48,70 +39,74 @@ const Material = () => {
   const fetchCourseContents = async () => {
     try {
       const res = await axios.get(`https://localhost:7133/api/CourseContent/GetByIdforstudent/${studentId}`);
-      const contentList = res.data?.content || [];
-      setCourseContents(contentList);
+      setCourseContents(res.data?.content || []);
     } catch (error) {
-      console.error('Error fetching course content:', error);
+      console.error('Content error:', error);
     }
   };
 
   const handleToggle = (subjectId) => {
-    if (expandedSubjectId === subjectId) {
-      setExpandedSubjectId(null);
-    } else {
-      setExpandedSubjectId(subjectId);
-      if (courseContents.length === 0) {
-        fetchCourseContents();
-      }
-    }
+    setExpandedSubjectId(expandedSubjectId === subjectId ? null : subjectId);
+    if (courseContents.length === 0) fetchCourseContents();
   };
 
-  const getContentForSubject = (subjectId) => {
-    return courseContents.filter((content) => content.subjectId === subjectId);
-  };
+  const getContentForSubject = (subjectId) =>
+    courseContents.filter((content) => content.subjectId === subjectId);
 
-  const getFullFileUrl = (filePath) => {
-    return `https://localhost:7133/${filePath}`;
-  };
+  const getFullFileUrl = (filePath) => `https://localhost:7133/${filePath}`;
 
   return (
-    <div>
-      <h2>Subjects</h2>
+    
+    <div className="container my-5">
+      <div className="material-header">
+        <h2>📘 Course Materials</h2>
+        <p className="text-muted">Click on a subject to view uploaded course content.</p>
+      </div>
+
       {subjects.length > 0 ? (
-        <ul>
-          {subjects.map((subject) => (
-            <li key={subject.subjectId}>
+        <div className="accordion" id="materialAccordion">
+          {subjects.map((subject, index) => (
+            <div className="accordion-item custom-card" key={subject.subjectId}>
+              <h2 className="accordion-header" id={`heading-${index}`}>
+                <button
+                  className={`accordion-button ${expandedSubjectId === subject.subjectId ? '' : 'collapsed'}`}
+                  onClick={() => handleToggle(subject.subjectId)}
+                  type="button"
+                >
+                  {subject.subjectName}
+                </button>
+              </h2>
               <div
-                style={{ cursor: 'pointer', fontWeight: 'bold' }}
-                onClick={() => handleToggle(subject.subjectId)}
+                id={`collapse-${index}`}
+                className={`accordion-collapse collapse ${expandedSubjectId === subject.subjectId ? 'show' : ''}`}
               >
-                {subject.subjectName}
-              </div>
-              {expandedSubjectId === subject.subjectId && (
-                <ul style={{ marginLeft: '20px' }}>
+                <div className="accordion-body">
                   {getContentForSubject(subject.subjectId).length > 0 ? (
-                    getContentForSubject(subject.subjectId).map((content, index) => (
-                      <li key={index}>
-                        {content.title} –{' '}
-                        <a
-                          href={getFullFileUrl(content.filePath)}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          View PDF
-                        </a>
-                      </li>
-                    ))
+                    <ul className="list-group list-group-flush">
+                      {getContentForSubject(subject.subjectId).map((content, idx) => (
+                        <li className="list-group-item d-flex justify-content-between align-items-center" key={idx}>
+                          <span>{content.title}</span>
+                          <a
+                            className="btn btn-sm view-btn"
+                            href={getFullFileUrl(content.filePath)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            View PDF
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
                   ) : (
-                    <li>No content available.</li>
+                    <p className="text-muted">No content uploaded yet.</p>
                   )}
-                </ul>
-              )}
-            </li>
+                </div>
+              </div>
+            </div>
           ))}
-        </ul>
+        </div>
       ) : (
-        <p>No subjects found.</p>
+        <div className="alert alert-warning mt-4">No subjects available for your semester.</div>
       )}
     </div>
   );

@@ -1,108 +1,138 @@
-/* Main Container */
 .container {
-  margin-top: 2rem;
-  max-width: 800px;
-  margin-left: auto;
-  margin-right: auto;
+  padding: 1rem;
 }
 
-/* Header Styling */
-.fees-header {
+/* Use gradient background instead of white */
+.receipt-box {
+  border: 1px solid #ccc;
+  padding: 30px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #f0f4ff 0%, #d9e4ff 100%);
+  max-width: 700px;
+  max-height: 700px;
+  margin: 10px auto;
+  box-shadow: 0 10px 20px rgba(14, 92, 173, 0.15);
+  overflow-x: auto;
+  color: #0e5cad; /* Dark blue text for contrast */
+}
+
+.receipt-header {
   text-align: center;
-  margin-bottom: 2rem;
-  color: #004080; /* Dark Blue */
-  font-weight: bold;
-  font-size: 1.8rem;
-  text-transform: uppercase;
-  border-bottom: 2px solid #004080;
-  display: inline-block;
-  padding-bottom: 5px;
+  margin-bottom: 12px;
 }
 
-/* Card Styling */
-.receipt-card {
-  margin-top: 1.5rem;
-  border-radius: 12px;
-  border: 1px solid #b0c4de; /* Light Steel Blue */
-  box-shadow: 0px 4px 12px rgba(0, 0, 128, 0.2); /* Navy Blue Shadow */
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+.receipt-header h4 {
+  color: #0e5cad; /* Dark blue for header */
+  margin-bottom: 4px;
+  font-size: 20px;
 }
 
-.receipt-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0px 8px 20px rgba(0, 0, 128, 0.25);
+.sub-address {
+  font-size: 14px;
+  color: #0e5cadcc; /* Slightly transparent blue */
+  margin-bottom: 8px;
 }
 
-/* Card Title Styling */
-.card-title {
-  font-size: 1.4rem;
-  color: #1e3a8a; /* Indigo Blue */
+.receipt-body {
   margin-bottom: 15px;
 }
 
-/* Field Labels and Values */
-.card-body p {
-  margin: 5px 0;
-  font-size: 1.1rem;
+.receipt-row {
+  display: flex;
+  margin-bottom: 6px;
+  font-size: 15px;
+  color: #0e5caddd; /* Slightly lighter blue */
 }
 
-.card-body p strong {
-  font-weight: bold;
-  color: #003366; /* Darker Blue */
+.label {
+  width: 140px;
+  font-weight: 600;
+  color: #0e5cad; /* Strong blue */
 }
 
-/* Alert Styling */
-.alert {
-  margin-top: 1rem;
-  font-size: 1.1rem;
-  background-color: #e6f0ff;
-  color: #004080;
-  border-color: #004080;
+.value {
+  flex-grow: 1;
+  color: #0e5cadcc;
 }
 
-/* Button Styling */
-.download-btn {
+.receipt-table {
   width: 100%;
-  margin-top: 15px;
-  background-color: #1e40af; /* Dark Blue */
+  border-collapse: collapse;
+  margin-top: 10px;
+  background: transparent; /* transparent so gradient shows nicely */
+  color: #0e5caddd;
+}
+
+.receipt-table thead {
+  background-color: #0e5cad; /* Strong blue header */
   color: white;
-  border-radius: 8px;
-  font-size: 1.1rem;
-  transition: background-color 0.2s ease;
 }
 
-.download-btn:hover {
-  background-color: #1e3a8a; /* Indigo Blue */
+.receipt-table th,
+.receipt-table td {
+  border: 1px solid #0e5cad55; /* subtle blue border */
+  padding: 6px 8px;
+  font-size: 14px;
 }
 
-/* Loading and Error Messages */
-.loading-message,
-.error-message {
-  text-align: center;
-  margin-top: 2rem;
-  font-size: 1.2rem;
+.receipt-table th.text-right,
+.receipt-table td.text-right {
+  text-align: right;
 }
 
-.loading-message {
-  color: #1e40af; /* Dark Blue */
+.receipt-table th:first-child,
+.receipt-table td:first-child {
+  text-align: left;
 }
 
-.error-message {
-  color: #dc3545;
+.text-right {
+  text-align: right;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-  .container {
-    margin-top: 1rem;
-    padding: 0 1rem;
+.btn {
+  font-size: 14px;
+  padding: 8px 16px;
+  border-radius: 6px;
+  background-color: #0e5cad;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.btn:hover {
+  background-color: #093c83;
+}
+
+@media (max-width: 600px) {
+  .receipt-box {
+    padding: 12px;
   }
 
-  .fees-header {
-    font-size: 1.5rem;
+  .receipt-header h4 {
+    font-size: 18px;
   }
 
-  .card-body p {
-    font-size: 1rem;
+  .sub-address {
+    font-size: 12px;
   }
+
+  .receipt-body div {
+    font-size: 14px;
+  }
+
+  .btn {
+    width: 100%;
+    font-size: 15px;
+  }
+
+  .text-right {
+    text-align: left !important;
+  }
+}
+
+/* Total row styles */
+.receipt-table tfoot tr td {
+  color: black !important;
+  font-weight: bold;
+  background-color: #f7f9fc; /* subtle light background for total */
 }

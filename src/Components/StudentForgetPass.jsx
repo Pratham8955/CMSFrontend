@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 const StudentForgetPass = () => {
   const navigate = useNavigate();
 
-  const [step, setStep] = useState(1); // 1: Send OTP, 2: Verify OTP, 3: Reset Password
+  const [step, setStep] = useState(1);
   const [email, setEmail] = useState('');
   const [otp, setOtp] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -14,47 +14,85 @@ const StudentForgetPass = () => {
   const [error, setError] = useState('');
   const [passwordMismatch, setPasswordMismatch] = useState(false);
 
-  // Send OTP
+  // Loading states
+  const [sendingOtp, setSendingOtp] = useState(false);
+  const [verifyingOtp, setVerifyingOtp] = useState(false);
+  const [resettingPassword, setResettingPassword] = useState(false);
+
+  const renderStepIndicator = () => {
+    const steps = ['Send OTP', 'Verify OTP', 'Reset Password'];
+
+    return (
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
+        {steps.map((label, index) => {
+          const stepNum = index + 1;
+          const isActive = step === stepNum;
+          const isCompleted = step > stepNum;
+          return (
+            <div
+              key={label}
+              style={{
+                flex: 1,
+                textAlign: 'center',
+                padding: '0.5rem 0',
+                borderBottom: isActive
+                  ? '3px solid #2563eb'
+                  : isCompleted
+                  ? '3px solid #4ade80'
+                  : '3px solid #ccc',
+                color: isActive ? '#2563eb' : isCompleted ? '#4ade80' : '#888',
+                fontWeight: isActive || isCompleted ? '600' : '400',
+                userSelect: 'none',
+              }}
+            >
+              {label}
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
+
   const handleSendOtp = async (e) => {
     e.preventDefault();
+    setSendingOtp(true);
     try {
       const response = await axios.post(
-        'https://localhost:7133/api/CommonApi/send-otp', 
+        'https://localhost:7133/api/CommonApi/send-otp',
         { email },
         { withCredentials: true }
       );
       setMessage(response.data.message);
       setError('');
-      setStep(2);  // Move to step 2 (Verify OTP)
-      // Clear message after 3 seconds
-      setTimeout(() => setMessage(''), 3000);
+      setStep(2);
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to send OTP');
       setMessage('');
+    } finally {
+      setSendingOtp(false);
     }
   };
 
-  // Verify OTP
   const handleVerifyOtp = async (e) => {
     e.preventDefault();
+    setVerifyingOtp(true);
     try {
       const response = await axios.post(
-        'https://localhost:7133/api/CommonApi/verify-otp', 
+        'https://localhost:7133/api/CommonApi/verify-otp',
         { email, otp },
         { withCredentials: true }
       );
       setMessage(response.data.message);
       setError('');
-      setStep(3);  // Move to step 3 (Reset Password)
-      // Clear message after 3 seconds
-      setTimeout(() => setMessage(''), 3000);
+      setStep(3);
     } catch (err) {
       setError(err.response?.data?.message || 'Invalid or expired OTP');
       setMessage('');
+    } finally {
+      setVerifyingOtp(false);
     }
   };
 
-  // Reset Password
   const handleResetPassword = async (e) => {
     e.preventDefault();
     if (newPassword !== confirmPassword) {
@@ -63,15 +101,14 @@ const StudentForgetPass = () => {
     }
 
     setPasswordMismatch(false);
-
+    setResettingPassword(true);
     try {
       const response = await axios.post(
-        'https://localhost:7133/api/CommonApi/forgetPasswordStudent', 
+        'https://localhost:7133/api/CommonApi/forgetPasswordStudent',
         { email, password: newPassword }
       );
       setMessage(response.data.message || 'Password updated successfully');
       setError('');
-      // Clear message after 3 seconds and redirect
       setTimeout(() => {
         setMessage('');
         navigate('/StudentLogin');
@@ -79,13 +116,36 @@ const StudentForgetPass = () => {
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to update password');
       setMessage('');
+    } finally {
+      setResettingPassword(false);
     }
   };
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: '#f0f4f8' }}>
-      <div style={{ backgroundColor: 'white', padding: '2rem', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', width: '100%', maxWidth: '400px' }}>
-        <h2 style={{ textAlign: 'center', marginBottom: '1rem', color: '#2563eb' }}>Student Password Reset</h2>
+    <div
+      style={{
+        minHeight: '100vh',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#f0f4f8',
+      }}
+    >
+      <div
+        style={{
+          backgroundColor: 'white',
+          padding: '2rem',
+          borderRadius: '8px',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+          width: '100%',
+          maxWidth: '400px',
+        }}
+      >
+        {renderStepIndicator()}
+
+        <h2 style={{ textAlign: 'center', marginBottom: '1rem', color: '#2563eb' }}>
+          Student Password Reset
+        </h2>
 
         {step === 1 && (
           <form onSubmit={handleSendOtp}>
@@ -96,11 +156,29 @@ const StudentForgetPass = () => {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                style={{ width: '100%', padding: '0.5rem', borderRadius: '5px', border: '1px solid #ccc' }}
+                style={{
+                  width: '100%',
+                  padding: '0.5rem',
+                  borderRadius: '5px',
+                  border: '1px solid #ccc',
+                }}
               />
             </div>
-            <button type="submit" style={{ width: '100%', backgroundColor: '#2563eb', color: 'white', padding: '0.75rem', border: 'none', borderRadius: '5px' }}>
-              Send OTP
+            <button
+              type="submit"
+              disabled={sendingOtp}
+              style={{
+                width: '100%',
+                backgroundColor: '#2563eb',
+                color: 'white',
+                padding: '0.75rem',
+                border: 'none',
+                borderRadius: '5px',
+                opacity: sendingOtp ? 0.6 : 1,
+                cursor: sendingOtp ? 'not-allowed' : 'pointer',
+              }}
+            >
+              {sendingOtp ? 'Sending...' : 'Send OTP'}
             </button>
           </form>
         )}
@@ -114,11 +192,29 @@ const StudentForgetPass = () => {
                 required
                 value={otp}
                 onChange={(e) => setOtp(e.target.value)}
-                style={{ width: '100%', padding: '0.5rem', borderRadius: '5px', border: '1px solid #ccc' }}
+                style={{
+                  width: '100%',
+                  padding: '0.5rem',
+                  borderRadius: '5px',
+                  border: '1px solid #ccc',
+                }}
               />
             </div>
-            <button type="submit" style={{ width: '100%', backgroundColor: '#2563eb', color: 'white', padding: '0.75rem', border: 'none', borderRadius: '5px' }}>
-              Verify OTP
+            <button
+              type="submit"
+              disabled={verifyingOtp}
+              style={{
+                width: '100%',
+                backgroundColor: '#2563eb',
+                color: 'white',
+                padding: '0.75rem',
+                border: 'none',
+                borderRadius: '5px',
+                opacity: verifyingOtp ? 0.6 : 1,
+                cursor: verifyingOtp ? 'not-allowed' : 'pointer',
+              }}
+            >
+              {verifyingOtp ? 'Verifying...' : 'Verify OTP'}
             </button>
           </form>
         )}
@@ -136,7 +232,12 @@ const StudentForgetPass = () => {
                   setNewPassword(e.target.value);
                   setPasswordMismatch(false);
                 }}
-                style={{ width: '100%', padding: '0.5rem', borderRadius: '5px', border: '1px solid #ccc' }}
+                style={{
+                  width: '100%',
+                  padding: '0.5rem',
+                  borderRadius: '5px',
+                  border: '1px solid #ccc',
+                }}
               />
             </div>
             <div style={{ marginBottom: '1rem' }}>
@@ -150,18 +251,42 @@ const StudentForgetPass = () => {
                   setConfirmPassword(e.target.value);
                   setPasswordMismatch(false);
                 }}
-                style={{ width: '100%', padding: '0.5rem', borderRadius: '5px', border: '1px solid #ccc' }}
+                style={{
+                  width: '100%',
+                  padding: '0.5rem',
+                  borderRadius: '5px',
+                  border: '1px solid #ccc',
+                }}
               />
-              {passwordMismatch && <p style={{ color: 'red', fontSize: '0.875rem' }}>Passwords do not match.</p>}
+              {passwordMismatch && (
+                <p style={{ color: 'red', fontSize: '0.875rem' }}>Passwords do not match.</p>
+              )}
             </div>
-            <button type="submit" style={{ width: '100%', backgroundColor: '#2563eb', color: 'white', padding: '0.75rem', border: 'none', borderRadius: '5px' }}>
-              Update Password
+            <button
+              type="submit"
+              disabled={resettingPassword}
+              style={{
+                width: '100%',
+                backgroundColor: '#2563eb',
+                color: 'white',
+                padding: '0.75rem',
+                border: 'none',
+                borderRadius: '5px',
+                opacity: resettingPassword ? 0.6 : 1,
+                cursor: resettingPassword ? 'not-allowed' : 'pointer',
+              }}
+            >
+              {resettingPassword ? 'Updating...' : 'Update Password'}
             </button>
           </form>
         )}
 
-        {message && <p style={{ marginTop: '1rem', color: 'green', textAlign: 'center' }}>{message}</p>}
-        {error && <p style={{ marginTop: '1rem', color: 'red', textAlign: 'center' }}>{error}</p>}
+        {message && (
+          <p style={{ marginTop: '1rem', color: 'green', textAlign: 'center' }}>{message}</p>
+        )}
+        {error && (
+          <p style={{ marginTop: '1rem', color: 'red', textAlign: 'center' }}>{error}</p>
+        )}
       </div>
     </div>
   );
