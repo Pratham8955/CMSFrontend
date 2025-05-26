@@ -59,7 +59,7 @@ const Navbar = () => {
               className={`auth-btn ${!isSignUp ? "active" : ""}`}
               onClick={() => navigate("/login")}
             >
-              Sign In
+              Login
             </button>
            
           </div>

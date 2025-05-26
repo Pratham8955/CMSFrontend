@@ -41,15 +41,15 @@ const StudentDashboard = () => {
 
               // Fetch faculties and filter by deptId
               axios
-                .get(`https://localhost:7133/api/Faculties/GetFaculties`)
-                .then((facRes) => {
-                  if (facRes.data.success) {
-                    const allFaculties =
-                      facRes.data.faculty || facRes.data.Faculty || [];
-                    const filtered = allFaculties.filter(
-                      (f) => f.deptId === stud.deptId
-                    );
-                    setFaculties(filtered);
+                .get(`http://localhost:5291/api/Subject/GetSubjectsByStudentonly/${studentId}`)
+                .then((SubRes) => {
+                  if (SubRes.data.success) {
+                    const allSubujects =
+                      SubRes.data.subject || SubRes.data.subject || [];
+                    // const filtered = allSubujects.filter(
+                    //   (f) => f.deptId === stud.deptId
+                    // );
+                    setFaculties(allSubujects);
                   }
                 })
                 .catch(console.error);
@@ -121,7 +121,7 @@ const StudentDashboard = () => {
 
       {/* Faculties List */}
       <h3 className="mb-4 text-primary border-bottom pb-2">
-        Faculties of Your Department: <span className="text-dark">{deptName}</span>
+        Subjects of Your Department: <span className="text-dark">{deptName}</span>
       </h3>
 
       {faculties.length === 0 ? (
@@ -131,19 +131,19 @@ const StudentDashboard = () => {
           <table className="table table-hover align-middle bg-white">
             <thead className="table-primary">
               <tr>
-                <th scope="col">Faculty Name</th>
-                <th scope="col">Email</th>
-                <th scope="col">Qualification</th>
-                <th scope="col">Experience</th>
+                <th scope="col" hidden>Subject Id</th>
+                <th scope="col">Subject Name</th>
+                <th scope="col">Department</th>
+                <th scope="col">Semester</th>
               </tr>
             </thead>
             <tbody>
-              {faculties.map((faculty) => (
-                <tr key={faculty.facultyId}>
-                  <td>{faculty.facultyName}</td>
-                  <td>{faculty.email}</td>
-                  <td>{faculty.qualification}</td>
-                  <td>{faculty.experience}</td>
+              {faculties.map((subject) => (
+                <tr key={subject.subjectId}>
+                  <td hidden>{subject.subjectId}</td>
+                  <td>{subject.subjectName}</td>
+                  <td>{subject.deptName}</td>
+                  <td>{subject.semId + " Semester"}</td>
                 </tr>
               ))}
             </tbody>

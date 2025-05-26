@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import Swal from 'sweetalert2';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const FacultyForgetPass = () => {
   const navigate = useNavigate();
@@ -67,11 +67,11 @@ const FacultyForgetPass = () => {
         { email },
         { withCredentials: true }
       );
-      Swal.fire('Success', response.data.message, 'success');
+      toast.success(response.data.message);
       setStep(2);
       setOtpTryCount(0);
     } catch (err) {
-      Swal.fire('Error', err.response?.data?.message || 'Failed to send OTP', 'error');
+      toast.error(err.response?.data?.message || 'Failed to send OTP');
     }
     setLoading(false);
   };
@@ -81,7 +81,7 @@ const FacultyForgetPass = () => {
     e.preventDefault();
 
     if (otpString.length !== 6) {
-      Swal.fire('Error', 'Please enter all 6 digits of the OTP', 'warning');
+        toast.error('Please enter a 6-digit OTP');
       return;
     }
 
@@ -92,23 +92,15 @@ const FacultyForgetPass = () => {
         { email, otp: otpString },
         { withCredentials: true }
       );
-      Swal.fire('Success', response.data.message, 'success');
+      toast.success(response.data.message);
       setStep(3);
     } catch (err) {
       const tries = otpTryCount + 1;
       setOtpTryCount(tries);
       if (tries >= maxOtpTries) {
-        Swal.fire(
-          'Failed',
-          `You have reached maximum attempts (${maxOtpTries}). Please resend OTP.`,
-          'error'
-        );
+        toast.error('Maximum OTP attempts exceeded. Please try again later.');
       } else {
-        Swal.fire(
-          'Error',
-          `Invalid or expired OTP. You have ${maxOtpTries - tries} attempt(s) left.`,
-          'error'
-        );
+       toast.error(`Invalid or expired OTP. You have ${maxOtpTries - tries} attempt(s) left.`);
       }
       setOtp(['', '', '', '', '', '']); // clear otp inputs on invalid attempt
       otpRefs.current[0]?.focus();
@@ -135,12 +127,14 @@ const FacultyForgetPass = () => {
           password: newPassword,
         }
       );
-      Swal.fire('Success', response.data.message || 'Password updated successfully', 'success');
+     toast.success(response.data.message || 'Password updated successfully');
+
       setTimeout(() => {
         navigate('/AdminandFacultyLogin');
       }, 2000);
     } catch (err) {
-      Swal.fire('Error', err.response?.data?.message || 'Failed to update password', 'error');
+     toast.error(err.response?.data?.message || 'Failed to update password');
+
     }
     setResetLoading(false);
   };
@@ -341,6 +335,7 @@ const FacultyForgetPass = () => {
           </form>
         )}
       </div>
+      <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
     </div>
   );
 };

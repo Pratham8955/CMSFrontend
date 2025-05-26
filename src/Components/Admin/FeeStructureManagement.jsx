@@ -71,6 +71,10 @@ const handleSubmit = async (e) => {
 
       if (response.data.success) {
         setSubmitMessage('Fee added successfully!');
+        setSelectedFeeStructureId('');
+        setTimeout(() => {
+      setSubmitMessage('');
+    }, 3000);
       } else {
         setSubmitMessage('Failed to add fee: ' + response.data.message);
       }

@@ -6,7 +6,7 @@ import "../../css/AdminFaculties.css";
 const AdminFaculties = () => {
   const [faculties, setFaculties] = useState([]);
   const [departments, setDepartments] = useState([]);
-  const [selectedDept, setSelectedDept] = useState(""); // NEW
+  const [selectedDept, setSelectedDept] = useState("");
   const [formData, setFormData] = useState({
     facultyName: "",
     email: "",
@@ -20,6 +20,9 @@ const AdminFaculties = () => {
   const [showForm, setShowForm] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editingId, setEditingId] = useState(null);
+
+  // New loading state
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fetchFaculties();
@@ -76,6 +79,8 @@ const AdminFaculties = () => {
     }
 
     try {
+      setLoading(true);  // Start loader
+
       if (isEditing) {
         const res = await axios.post(
           `https://localhost:7133/api/Faculties/UpdateFaculty/${editingId}`,
@@ -105,6 +110,8 @@ const AdminFaculties = () => {
     } catch (error) {
       console.error(error);
       Swal.fire("Error", "Error submitting faculty form.", "error");
+    } finally {
+      setLoading(false); // Stop loader
     }
   };
 
@@ -176,11 +183,19 @@ const AdminFaculties = () => {
 
   return (
     <div className="admin-container">
+       {loading && (
+      <div className="loader-overlay">
+        <div className="loader-spinner"></div>
+      </div>
+    )}
       <h2 className="admin-title">Faculty Management</h2>
 
       {!showForm && (
-        <div className="top-controls" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <button onClick={() => setShowForm(true)} className="admin-button">
+        <div
+          className="top-controls"
+          style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}
+        >
+          <button onClick={() => setShowForm(true)} className="admin-button" disabled={loading}>
             Add New Faculty
           </button>
           <select
@@ -188,6 +203,7 @@ const AdminFaculties = () => {
             value={selectedDept}
             onChange={(e) => setSelectedDept(e.target.value)}
             style={{ maxWidth: "250px" }}
+            disabled={loading}
           >
             <option value="">Filter by Department</option>
             {departments.map((dept) => (
@@ -201,25 +217,58 @@ const AdminFaculties = () => {
 
       {showForm && (
         <form onSubmit={handleSubmit} className="form-container">
-          {/* Form fields same as before */}
+          {/* Show loader if loading */}
+         {loading && <div className="loader"></div>}
+
           <div className="form-group">
             <label>Name:</label>
-            <input type="text" name="facultyName" value={formData.facultyName} onChange={handleChange} required className="form-input" />
+            <input
+              type="text"
+              name="facultyName"
+              value={formData.facultyName}
+              onChange={handleChange}
+              required
+              className="form-input"
+              disabled={loading}
+            />
           </div>
 
           <div className="form-group">
             <label>Email:</label>
-            <input type="email" name="email" value={formData.email} onChange={handleChange} required className="form-input" />
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+              className="form-input"
+              disabled={loading}
+            />
           </div>
 
           <div className="form-group">
             <label>Date of Joining:</label>
-            <input type="date" name="doj" value={formData.doj} onChange={handleChange} required className="form-input" />
+            <input
+              type="date"
+              name="doj"
+              value={formData.doj}
+              onChange={handleChange}
+              required
+              className="form-input"
+              disabled={loading}
+            />
           </div>
 
           <div className="form-group">
             <label>Gender:</label>
-            <select name="gender" value={formData.gender} onChange={handleChange} required className="form-select">
+            <select
+              name="gender"
+              value={formData.gender}
+              onChange={handleChange}
+              required
+              className="form-select"
+              disabled={loading}
+            >
               <option value="">Select Gender</option>
               <option value="Male">Male</option>
               <option value="Female">Female</option>
@@ -228,17 +277,40 @@ const AdminFaculties = () => {
 
           <div className="form-group">
             <label>Qualification:</label>
-            <input type="text" name="qualification" value={formData.qualification} onChange={handleChange} required className="form-input" />
+            <input
+              type="text"
+              name="qualification"
+              value={formData.qualification}
+              onChange={handleChange}
+              required
+              className="form-input"
+              disabled={loading}
+            />
           </div>
 
           <div className="form-group">
             <label>Experience:</label>
-            <input type="text" name="experience" value={formData.experience} onChange={handleChange} required className="form-input" />
+            <input
+              type="text"
+              name="experience"
+              value={formData.experience}
+              onChange={handleChange}
+              required
+              className="form-input"
+              disabled={loading}
+            />
           </div>
 
           <div className="form-group">
             <label>Department:</label>
-            <select name="deptId" value={formData.deptId} onChange={handleChange} required className="form-select">
+            <select
+              name="deptId"
+              value={formData.deptId}
+              onChange={handleChange}
+              required
+              className="form-select"
+              disabled={loading}
+            >
               <option value="">Select Department</option>
               {departments.map((dept) => (
                 <option key={dept.deptId} value={dept.deptId}>
@@ -250,15 +322,26 @@ const AdminFaculties = () => {
 
           <div className="form-group">
             <label>Faculty Image:</label>
-            <input type="file" name="facultyImg" accept="image/*" onChange={handleChange} className="form-input" />
+            <input
+              type="file"
+              name="facultyImg"
+              accept="image/*"
+              onChange={handleChange}
+              className="form-input"
+              disabled={loading}
+            />
           </div>
 
           <div className="button-group">
-            <button type="submit" className="admin-button save-btn">
+            <button type="submit" className="admin-button save-btn" disabled={loading}>
               {isEditing ? "Update Faculty" : "Save Faculty"}
             </button>
-            <button type="button" onClick={resetForm} className="admin-button close-btn">
-              
+            <button
+              type="button"
+              onClick={resetForm}
+              className="admin-button close-btn"
+              disabled={loading}
+            >
               Cancel
             </button>
           </div>
@@ -298,8 +381,20 @@ const AdminFaculties = () => {
                 <td>{departments.find((d) => d.deptId === faculty.deptId)?.deptName || "N/A"}</td>
                 <td>
                   <div className="action-buttons">
-                    <button className="admin-button edit-btn" onClick={() => handleEdit(faculty)}>Edit</button>
-                    <button className="admin-button delete-btn" onClick={() => handleDelete(faculty.facultyId)}>Delete</button>
+                    <button
+                      className="admin-button edit-btn"
+                      onClick={() => handleEdit(faculty)}
+                      disabled={loading}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className="admin-button delete-btn"
+                      onClick={() => handleDelete(faculty.facultyId)}
+                      disabled={loading}
+                    >
+                      Delete
+                    </button>
                   </div>
                 </td>
               </tr>

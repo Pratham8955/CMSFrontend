@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import Stateandcity from "../Admin/Stateandcity.json";
-import "../../css/Admin/Admision.css"
+import "../../css/Admin/Admision.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useNavigate } from "react-router-dom";
 
@@ -37,6 +37,7 @@ const Admision = () => {
   const [selectedCity, setSelectedCity] = useState("");
   const [departments, setDepartments] = useState([]);
   const [semesters, setSemesters] = useState([]);
+  const [loading, setLoading] = useState(false); // Loader state
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -93,8 +94,6 @@ const Admision = () => {
         setFormData({ ...formData, [name]: value });
       }
     } else if (["StudentImg", "tenthmarksheet", "twelfthMarksheet"].includes(name)) {
-
-
       if (files && files[0]) {
         setFormData({ ...formData, [name]: files[0] });
       }
@@ -105,6 +104,8 @@ const Admision = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true); // Show loader on submit
+
     const formDataToSubmit = new FormData();
     for (const key in formData) {
       if (formData[key]) {
@@ -123,13 +124,39 @@ const Admision = () => {
 
       if (response.data.success) {
         Swal.fire("Success", response.data.message, "success").then(() => {
-
+          // Optionally reset form or redirect here
+          setFormData({
+            studentName: "",
+            email: "",
+            dob: "",
+            gender: "",
+            address: "",
+            city: "",
+            state: "",
+            phone: "",
+            deptId: "",
+            currentSemester: "",
+            StudentImg: null,
+            tenthPassingYear: "",
+            tenthPercentage: "",
+            tenthmarksheet: null,
+            twelfthSchool: "",
+            twelfthPassingYear: "",
+            twelfthPercentage: "",
+            twelfthMarksheet: null,
+            tenthSchool: ""
+          });
+          setSelectedState("");
+          setSelectedCity("");
+          setCities([]);
         });
       } else {
         Swal.fire("Error", response.data.message, "error");
       }
     } catch (error) {
       Swal.fire("Error", "Registration failed!", "error");
+    } finally {
+      setLoading(false); // Hide loader after submit completes
     }
   };
 
@@ -142,6 +169,12 @@ const Admision = () => {
       className="d-flex align-items-center justify-content-center"
       style={{ minHeight: "10vh", background: "linear-gradient(to right, #f8f9fa, #e3f2fd)" }}
     >
+      {loading && (
+  <div className="admission-loader-overlay">
+    <div className="admission-loader"></div>
+  </div>
+)}
+
       <form
         onSubmit={handleSubmit}
         className="p-4 rounded shadow-sm border bg-white"
@@ -197,10 +230,9 @@ const Admision = () => {
               onChange={handleChange}
               className="form-control"
               required
-            />    
+            />
           </div>
         </div>
-
 
         {/* DOB and Gender */}
         <div className="row mb-3">
@@ -284,9 +316,6 @@ const Admision = () => {
           </div>
         </div>
 
-
-
-
         {/* Department Dropdown */}
         <div className="row mb-3">
           <div className="col">
@@ -327,82 +356,95 @@ const Admision = () => {
           </div>
         </div>
 
-
         {/* 10th Details */}
-        <h5>10th Details</h5>
         <div className="row mb-3">
           <div className="col">
+            <label className="form-label">10th School</label>
             <input
               type="text"
               name="tenthSchool"
               value={formData.tenthSchool}
               onChange={handleChange}
               className="form-control"
-              placeholder="10th School"
             />
           </div>
           <div className="col">
+            <label className="form-label">10th Passing Year</label>
             <input
               type="text"
               name="tenthPassingYear"
               value={formData.tenthPassingYear}
               onChange={handleChange}
               className="form-control"
-              placeholder="10th Passing Year"
+              maxLength={4}
+              pattern="\d{4}"
+              title="Enter 4 digit year"
             />
           </div>
           <div className="col">
+            <label className="form-label">10th Percentage</label>
             <input
-              type="text"
+              type="number"
               name="tenthPercentage"
               value={formData.tenthPercentage}
               onChange={handleChange}
               className="form-control"
-              placeholder="10th %"
+              min="0"
+              max="100"
+              step="0.01"
             />
           </div>
           <div className="col">
+            <label className="form-label">10th Marksheet</label>
             <input
               type="file"
               name="tenthmarksheet"
               onChange={handleChange}
               className="form-control"
             />
+          </div>
+        </div>
 
-          </div> </div>    {/* 12th Details */}
-        <h5>12th Details</h5>
+        {/* 12th Details */}
         <div className="row mb-3">
           <div className="col">
+            <label className="form-label">12th School</label>
             <input
               type="text"
               name="twelfthSchool"
               value={formData.twelfthSchool}
               onChange={handleChange}
               className="form-control"
-              placeholder="12th School"
             />
           </div>
           <div className="col">
+            <label className="form-label">12th Passing Year</label>
             <input
               type="text"
               name="twelfthPassingYear"
               value={formData.twelfthPassingYear}
               onChange={handleChange}
               className="form-control"
-              placeholder="12th Passing Year"
+              maxLength={4}
+              pattern="\d{4}"
+              title="Enter 4 digit year"
             />
           </div>
           <div className="col">
+            <label className="form-label">12th Percentage</label>
             <input
-              type="text"
+              type="number"
               name="twelfthPercentage"
               value={formData.twelfthPercentage}
               onChange={handleChange}
               className="form-control"
-              placeholder="12th %"
+              min="0"
+              max="100"
+              step="0.01"
             />
           </div>
           <div className="col">
+            <label className="form-label">12th Marksheet</label>
             <input
               type="file"
               name="twelfthMarksheet"
@@ -412,11 +454,20 @@ const Admision = () => {
           </div>
         </div>
 
+        {/* Submit button */}
+        <div className="d-grid">
+          <button type="submit" disabled={loading} className="btn btn-primary">
+  {loading ? (
+    <>
+      <span className="admission-loader me-2" aria-hidden="true"></span>
+      Submitting...
+    </>
+  ) : (
+    "Submit Admission"
+  )}
+</button>
 
-
-        <button type="submit" className="btn btn-primary w-100">
-          Register
-        </button>
+        </div>
       </form>
     </div>
   );

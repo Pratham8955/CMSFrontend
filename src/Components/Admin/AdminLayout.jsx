@@ -3,6 +3,8 @@ import { useNavigate, Outlet, useLocation } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Swal from "sweetalert2";
 import "../../css/Admin/AdminLayout.css";
+import 'sweetalert2/dist/sweetalert2.min.css';
+
 
 const AdminLayout = () => {
   const navigate = useNavigate();
@@ -63,7 +65,7 @@ const AdminLayout = () => {
               onClick={() => navigate(item.path)}
               title={isSidebarOpen ? "" : item.label}
             >
-              <button className="btn nav-btn d-flex align-items-center w-100 text-start text-white">
+              <button className=" nav-btn d-flex align-items-center w-100 text-start text-white">
                 <span className="me-3 icon fs-5">{item.icon}</span>
                 {isSidebarOpen && <span className="flex-grow-1">{item.label}</span>}
               </button>
@@ -75,7 +77,7 @@ const AdminLayout = () => {
             onClick={handleLogout}
             title={isSidebarOpen ? "" : "Logout"}
           >
-            <button className="btn nav-btn d-flex align-items-center w-100 text-start text-danger fw-semibold">
+            <button className=" nav-btn d-flex align-items-center w-100 text-start text-danger fw-semibold">
               <span className="me-3 icon fs-5"><i className="bi bi-box-arrow-right"></i></span>
               {isSidebarOpen && <span>Logout</span>}
             </button>

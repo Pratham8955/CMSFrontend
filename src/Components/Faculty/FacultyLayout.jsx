@@ -108,7 +108,7 @@ const FacultyLayout = () => {
                 onClick={() => navigate(item.path)}
                 title={isSidebarOpen ? "" : item.label}
               >
-                <button className="btn nav-btn d-flex align-items-center w-100 text-start text-white">
+                <button className=" nav-btn d-flex align-items-center w-100 text-start text-white">
                   <span className="me-3 icon fs-5">
                     <IconComponent />
                   </span>

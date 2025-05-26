@@ -110,7 +110,7 @@ const Profile = () => {
                 <InfoItem icon="house-fill" label="Address" value={student.address} />
                 <InfoItem icon="geo-alt-fill" label="City" value={student.city} />
                 <InfoItem icon="pin-map-fill" label="State" value={student.state} />
-                <InfoItem icon="book-half" label="Current Semester" value={student.currentSemester} />
+                <InfoItem icon="book-half" label="Current Semester" value={student.currentSemester +" Semester"} />
                 <InfoItem icon="building" label="Department" value={deptName || student.deptId} />
               </div>
             </div>

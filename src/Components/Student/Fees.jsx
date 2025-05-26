@@ -93,7 +93,7 @@ const Fees = () => {
     }
   }, [paymentStatus, student]);
 
- const generatePdf = (data) => {
+const generatePdf = (data) => {
   if (!data) return;
   const doc = new jsPDF();
 
@@ -109,20 +109,44 @@ const Fees = () => {
   doc.text("RECEIPT", 105, 38, null, null, "center");
 
   doc.setFontSize(11);
-  doc.text(`Transaction Id.:  ${data.transactionId}`, 15, 50);
-  doc.text(`Date:  ${new Date(data.paymentDate).toLocaleDateString()}`, 150, 50);
 
-  doc.text(`Received From:  ${data.studentName || "N/A"}`, 15, 60);
-  doc.text(`Particulars:  ${data.semesterName}`, 15, 70);
+  // Bold label, normal value
+  doc.setFont("helvetica", "bold");
+  doc.text("Transaction Id.:", 15, 50);
+  doc.setFont("helvetica", "normal");
+  doc.text(`${data.transactionId}`, 55, 50);
+
+  doc.setFont("helvetica", "bold");
+  doc.text("Date:", 155, 50);
+  doc.setFont("helvetica", "normal");
+  doc.text(`${new Date(data.paymentDate).toLocaleDateString()}`, 165, 50);
+
+  doc.setFont("helvetica", "bold");
+  doc.text("Received From:", 15, 60);
+  doc.setFont("helvetica", "normal");
+  doc.text(`${data.student_Name || "N/A"}`, 55, 60);
+
+  doc.setFont("helvetica", "bold");
+  doc.text("Particulars:", 15, 70);
+  doc.setFont("helvetica", "normal");
+  doc.text(`${data.departmentName}-${data.semesterName}`, 55, 70);
+
+  const { tuitionFees, labFees, collegeGroundFee, internalExam } = data.feeType;
+  const total = [
+    Number(tuitionFees),
+    Number(labFees),
+    Number(collegeGroundFee),
+    Number(internalExam),
+  ].reduce((a, b) => a + b, 0);
 
   autoTable(doc, {
     startY: 80,
     head: [["Sr. No.", "Description", "Amount (Rs.)"]],
     body: [
-      ["1", "Tuition Fee", data.feeType.tuitionFees],
-      ["2", "Laboratory Fee", data.feeType.labFees],
-      ["3", "Ground Fee", data.feeType.collegeGroundFee],
-      ["4", "Internal Examination", data.feeType.internalExam],
+      ["1", "Tuition Fee", tuitionFees],
+      ["2", "Laboratory Fee", labFees],
+      ["3", "Ground Fee", collegeGroundFee],
+      ["4", "Internal Examination", internalExam],
     ],
     styles: { halign: 'center' },
     headStyles: {
@@ -131,27 +155,28 @@ const Fees = () => {
       fontStyle: 'bold',
     },
     columnStyles: {
-      0: { halign: 'left' },
-      1: { halign: 'left' },
-      2: { halign: 'right' },
+      0: { halign: 'center' },
+      1: { halign: 'center' },
+      2: { halign: 'center' },
     },
   });
 
-  const total = [
-    Number(data.feeType.tuitionFees),
-    Number(data.feeType.labFees),
-    Number(data.feeType.collegeGroundFee),
-    Number(data.feeType.internalExam),
-  ].reduce((a, b) => a + b, 0);
-
-  doc.setTextColor(0, 0, 0); // Black text
+  // Add Total outside the table, aligned to the right
+  const finalY = doc.lastAutoTable.finalY + 10;
   doc.setFont("helvetica", "bold");
-  doc.text(`Total (Rs.):  ${total.toFixed(2)}`, 180, doc.lastAutoTable.finalY + 10, { align: "right" });
+  doc.text("Total (Rs.):", 138, finalY);
   doc.setFont("helvetica", "normal");
-  doc.text(`Mode of Payment :  Online`, 15, doc.lastAutoTable.finalY + 20);
+  doc.text(`${total.toFixed(2)}`, 175, finalY, { align: "right" });
+
+  // Payment Mode
+  doc.setFont("helvetica", "bold");
+  doc.text("Mode of Payment :", 15, finalY + 10);
+  doc.setFont("helvetica", "normal");
+  doc.text("Online", 55, finalY + 10);
 
   doc.save("Fee_Receipt.pdf");
 };
+
 
   if (loading) return <div className="loading-message">Loading student details...</div>;
   if (error) return <div className="error-message">{error}</div>;
@@ -176,11 +201,11 @@ const Fees = () => {
                   </div>
                   <div className="receipt-row">
                     <span className="label">Received From:</span>
-                    <span className="value">{paidFeeDetails.studentName || "N/A"}</span>
+                    <span className="value">{paidFeeDetails.student_Name || "N/A"}</span>
                   </div>
                   <div className="receipt-row">
                     <span className="label">Particulars:</span>
-                    <span className="value">{paidFeeDetails.semesterName || "N/A"}</span>
+                    <span className="value"> {paidFeeDetails.departmentName}-{paidFeeDetails.semesterName || "N/A"}</span>
                   </div>
 
                   <table className="table table-bordered receipt-table mt-3">

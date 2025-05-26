@@ -28,22 +28,22 @@ const ContentUpload = () => {
   }, [facultyId]);
 
   const fetchContents = () => {
-    axios.get('https://localhost:7133/api/CourseContent')
+    axios.get(`http://localhost:5291/api/CourseContent/GetByIdforFaculty/${facultyId}`)
       .then(response => {
-        setContents(response.data);
+        setContents(response.data.content);
       })
       .catch(error => {
         console.error('Error fetching contents:', error);
       });
   };
 
-  const showForm = (mode = "add", existing = null) => {
-    let formData = {
-      subjectId: existing?.subjectId || '',
-      title: existing?.title || '',
-      description: existing?.description || '',
-      pdfFile: null
-    };
+ const showForm = (mode = "add", existing = null) => {
+  let formData = {
+    subjectId: existing?.subjectId || '',
+    title: existing?.title || '',
+    description: existing?.description || '',
+    pdfFile: null
+  };
 
     MySwal.fire({
       title: mode === "edit" ? 'Edit Course Content' : 'Add Course Content',
@@ -202,7 +202,7 @@ const ContentUpload = () => {
                   <tr key={content.contentId}>
                     <td>{content.title}</td>
                     <td>{content.description}</td>
-                    <td>{subjects.find(s => s.subjectId === content.subjectId)?.subject || <i>Unknown</i>}</td>
+                    <td>{content.subjectName}</td>
                     <td className="text-center">
                       <a
                         href={`https://localhost:7133/${content.filePath}`}

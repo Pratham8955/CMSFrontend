@@ -8,6 +8,7 @@ const AdminDepartments = () => {
   const [deptName, setDeptName] = useState("");
   const [headOfDept, setHeadOfDept] = useState("");
   const [facultyList, setFacultyList] = useState([]);
+  const [FacultyListforEdit, setFacultyListforEdit] = useState([]);
 
   // Modal control
   const [showAddModal, setShowAddModal] = useState(false);
@@ -50,6 +51,18 @@ const AdminDepartments = () => {
       });
   };
 
+  const fetchFacultiesByDepartment = async (deptId) => {
+      try {
+        const response = await axios.get(
+          `https://localhost:7133/api/CommonApi/GetFacultyByDepartment/${deptId}`
+        );
+        setFacultyListforEdit(response.data.faculty || []);
+      } catch (error) {
+        alert("Failed to load faculty list.");
+      }
+    };
+
+
   // Open Add Modal & reset form
   const openAddModal = () => {
     setDeptName("");
@@ -63,6 +76,7 @@ const AdminDepartments = () => {
     setDeptName(dept.deptName);
     setHeadOfDept(dept.headOfDept?.toString() || "");
     setEditingId(dept.deptId);
+    fetchFacultiesByDepartment(dept.deptId);
     setShowEditModal(true);
   };
 
@@ -177,22 +191,6 @@ const AdminDepartments = () => {
                 />
               </div>
 
-              <div className="form-group">
-                <label>Head of Department (Optional):</label>
-                <select
-                  value={headOfDept}
-                  onChange={(e) => setHeadOfDept(e.target.value)}
-                  className="form-select"
-                >
-                  <option value="">-- None --</option>
-                  {facultyList.map((faculty) => (
-                    <option key={faculty.facultyId} value={faculty.facultyId}>
-                      {faculty.facultyName}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
               <div className="button-group">
                 <button type="submit" className="admin-button save-btn">
                   Save Department
@@ -216,32 +214,33 @@ const AdminDepartments = () => {
           <div className="modal-content">
             <h3>Edit Department</h3>
             <form onSubmit={handleSubmit} className="form-container">
-              <div className="form-group">
-                <label>Department Name:</label>
-                <input
-                  type="text"
-                  value={deptName}
-                  onChange={(e) => setDeptName(e.target.value)}
-                  required
-                  className="form-input"
-                />
-              </div>
 
               <div className="form-group">
-                <label>Head of Department (Optional):</label>
-                <select
-                  value={headOfDept}
-                  onChange={(e) => setHeadOfDept(e.target.value)}
-                  className="form-select"
-                >
-                  <option value="">-- None --</option>
-                  {facultyList.map((faculty) => (
-                    <option key={faculty.facultyId} value={faculty.facultyId}>
-                      {faculty.facultyName}
-                    </option>
-                  ))}
-                </select>
-              </div>
+          <label>Department Name:</label>
+          <input
+            type="text"
+            value={deptName}
+            onChange={(e) => setDeptName(e.target.value)}
+            required
+            className="form-input"
+          />
+        </div>
+              <div className="form-group">
+  <label>Head of Department (Optional):</label>
+  <select
+    value={headOfDept}
+    onChange={(e) => setHeadOfDept(e.target.value)}
+    className="form-select"
+  >
+    <option value="">-- None --</option>
+    {FacultyListforEdit.map((faculty) => (
+      <option key={faculty.facultyId} value={faculty.facultyId}>
+        {faculty.facultyName}
+      </option>
+    ))}
+  </select>
+</div>
+
 
               <div className="button-group">
                 <button type="submit" className="admin-button save-btn">
