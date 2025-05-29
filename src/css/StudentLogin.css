@@ -78,3 +78,68 @@
   align-items: center;
   justify-content: center;
 }
+
+/* Responsive styles */
+@media (max-width: 991.98px) {
+  /* Smaller padding on form */
+  .student-login-form {
+    padding: 30px 20px;
+  }
+
+  /* Adjust button and link container width */
+  .d-flex.align-items-center {
+    width: 100% !important;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+
+  /* Shrink min-width of button */
+  .student-login-button {
+    min-width: 150px;
+    flex-grow: 1;
+  }
+
+  /* Forgot password link spacing and wrapping */
+  .forgot-password-link {
+    margin-left: 0;
+    white-space: normal;
+    flex-grow: 1;
+    text-align: center;
+  }
+}
+
+@media (max-width: 575.98px) {
+  /* Stack image and form vertically */
+  .row.shadow.rounded-4.overflow-hidden.bg-white {
+    flex-direction: column;
+  }
+
+  /* Hide image on very small screens to save space */
+  .col-md-6.d-none.d-md-flex {
+    display: none !important;
+  }
+
+  /* Form full width */
+  .col-md-6.p-4 {
+    flex: 0 0 100%;
+    max-width: 100%;
+    padding: 20px 15px;
+  }
+
+  /* Reduce form padding */
+  .student-login-form {
+    padding: 20px 15px;
+  }
+
+  /* Inputs font size smaller */
+  .student-login-input {
+    font-size: 14px;
+    padding: 10px 12px;
+  }
+
+  /* Button font size smaller */
+  .student-login-button {
+    font-size: 14px;
+    padding: 10px 20px;
+  }
+}

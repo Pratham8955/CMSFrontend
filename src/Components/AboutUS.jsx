@@ -1,9 +1,9 @@
 import React from 'react';
-import universityImage from '../assets/university.png'; // Update as needed
-import academicsImage from '../assets/academics.png';   // Update as needed
-import campusImage from '../assets/campus.png';         // Optional: Add this image
-import heroImage from '../assets/hero.png';             // Optional: Add this image
-import awardsImage from '../assets/awards.png';         // Optional: Add this image
+import universityImage from '../assets/university.png'; 
+import academicsImage from '../assets/academics.png';   
+import campusImage from '../assets/campus.png';         
+import heroImage from '../assets/hero.png';             
+import awardsImage from '../assets/awards.png';         
 import { NavLink } from "react-router-dom";
 
 import '../css/AboutUs.css';

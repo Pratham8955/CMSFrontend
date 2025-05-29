@@ -1,8 +1,8 @@
-
 .fee-status-container {
   width: 90%;
   margin: 20px auto;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  overflow-x: auto; /* allows horizontal scroll on small screens */
 }
 
 .fee-status-title {
@@ -20,6 +20,7 @@
   width: 100%;
   border-collapse: collapse;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  min-width: 600px; /* minimum width to avoid too narrow table on large screens */
 }
 
 .fee-status-table th,
@@ -41,4 +42,22 @@
 
 .fee-status-table tbody tr:hover {
   background-color: #f1f1f1;
+}
+
+/* Responsive: On smaller screens, allow horizontal scroll */
+@media (max-width: 767.98px) {
+  .fee-status-container {
+    width: 100%;
+    margin: 10px 0;
+  }
+
+  .fee-status-table {
+    min-width: 100%;
+    font-size: 14px;
+  }
+
+  .fee-status-table th,
+  .fee-status-table td {
+    padding: 8px 10px;
+  }
 }
