@@ -176,8 +176,8 @@
 .swal2-title {
   font-size: 1.4rem;
   font-weight: 600;
-  margin-bottom: 1rem;
-  text-align: left;
+  /* margin-bottom: 1rem; */
+  text-align: center;
 }
 
 /* Modal button styles */

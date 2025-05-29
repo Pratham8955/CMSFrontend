@@ -22,37 +22,40 @@ const AssignedSubjects = () => {
 
   return (
     <div className="p-4">
-      <h2 className="mb-4 fw-bold text-primary">All Subjects</h2>
-      <div className="table-responsive">
-        <table className="table table-bordered table-striped table-hover align-middle">
-          <thead className="table-light">
-            <tr>
-              <th scope="col">Sr No.</th>
-              <th scope="col">Subject Name</th>
-              <th scope="col">Semester</th>
-              <th scope="col">Department Name</th>
+      <h2 className="mb-4 fw-bold text-primary text-center">All Subjects</h2>
+    <div className="d-flex justify-content-center mt-4">
+  <div className="table-responsive" style={{ maxWidth: '1000px', width: '100%' }}>
+    <table className="table table-bordered table-striped table-hover align-middle">
+      <thead className="table-light">
+        <tr>
+          <th scope="col">Sr No.</th>
+          <th scope="col">Subject Name</th>
+          <th scope="col">Semester</th>
+          <th scope="col">Department Name</th>
+        </tr>
+      </thead>
+      <tbody>
+        {subjects.length > 0 ? (
+          subjects.map((item, index) => (
+            <tr key={item.subjectId}>
+              <th scope="row">{index + 1}</th>
+              <td>{item.subject}</td>
+              <td>{item.semId} Semester</td>
+              <td>{item.depname}</td>
             </tr>
-          </thead>
-          <tbody>
-            {subjects.length > 0 ? (
-              subjects.map((item, index) => (
-                <tr key={item.subjectId}>
-                  <th scope="row">{index + 1}</th>
-                  <td>{item.subject}</td>
-                  <td>{item.semId} Semester</td>
-                  <td>{item.depname}</td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="4" className="text-center text-muted">
-                  No subjects assigned.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+          ))
+        ) : (
+          <tr>
+            <td colSpan="4" className="text-center text-muted">
+              No subjects assigned.
+            </td>
+          </tr>
+        )}
+      </tbody>
+    </table>
+  </div>
+</div>
+
     </div>
   );
 };

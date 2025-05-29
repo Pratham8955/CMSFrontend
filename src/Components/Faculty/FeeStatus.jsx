@@ -67,8 +67,10 @@ const FeeStatus = () => {
     return <div className="fee-status-error alert alert-danger">{error}</div>;
 
   return (
-    <div className="fee-status-container">
-      <h2 className="fee-status-title">Fee Status</h2>
+ <div>
+            <h2 className="mb-4 fw-bold text-primary text-center">Fee Status</h2>
+     <div className="fee-status-container">
+
       <table className="fee-status-table table table-striped table-bordered">
         <thead className="thead-dark">
           <tr>
@@ -119,6 +121,7 @@ const FeeStatus = () => {
         </tbody>
       </table>
     </div>
+ </div>
   );
 };
 

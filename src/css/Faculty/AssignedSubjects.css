@@ -71,7 +71,7 @@
 .table tbody tr:hover {
   background: #e0f7fa;
   box-shadow: 0 10px 25px rgba(0, 150, 136, 0.3);
-  transform: translateY(-5px);
+  /* transform: translateY(-5px); */
 }
 
 .table tbody td, 

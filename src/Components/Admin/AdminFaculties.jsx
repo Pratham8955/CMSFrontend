@@ -17,11 +17,11 @@ const AdminFaculties = () => {
     deptId: "",
     image: null,
   });
+  const [existingImageName, setExistingImageName] = useState("");
   const [showForm, setShowForm] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editingId, setEditingId] = useState(null);
 
-  // New loading state
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -31,7 +31,9 @@ const AdminFaculties = () => {
 
   const fetchFaculties = async () => {
     try {
-      const res = await axios.get("https://localhost:7133/api/Faculties/GetFaculties");
+      const res = await axios.get(
+        "https://localhost:7133/api/Faculties/GetFaculties"
+      );
       if (res.data.success) {
         setFaculties(res.data.faculty || res.data.Faculty);
       } else {
@@ -45,7 +47,9 @@ const AdminFaculties = () => {
 
   const fetchDepartments = async () => {
     try {
-      const res = await axios.get("https://localhost:7133/api/Department/GetDepartment");
+      const res = await axios.get(
+        "https://localhost:7133/api/Department/GetDepartment"
+      );
       if (res.data.success) {
         setDepartments(res.data.department || []);
       }
@@ -58,6 +62,11 @@ const AdminFaculties = () => {
     const { name, value, type, files } = e.target;
     if (type === "file") {
       setFormData({ ...formData, image: files[0] });
+      if (files.length > 0) {
+        setExistingImageName(files[0].name);
+      } else {
+        setExistingImageName("");
+      }
     } else {
       setFormData({ ...formData, [name]: value });
     }
@@ -74,12 +83,13 @@ const AdminFaculties = () => {
     data.append("qualification", formData.qualification);
     data.append("experience", formData.experience);
     data.append("deptId", formData.deptId);
+
     if (formData.image) {
       data.append("facultyImg", formData.image);
     }
 
     try {
-      setLoading(true);  // Start loader
+      setLoading(true);
 
       if (isEditing) {
         const res = await axios.post(
@@ -99,7 +109,11 @@ const AdminFaculties = () => {
         );
 
         if (res.data.success) {
-          Swal.fire("Success", res.data.message || "Faculty added successfully!", "success");
+          Swal.fire(
+            "Success",
+            res.data.message || "Faculty added successfully!",
+            "success"
+          );
         } else {
           Swal.fire("Error", res.data.message || "Failed to add faculty.", "error");
         }
@@ -111,7 +125,7 @@ const AdminFaculties = () => {
       console.error(error);
       Swal.fire("Error", "Error submitting faculty form.", "error");
     } finally {
-      setLoading(false); // Stop loader
+      setLoading(false);
     }
   };
 
@@ -126,6 +140,7 @@ const AdminFaculties = () => {
       deptId: "",
       image: null,
     });
+    setExistingImageName("");
     setShowForm(false);
     setIsEditing(false);
     setEditingId(null);
@@ -142,6 +157,10 @@ const AdminFaculties = () => {
       deptId: faculty.deptId,
       image: null,
     });
+
+    // Set existing image filename here (adjust property name if different)
+    setExistingImageName(faculty.facultyImg || "");
+
     setEditingId(faculty.facultyId);
     setIsEditing(true);
     setShowForm(true);
@@ -183,11 +202,11 @@ const AdminFaculties = () => {
 
   return (
     <div className="admin-container">
-       {loading && (
-      <div className="loader-overlay">
-        <div className="loader-spinner"></div>
-      </div>
-    )}
+      {loading && (
+        <div className="loader-overlay">
+          <div className="loader-spinner"></div>
+        </div>
+      )}
       <h2 className="admin-title">Faculty Management</h2>
 
       {!showForm && (
@@ -217,8 +236,7 @@ const AdminFaculties = () => {
 
       {showForm && (
         <form onSubmit={handleSubmit} className="form-container">
-          {/* Show loader if loading */}
-         {loading && <div className="loader"></div>}
+          {loading && <div className="loader"></div>}
 
           <div className="form-group">
             <label>Name:</label>
@@ -330,6 +348,11 @@ const AdminFaculties = () => {
               className="form-input"
               disabled={loading}
             />
+            {existingImageName && (
+              <small style={{ display: "block", marginTop: "4px", color: "#555" }}>
+                Current Image: {existingImageName}
+              </small>
+            )}
           </div>
 
           <div className="button-group">

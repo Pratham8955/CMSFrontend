@@ -123,7 +123,7 @@ const FacultyLayout = () => {
             onClick={handleLogout}
             title={isSidebarOpen ? "" : "Logout"}
           >
-            <button className="btn nav-btn d-flex align-items-center w-100 text-start text-danger fw-semibold">
+            <button className="btn nav-btn d-flex align-items-center w-100 text-start text-danger fw-semibold p-3">
               <span className="me-3 icon fs-5">
                 <FaSignOutAlt />
               </span>

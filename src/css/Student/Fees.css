@@ -53,6 +53,7 @@
 .value {
   flex-grow: 1;
   color: #0e5cadcc;
+  text-transform: capitalize;
 }
 
 .receipt-table {

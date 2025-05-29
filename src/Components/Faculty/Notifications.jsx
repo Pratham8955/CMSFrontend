@@ -207,7 +207,8 @@ const Notifications = () => {
 
   return (
     <div className="notification-container">
-      <div className="notification-header">Notification Center</div>
+                  <h2 className="mb-4 fw-bold text-primary text-center notification-header">Notification Center</h2>
+
 
       {loading ? (
         <div className="text-center">

@@ -173,69 +173,72 @@ const ContentUpload = () => {
   };
 
   return (
-    <div className="container py-5">
-      <div className="d-flex justify-content-between align-items-center mb-4">
-        <h2 className="fw-bold text-primary">Uploaded Course Contents</h2>
-        <button className="btn btn-success fw-semibold" onClick={() => showForm("add")}>
-          + Add
-        </button>
-      </div>
-
-      {contents.length === 0 ? (
-        <p className="text-center">No content uploaded yet.</p>
-      ) : (
-        <div className="card shadow-sm border-0 rounded-4 p-4" > 
-          <div className="table-responsive">
-            <table className="table table-bordered table-hover align-middle">
-              <thead className="table-primary text-center">
-                <tr>
-                  <th>Title</th>
-                  <th>Description</th>
-                  <th>Subject</th>
-                  <th>PDF</th>
-                  <th>Upload Date</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {contents.map(content => (
-                  <tr key={content.contentId}>
-                    <td>{content.title}</td>
-                    <td>{content.description}</td>
-                    <td>{content.subjectName}</td>
-                    <td className="text-center">
-                      <a
-                        href={`https://localhost:7133/${content.filePath}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="btn btn-sm btn-outline-primary"
-                      >
-                        View PDF
-                      </a>
-                    </td>
-                    <td>{new Date(content.uploadDate).toLocaleDateString()}</td>
-                    <td className="text-center">
-                      <button
-                        className="btn btn-sm btn-warning me-2"
-                        onClick={() => showForm("edit", content)}
-                      >
-                        Edit
-                      </button>
-                      <button
-                        className="btn btn-sm btn-danger"
-                        onClick={() => handleDelete(content.contentId)}
-                      >
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
+  <div className="d-flex justify-content-center">
+  <div className="container " style={{ maxWidth: '1100px', width: '100%' }}>
+    <div className="d-flex justify-content-between align-items-center mb-4">
+      <h2 className="fw-bold text-primary">Uploaded Course Contents</h2>
+      <button className="btn btn-success fw-semibold" onClick={() => showForm("add")}>
+        + Add
+      </button>
     </div>
+
+    {contents.length === 0 ? (
+      <p className="text-center">No content uploaded yet.</p>
+    ) : (
+      <div className="card shadow-sm border-0 rounded-4 p-4">
+        <div className="table-responsive">
+          <table className="table table-bordered table-hover align-middle">
+            <thead className="table-primary text-center">
+              <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Subject</th>
+                <th>PDF</th>
+                <th>Upload Date</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {contents.map((content) => (
+                <tr key={content.contentId}>
+                  <td>{content.title}</td>
+                  <td>{content.description}</td>
+                  <td>{content.subjectName}</td>
+                  <td className="text-center">
+                    <a
+                      href={`https://localhost:7133/${content.filePath}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn btn-sm btn-outline-primary"
+                    >
+                      View PDF
+                    </a>
+                  </td>
+                  <td>{new Date(content.uploadDate).toLocaleDateString()}</td>
+                  <td className="text-center">
+                    <button
+                      className="btn btn-sm btn-warning me-2"
+                      onClick={() => showForm("edit", content)}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className="btn btn-sm btn-danger"
+                      onClick={() => handleDelete(content.contentId)}
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    )}
+  </div>
+</div>
+
   );
 };
 

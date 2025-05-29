@@ -4,6 +4,8 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Swal from "sweetalert2";
 import "../../css/Admin/AdminLayout.css";
 import 'sweetalert2/dist/sweetalert2.min.css';
+import 'bootstrap-icons/font/bootstrap-icons.css';
+
 
 
 const AdminLayout = () => {
@@ -14,15 +16,15 @@ const AdminLayout = () => {
   const toggleSidebar = () => setSidebarOpen(!isSidebarOpen);
 
   const handleLogout = () => {
-    Swal.fire({
-      title: "Are you sure?",
-      text: "You will be logged out from the Admin Panel.",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#d33",
-      cancelButtonColor: "#3085d6",
-      confirmButtonText: "Yes, log me out",
-    }).then((result) => {
+   Swal.fire({
+  title: "Are you sure?",
+  text: "You will be logged out from the Admin Panel.",
+  icon: "warning",
+  showCancelButton: true,
+  confirmButtonColor: "#d33",
+  cancelButtonColor: "#3085d6",
+  confirmButtonText: "Yes, log me out",
+}).then((result) => {
       if (result.isConfirmed) {
         localStorage.clear();
         navigate("/AdminandFacultyLogin");
@@ -61,7 +63,7 @@ const AdminLayout = () => {
           {menuItems.map((item, idx) => (
             <li
               key={idx}
-              className={`nav-item mb-1 rounded ${location.pathname === item.path ? "active-link" : ""}`}
+              className={`nav-item rounded ${location.pathname === item.path ? "active-link" : ""}`}
               onClick={() => navigate(item.path)}
               title={isSidebarOpen ? "" : item.label}
             >
@@ -77,7 +79,8 @@ const AdminLayout = () => {
             onClick={handleLogout}
             title={isSidebarOpen ? "" : "Logout"}
           >
-            <button className=" nav-btn d-flex align-items-center w-100 text-start text-danger fw-semibold">
+            <button className="btn nav-btn d-flex align-items-center w-100 text-start text-danger fw-semibold p-3">
+
               <span className="me-3 icon fs-5"><i className="bi bi-box-arrow-right"></i></span>
               {isSidebarOpen && <span>Logout</span>}
             </button>
