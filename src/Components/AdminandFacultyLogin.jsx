@@ -63,7 +63,7 @@ const AdminandFacultyLogin = () => {
             </div>
 
             <div className="col-md-6 p-4 d-flex align-items-center justify-content-center">
-              <form onSubmit={handleSubmit} className="student-login-form w-100">
+              <form onSubmit={handleSubmit} className="admin-login-form w-100">
                 <h2 className="text-center mb-4 text-primary fw-bold">👨‍🏫 Admin / Faculty Login</h2>
 
                 <div className="form-group mb-3">

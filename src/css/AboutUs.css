@@ -18,9 +18,7 @@
   /* transition: transform 0.3s ease; */
 }
 
-.section:hover {
-  transform: translateY(-5px);
-}
+
 
 .section.reverse {
   flex-direction: row-reverse;

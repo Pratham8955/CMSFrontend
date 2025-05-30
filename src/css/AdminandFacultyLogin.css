@@ -1,71 +1,60 @@
-/* Wrapper */
 .admin-faculty-login-container {
-  background-color: #f8f9fa;
-  padding: 40px 0;
+    background: linear-gradient(to right, #f8f9fa, #e3f2fd);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  .admin-faculty-login-img {
+    width: 80%;
+    max-height: 560px;
+    object-fit: contain;
+    border-radius: 20px;
+  }
+  
+  .admin-faculty-login-form {
+    max-width: 400px;
+    width: 100%;
+    background: #ffffff;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  }
+  
+  .admin-faculty-login-input {
+    padding: 16px;
+    font-size: 16px;
+    border-radius: 10px;
+    border: none;
+    background-color: #f1f3f5;
+  }
+  
+  .admin-faculty-login-button {
+    background-color: #4285F4;
+    color: #fff;
+    font-size: 16px;
+    padding: 16px;
+    border-radius: 10px;
+    font-weight: 600;
+    width: 100%;
+    border: none;
+    transition: 0.3s ease;
+  }
+  .admin-login-form h2 {
+  font-size: 5px !important;
 }
 
-/* Image */
-.admin-faculty-login-img {
-  width: 100%;
-  max-width: 500px;
-  height: auto;
-  object-fit: contain;
-}
-
-/* Form card */
-.admin-faculty-login-form {
-  border-radius: 20px;
-  padding: 40px 30px;
-  background-color: #ffffff;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-/* Inputs */
-.admin-faculty-login-input {
-  padding: 12px 15px;
-  font-size: 16px;
-  border-radius: 12px;
-  background-color: #f1f3f5;
-  border: 1px solid #ced4da;
-  transition: all 0.3s;
-}
-
-.admin-faculty-login-input:focus {
-  border-color: #052864;
-  box-shadow: 0 0 0 0.2rem rgba(122, 146, 184, 0.25);
-}
-
-/* Button */
-.admin-faculty-login-button {
-  background-color: #4285f4;
-  color: #fff;
-  font-size: 16px;
-  padding: 12px 24px;
-  border-radius: 12px;
-  font-weight: 600;
-  width: 100%;
-  border: none;
-  transition: background-color 0.3s ease;
-}
-
-.admin-faculty-login-button:hover {
-  background-color: #3367d6;
-}
-
-/* Forgot password link */
-.student-login-links a {
-  color: #218deb;
-  font-size: 0.9rem;
-  text-decoration: none;
-  white-space: nowrap;
-  cursor: pointer;
-}
-
-.student-login-links a:hover {
-  text-decoration: underline;
-}
-
-/* Spinner overlay */
-.z-3 {
-  z-index: 10 !important;
-}
+  .admin-faculty-login-button:hover {
+    background-color: #3367D6;
+  }
+  
+  .admin-faculty-login-links {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1rem;
+  }
+  
+  .admin-faculty-login-links a {
+    color: #6c757d;
+    font-size: 0.9rem;
+    text-decoration: none;
+  }
+  

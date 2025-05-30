@@ -64,6 +64,9 @@
 .forgot-password-link:hover {
   text-decoration: underline;
 }
+.student-login-form h2 {
+  font-size: 30px !important; /* Tamne jem size joie te ahiya mokli sako cho */
+}
 
 /* Spinner overlay */
 .loading-overlay {

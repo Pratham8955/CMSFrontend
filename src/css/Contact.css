@@ -1,95 +1,170 @@
-.map-wrapper {
-  position: relative;
-  height: 100vh;
-  width: 100vw;
-}
+/* Contact.css */
 
-.full-map {
+body, html {
   height: 100%;
-  width: 100%;
-  z-index: 1;
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f8f9fa;
 }
 
-.form-overlay {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  z-index: 1000;
-  background: rgba(255, 255, 255, 0.9);
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-  width: 280px;
-  max-width: 90vw;
-  box-sizing: border-box;
+/* Left map column */
+.col-md-6:first-child {
+  box-shadow: inset -8px 0 15px -8px rgba(0,0,0,0.1);
 }
 
-.contact-form {
-  display: flex;
+/* Right side wrapper */
+.col-md-6.bg-light {
+  background-color: #bfd1f4 !important;
+  padding: 3rem !important;
+  display: flex !important;
   flex-direction: column;
-  gap: 10px;
+  justify-content: center;
+  align-items: center;
 }
 
-.contact-form input {
-  padding: 10px;
-  font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 8px;
+/* Heading */
+h2 {
+  font-weight: 700;
+  font-size: 2.5rem;
+  color: #0d6efd;
+  margin-bottom: 2rem;
+  letter-spacing: 1px;
 }
 
-.contact-form button {
-  padding: 10px;
-  background-color: #007bff;
-  color: white;
+/* Contact form */
+.contact-form {
+  background-color: #baacf2;
+  border-radius: 15px;
+  box-shadow: 0 0 25px rgba(2, 2, 2, 0.15);
+  padding: 2rem;
+  width: 100%;
+  max-width: 550px;
+  transition: box-shadow 0.3s ease;
+}
+
+.contact-form:hover {
+  box-shadow: 0 0 40px rgb(13 110 253 / 0.3);
+}
+
+/* Inputs and select */
+.contact-form input.form-control,
+.contact-form select.form-select,
+.contact-form textarea.form-control {
+  border: 1.5px solid #0b3660;
+  padding: 0.75rem 1.5rem;
   font-size: 1rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.contact-form input.form-control:focus,
+.contact-form select.form-select:focus,
+.contact-form textarea.form-control:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 8px rgb(13 110 253 / 0.25);
+  outline: none;
+}
+
+/* Rounded pills style */
+.contact-form input.form-control.rounded-pill,
+.contact-form select.form-select.rounded-pill {
+  border-radius: 50px !important;
+}
+
+/* Rounded textarea */
+.contact-form textarea.form-control.rounded {
+  border-radius: 15px !important;
+}
+
+/* Button */
+.contact-form button.btn-primary {
+  background-color: #0d6efd;
   border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+  font-weight: 600;
+  font-size: 1.1rem;
+  padding: 0.75rem 0;
+  border-radius: 50px;
+  box-shadow: 0 4px 12px rgb(13 110 253 / 0.25);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-.contact-form button:hover {
-  background-color: #0056b3;
+.contact-form button.btn-primary:hover {
+  background-color: #0b5ed7;
+  box-shadow: 0 6px 18px rgb(11 94 215 / 0.4);
 }
 
-.direction-link {
-  display: inline-block;
-  margin-top: 10px;
-  padding: 10px;
-  background-color: #28a745;
-  color: white;
-  text-align: center;
-  text-decoration: none;
-  border-radius: 8px;
-  transition: background-color 0.3s ease;
+/* Contact info below form */
+.col-md-6.bg-light > div.mb-4.text-center p {
+  font-size: 1rem;
+  margin: 0.4rem 0;
+  color: #212529;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.direction-link:hover {
-  background-color: #218838;
+.col-md-6.bg-light > div.mb-4.text-center p svg {
+  font-size: 1.3rem;
 }
 
-/* Responsive adjustments */
-@media (max-width: 600px) {
-  .form-overlay {
-    position: fixed;
-    top: auto;
-    bottom: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 95%;
-    padding: 15px;
-    border-radius: 10px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+/* Social icons container */
+.col-md-6.bg-light > div.mb-4.text-center .d-flex a {
+  transition: transform 0.2s ease;
+}
+
+.col-md-6.bg-light > div.mb-4.text-center .d-flex a:hover {
+  transform: scale(1.2);
+}
+
+/* Social icon colors */
+.text-primary {
+  color: #0d6efd !important;
+}
+.text-danger {
+  color: #dc3545 !important;
+}
+.text-info {
+  color: #0dcaf0 !important;
+}
+
+/* Phone and email row */
+.contact-row p {
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+  color: #212529;
+  font-size: 1rem;
+}
+
+.contact-row p svg {
+  font-size: 1.3rem;
+}
+
+/* Responsive tweaks */
+@media (max-width: 767.98px) {
+  .col-md-6:first-child {
+    height: 300px !important;
   }
-
-  .contact-form input,
-  .contact-form button,
-  .direction-link {
-    font-size: 0.9rem;
-    padding: 8px;
+  .col-md-6.bg-light {
+    padding: 2rem !important;
   }
-
   .contact-form {
-    gap: 8px;
+    padding: 1.5rem;
   }
+  h2 {
+    font-size: 2rem;
+  }
+}
+
+/* Stack phone & email on small screens */
+@media (max-width: 576px) {
+  .contact-row {
+    flex-direction: column !important;
+    gap: 0.5rem !important;
+  }
+}
+.contact-row p {
+  margin-bottom: 0;
+  font-size: 1rem;
+  white-space: nowrap;
 }
