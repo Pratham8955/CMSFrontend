@@ -97,7 +97,7 @@ const AdminFaculties = () => {
           data
         );
 
-        if (res.status === 204) {
+        if (res.status === 200) {
           Swal.fire("Success", "Faculty updated successfully!", "success");
         } else {
           Swal.fire("Error", "Failed to update faculty.", "error");

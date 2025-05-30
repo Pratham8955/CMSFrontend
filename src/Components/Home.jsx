@@ -1,20 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import '../css/Home.css';
-import 'bootstrap-icons/font/bootstrap-icons.css'; // ✅ Bootstrap Icons
+import 'bootstrap-icons/font/bootstrap-icons.css';
 import { NavLink, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
 const Home = () => {
   const [departments, setDepartments] = useState([]);
   const [students, setStudents] = useState([]);
-  const [faculties, setFaculties] = useState([]);        // New state for faculties
+  const [faculties, setFaculties] = useState([]);
+  const [headFaculties, setHeadFaculties] = useState([]); // only HoDs
   const [searchTerm, setSearchTerm] = useState('');
   const [matchedDept, setMatchedDept] = useState(null);
   const [error, setError] = useState(null);
   const [loadingDepts, setLoadingDepts] = useState(true);
   const [loadingStudents, setLoadingStudents] = useState(true);
-  const [loadingFaculties, setLoadingFaculties] = useState(true);  // Loading state for faculties
+  const [loadingFaculties, setLoadingFaculties] = useState(true);
   const navigate = useNavigate();
+
+  // Fetch departments
   useEffect(() => {
     fetch('https://localhost:7133/api/Department/GetDepartment')
       .then(res => res.json())
@@ -32,6 +35,7 @@ const Home = () => {
       });
   }, []);
 
+  // Fetch students
   useEffect(() => {
     fetch('https://localhost:7133/api/Student/GetStudents')
       .then(res => res.json())
@@ -49,7 +53,7 @@ const Home = () => {
       });
   }, []);
 
-  // New useEffect to fetch faculties
+  // Fetch faculties
   useEffect(() => {
     fetch('https://localhost:7133/api/Faculties/GetFaculties')
       .then(res => res.json())
@@ -67,24 +71,33 @@ const Home = () => {
       });
   }, []);
 
+  // Derive only those faculties whose ID matches a headOfDept
+  useEffect(() => {
+    if (!loadingDepts && !loadingFaculties) {
+      const headIds = departments
+        .map(dept => dept.headOfDept)
+        .filter(id => id != null);
+      setHeadFaculties(faculties.filter(f => headIds.includes(f.facultyId)));
+    }
+  }, [departments, faculties, loadingDepts, loadingFaculties]);
+
+  // Search‐to‐dept logic
   useEffect(() => {
     const trimmed = searchTerm.trim().toLowerCase();
     if (!trimmed) {
       setMatchedDept(null);
       return;
     }
-
-    const found = departments.find(dept =>
-      dept.deptName.toLowerCase().includes(trimmed)
+    const found = departments.find(d =>
+      d.deptName.toLowerCase().includes(trimmed)
     );
     setMatchedDept(found || null);
   }, [searchTerm, departments]);
 
-  const getStudentCount = (deptId) =>
-    students.filter(student => student.deptId === deptId).length;
+  const getStudentCount = deptId =>
+    students.filter(s => s.deptId === deptId).length;
 
-  // ✅ Bootstrap icon mapping based on department name
-  const getIconClass = (deptName) => {
+  const getIconClass = deptName => {
     const name = deptName.toLowerCase();
     if (name.includes('bca')) return 'bi bi-pc-display';
     if (name.includes('b.com')) return 'bi bi-currency-dollar';
@@ -93,26 +106,25 @@ const Home = () => {
     if (name.includes('mba')) return 'bi bi-bar-chart-line-fill';
     return 'bi bi-building';
   };
- const handleSearchClick = () => {
-  const trimmed = searchTerm.trim().toLowerCase();
-  if (!trimmed) return;
 
-  const found = departments.find(dept =>
-    dept.deptName.toLowerCase().includes(trimmed)
-  );
+  const handleSearchClick = () => {
+    const trimmed = searchTerm.trim().toLowerCase();
+    if (!trimmed) return;
+    const found = departments.find(d =>
+      d.deptName.toLowerCase().includes(trimmed)
+    );
+    if (!found) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'No department found!',
+        confirmButtonColor: '#3085d6',
+      });
+      return;
+    }
+    navigate(`/Courses?search=${encodeURIComponent(trimmed)}`);
+  };
 
-  if (!found) {
-    Swal.fire({
-      icon: 'error',
-      title: 'Oops...',
-      text: 'No department found!',
-      confirmButtonColor: '#3085d6',
-    });
-    return;
-  }
-
-  navigate(`/Courses?search=${encodeURIComponent(trimmed)}`);
-};
   return (
     <div className="home-container">
       <div className="home-content">
@@ -122,26 +134,24 @@ const Home = () => {
           Where excellence meets opportunity! At College, we are committed to nurturing talent,
           fostering innovation, and empowering students for a bright future.
         </p>
-   <div className="home-search">
+        <div className="home-search">
           <input
             type="text"
             placeholder="Courses"
             className="home-input"
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
-            onKeyDown={e => {
-              if(e.key === 'Enter') handleSearchClick();
-            }}
+            onKeyDown={e => e.key === 'Enter' && handleSearchClick()}
           />
-          <button className="home-button" onClick={handleSearchClick}>Search</button>
+          <button className="home-button" onClick={handleSearchClick}>
+            Search
+          </button>
         </div>
-
-        {error && <p style={{ color: 'red', marginTop: '10px' }}>Error: {error}</p>}
-
+        {error && <p style={{ color: 'red', marginTop: 10 }}>Error: {error}</p>}
       </div>
 
       <div className="home-image-container">
-        <img src="campus.jpg" alt="Campus" />
+        <img src="campus.jpg" alt="Campus"/>
       </div>
 
       {/* Undergraduate Programs */}
@@ -149,160 +159,140 @@ const Home = () => {
         <h3>Invest in Your Future</h3>
         <p>
           Embark on your academic journey at ICT HOME and explore our diverse undergraduate and postgraduate programs! We offer:{' '}
-          {
-            loadingDepts ? (
-              <span>Loading departments...</span>
-            ) : (
-              departments.map((dept, index) => (
-                <span key={dept.deptId}>
-                  <strong>{dept.deptName}</strong>{index < departments.length - 1 ? ', ' : '.'}
+          {loadingDepts
+            ? 'Loading departments...'
+            : departments.map((d, i) => (
+                <span key={d.deptId}>
+                  <strong>{d.deptName}</strong>
+                  {i < departments.length - 1 ? ', ' : '.'}
                 </span>
-              ))
-            )
-          } Choose your path and become a well-equipped professional in today's dynamic world.
+              ))}
         </p>
 
-        {/* Student Count Cards with Icons */}
+        {/* Student Count Cards */}
         <div className="student-count-cards">
-          {
-            loadingStudents ? (
-              <p>Loading student data...</p>
-            ) : (
-              <>
-                {departments.map(dept => (
-                  <div key={dept.deptId} className="student-card">
-                    <div className="card-icon">
-                      <i className={getIconClass(dept.deptName)}></i>
-                    </div>
-                    <p><strong>{dept.deptName} : {getStudentCount(dept.deptId)} Students</strong></p>
-                  </div>
-                ))}
-
-                <div className="student-card">
+          {loadingStudents ? (
+            <p>Loading student data...</p>
+          ) : (
+            <>
+              {departments.map(d => (
+                <div key={d.deptId} className="student-card">
                   <div className="card-icon">
-                    <i className="bi bi-globe2"></i>
+                    <i className={getIconClass(d.deptName)}></i>
                   </div>
-                  <p><strong>Total : {students.length} Students</strong></p>
+                  <p>
+                    <strong>
+                      {d.deptName} : {getStudentCount(d.deptId)} Students
+                    </strong>
+                  </p>
                 </div>
-              </>
-            )
-          }
+              ))}
+              <div className="student-card">
+                <div className="card-icon">
+                  <i className="bi bi-globe2"></i>
+                </div>
+                <p>
+                  <strong>Total : {students.length} Students</strong>
+                </p>
+              </div>
+            </>
+          )}
         </div>
 
-        {/* Our Highlights Section */}
+        {/* Highlights */}
         <div className="home-highlights">
           <h2 className="highlight-title">Our Highlights</h2>
           <div className="highlight-cards">
             <div className="highlight-card">
               <h4>UGC & AICTE Accredited</h4>
-              <p>
-                We are an AICTE recognized and UGC-affiliated university, further processing for NAAC accreditation.
-              </p>
+              <p>We are an AICTE recognized and UGC-affiliated university, further processing for NAAC accreditation.</p>
             </div>
             <div className="highlight-card">
               <h4>INFRASTRUCTURE</h4>
-              <p>
-                We have a wide range of facilities that are open to students, staff, visitors, and the local community.
-              </p>
+              <p>We have a wide range of facilities that are open to students, staff, visitors, and the local community.</p>
             </div>
             <div className="highlight-card">
               <h4>STUDENT PROGRESSION & SUPPORT</h4>
-              <p>
-                We provide comprehensive support to students for the optimal progression of their skills during these pandemic times.
-              </p>
+              <p>We provide comprehensive support to students for the optimal progression of their skills during these pandemic times.</p>
             </div>
           </div>
         </div>
 
-        {/* ====== Faculty List Section ====== */}
-        <div className="faculty-list-section" style={{ marginTop: '40px' }}>
-          <h2>Our Faculty Members</h2>
-
-          {loadingFaculties ? (
+        {/* ====== Faculty List Section (HoDs only) ====== */}
+        <div className="faculty-list-section" style={{ marginTop: 40 }}>
+          <h2>Our Department Heads</h2>
+          {loadingDepts || loadingFaculties ? (
             <p>Loading faculty data...</p>
-          ) : faculties.length === 0 ? (
-            <p>No faculties found.</p>
+          ) : headFaculties.length === 0 ? (
+            <p>No department heads found.</p>
           ) : (
-            <div className="faculty-cards" style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
-              {faculties.map(faculty => (
+            <div className="faculty-cards" style={{ display: 'flex', flexWrap: 'wrap', gap: 20 }}>
+              {headFaculties.map(f => (
                 <div
-                  key={faculty.facultyId}
+                  key={f.facultyId}
                   className="faculty-card"
                   style={{
                     border: '1px solid #ccc',
-                    borderRadius: '10px',
-                    padding: '15px',
-                    width: '250px',
+                    borderRadius: 10,
+                    padding: 15,
+                    width: 250,
                     boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
                     textAlign: 'center',
                   }}
                 >
                   <img
-                    src={`https://localhost:7133/Uploads/Faculty/${faculty.facultyImg}`}
-                    alt={faculty.facultyName}
-                    style={{ width: '150px', height: '150px', objectFit: 'cover', borderRadius: '50%', marginBottom: '10px' }}
+                    src={`https://localhost:7133/Uploads/Faculty/${f.facultyImg}`}
+                    alt={f.facultyName}
+                    style={{ width: 150, height: 150, objectFit: 'cover', borderRadius: '50%', marginBottom: 10 }}
                   />
-                  <h3 style={{ marginBottom: '5px' }}>{faculty.facultyName}</h3>
-                  <p style={{ margin: '5px 0' }}><strong>Email:</strong> {faculty.email}</p>
-                  <p style={{ margin: '5px 0' }}><strong>Qualification:</strong> {faculty.qualification}</p>
-                  <p style={{ margin: '5px 0' }}><strong>Experience:</strong> {faculty.experience} years</p>
+                  <h3 style={{ marginBottom: 5 }}>{f.facultyName}</h3>
+                  <p style={{ margin: '5px 0' }}><strong>Email:</strong> {f.email}</p>
+                  <p style={{ margin: '5px 0' }}><strong>Qualification:</strong> {f.qualification}</p>
+                  <p style={{ margin: '5px 0' }}><strong>Experience:</strong> {f.experience} years</p>
                 </div>
               ))}
             </div>
           )}
         </div>
+
         <h2 className="highlight-title1">Mission to Empowering dreams and Transforming lives.</h2>
-        <div style={{ textAlign: 'center', marginTop: '20px' }}>
+        <div style={{ textAlign: 'center', marginTop: 20 }}>
           <button
             onClick={() => navigate('/login')}
             style={{
               padding: '10px 25px',
-              fontSize: '16px',
+              fontSize: 16,
               backgroundColor: '#3498db',
               color: '#fff',
               border: 'none',
-              borderRadius: '8px',
+              borderRadius: 8,
               cursor: 'pointer',
-              boxShadow: '0 2px 6px rgba(0, 0, 0, 0.2)',
+              boxShadow: '0 2px 6px rgba(0,0,0,0.2)',
               transition: 'background-color 0.3s',
             }}
-            onMouseOver={(e) => (e.target.style.backgroundColor = '#2980b9')}
-            onMouseOut={(e) => (e.target.style.backgroundColor = '#3498db')}
+            onMouseOver={e => (e.target.style.backgroundColor = '#2980b9')}
+            onMouseOut={e => (e.target.style.backgroundColor = '#3498db')}
           >
             Let's Get Started...
           </button>
         </div>
+
         <div className="home-image-container1">
           <img src="facimg.jpg" alt="facimg" />
         </div>
+
+        {/* Footer */}
         <div className="footer">
           <div className="footer-left">
             <h2>Let's keep in touch!</h2>
             <h9>Opening doors through literacy. Don’t be mean behind the screen</h9>
           </div>
-
           <div className="footer-right">
             <ul className="navbar-nav">
-              <li>
-                <NavLink to="/" className="nav-link">
-                  <i className="bi bi-house-door me-1"></i> Home
-                </NavLink>
-              </li>
-              <li >
-                <NavLink to="/courses" className="nav-link">
-                  <i className="bi bi-check2-square me-1"></i> Courses
-                </NavLink>
-              </li>
-              <li>
-                <NavLink to="/contact" className="nav-link">
-                  <i className="bi bi-envelope me-1"></i> Contact Us
-                </NavLink>
-              </li>
-              <li>
-                <NavLink to="/aboutUs" className="nav-link">
-                  <i className="bi bi-info-circle me-1"></i> About Us
-                </NavLink>
-              </li>
+              <li><NavLink to="/" className="nav-link"><i className="bi bi-house-door me-1"></i> Home</NavLink></li>
+              <li><NavLink to="/courses" className="nav-link"><i className="bi bi-check2-square me-1"></i> Courses</NavLink></li>
+              <li><NavLink to="/contact" className="nav-link"><i className="bi bi-envelope me-1"></i> Contact Us</NavLink></li>
+              <li><NavLink to="/aboutUs" className="nav-link"><i className="bi bi-info-circle me-1"></i> About Us</NavLink></li>
             </ul>
           </div>
         </div>

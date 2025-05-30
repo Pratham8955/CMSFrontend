@@ -163,6 +163,19 @@
   font-size: 1.3rem;
   color: #34118c;
 }
+.slick-slide {
+  display: flex !important;
+  justify-content: center;
+}
+
+.card {
+  transition: transform 0.3s ease-in-out;
+}
+
+.card:hover {
+  transform: scale(1.05);
+}
+
 .footer {
  
   display: flex;
@@ -173,6 +186,9 @@
   background: linear-gradient(to bottom right, #8b9dc3, #3b5998);
   padding: 30px;
   margin-bottom: 20px;
+}
+.footer h2 {
+  color:black;
 }
 
 .footer-left {
