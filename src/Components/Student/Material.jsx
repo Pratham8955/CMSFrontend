@@ -1,115 +1,91 @@
 import React, { useEffect, useState } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import axios from 'axios';
-import "../../css/Student/Material.css"
+import "../../css/Student/Material.css";
+
 const Material = () => {
-  
   const [subjects, setSubjects] = useState([]);
   const [studentId, setStudentId] = useState(null);
   const [courseContents, setCourseContents] = useState([]);
-  const [expandedSubjectId, setExpandedSubjectId] = useState(null);
+  const [expandedId, setExpandedId] = useState(null);
 
   useEffect(() => {
-    const fetchStudentAndSubjects = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        if (!token) return;
+    const fetchStudent = async () => {
+      const token = localStorage.getItem('token');
+      if (!token) return;
 
-        const decoded = jwtDecode(token);
-        const id = decoded.StudentUserId;
-        setStudentId(id);
+      const decoded = jwtDecode(token);
+      const id = decoded.StudentUserId;
+      setStudentId(id);
 
-        const studentRes = await axios.get(`https://localhost:7133/api/Student/getStudentsById/${id}`);
-        const studentData = studentRes.data?.student?.[0];
+      const res = await axios.get(`https://localhost:7133/api/Student/getStudentsById/${id}`);
+      const student = res.data.student[0];
 
-        if (studentData) {
-          const subjectRes = await axios.get(
-            `https://localhost:7133/api/Subject/GetSubjectsByStudent/${studentData.deptId}/${studentData.currentSemester}`
-          );
-          setSubjects(subjectRes.data?.subject || []);
-        }
-      } catch (error) {
-        console.error('Error:', error);
+      if (student) {
+        const subjectsRes = await axios.get(
+          `https://localhost:7133/api/Subject/GetSubjectsByStudent/${student.deptId}/${student.currentSemester}`
+        );
+        setSubjects(subjectsRes.data.subject || []);
       }
     };
 
-    fetchStudentAndSubjects();
+    fetchStudent();
   }, []);
 
-  const fetchCourseContents = async () => {
-    try {
-      const res = await axios.get(`https://localhost:7133/api/CourseContent/GetByIdforstudent/${studentId}`);
-      setCourseContents(res.data?.content || []);
-    } catch (error) {
-      console.error('Content error:', error);
-    }
+  const fetchContents = async () => {
+    const res = await axios.get(`https://localhost:7133/api/CourseContent/GetByIdforstudent/${studentId}`);
+    setCourseContents(res.data.content || []);
   };
 
-  const handleToggle = (subjectId) => {
-    setExpandedSubjectId(expandedSubjectId === subjectId ? null : subjectId);
-    if (courseContents.length === 0) fetchCourseContents();
+  const toggleCard = (subjectId) => {
+    setExpandedId(expandedId === subjectId ? null : subjectId);
+    if (courseContents.length === 0) fetchContents();
   };
 
-  const getContentForSubject = (subjectId) =>
-    courseContents.filter((content) => content.subjectId === subjectId);
-
-  const getFullFileUrl = (filePath) => `https://localhost:7133/${filePath}`;
+  const getSubjectContents = (id) => courseContents.filter((c) => c.subjectId === id);
+  const getFullUrl = (path) => `https://localhost:7133/${path}`;
 
   return (
-    
-    <div className="container my-5">
-      <div className="material-header">
-        <h2>📘 Course Materials</h2>
-        <p className="text-muted">Click on a subject to view uploaded course content.</p>
+    <div className="container py-5">
+      <div className="text-center mb-4">
+        <h1 className="display-6 fw-bold text-dark">📘 Course Materials</h1>
+        <p className="text-muted">Access your study materials by subject</p>
       </div>
 
-      {subjects.length > 0 ? (
-        <div className="accordion" id="materialAccordion">
-          {subjects.map((subject, index) => (
-            <div className="accordion-item custom-card" key={subject.subjectId}>
-              <h2 className="accordion-header" id={`heading-${index}`}>
-                <button
-                  className={`accordion-button ${expandedSubjectId === subject.subjectId ? '' : 'collapsed'}`}
-                  onClick={() => handleToggle(subject.subjectId)}
-                  type="button"
-                >
-                  {subject.subjectName}
-                </button>
-              </h2>
-              <div
-                id={`collapse-${index}`}
-                className={`accordion-collapse collapse ${expandedSubjectId === subject.subjectId ? 'show' : ''}`}
-              >
-                <div className="accordion-body">
-                  {getContentForSubject(subject.subjectId).length > 0 ? (
-                    <ul className="list-group list-group-flush">
-                      {getContentForSubject(subject.subjectId).map((content, idx) => (
-                        <li className="list-group-item d-flex justify-content-between align-items-center" key={idx}>
-                          <span>{content.title}</span>
-                          <a
-                            className="btn btn-sm view-btn"
-                            href={getFullFileUrl(content.filePath)}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            View PDF
-                          </a>
+      <div className="row g-4">
+        {subjects.map((subj) => {
+          const files = getSubjectContents(subj.subjectId);
+          const isExpanded = expandedId === subj.subjectId;
+
+          return (
+            <div className="col-md-6 col-lg-4" key={subj.subjectId}>
+              <div className={`material-card card p-3 ${isExpanded ? 'active' : ''}`} onClick={() => toggleCard(subj.subjectId)}>
+                <div className="card-body">
+                  <h5 className="card-title">{subj.subjectName}</h5>
+                  <div className="d-flex justify-content-between align-items-center">
+                    <span className="badge bg-primary">{files.length} Files</span>
+                    <span className="text-muted small">{isExpanded ? "Hide" : "View"}</span>
+                  </div>
+
+                  {isExpanded && (
+                    <ul className="list-group mt-3">
+                      {files.length > 0 ? files.map((file, index) => (
+                        <li key={index} className="list-group-item d-flex justify-content-between align-items-center">
+                          {file.title}
+                          <a href={getFullUrl(file.filePath)} target="_blank" rel="noreferrer" className="btn btn-sm btn-outline-primary">Open</a>
                         </li>
-                      ))}
+                      )) : <li className="list-group-item text-muted">No materials uploaded</li>}
                     </ul>
-                  ) : (
-                    <p className="text-muted">No content uploaded yet.</p>
                   )}
                 </div>
               </div>
             </div>
-          ))}
-        </div>
-      ) : (
-        <div className="alert alert-warning mt-4">No subjects available for your semester.</div>
-      )}
+          );
+        })}
+      </div>
     </div>
   );
 };
 
 export default Material;
+  

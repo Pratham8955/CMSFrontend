@@ -43,6 +43,15 @@
 }
 
 .logout-btn {
+  margin-top: auto;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.logout-btn:hover {
+  background-color: rgba(255, 77, 77, 0.25);
+}
+
+/* .logout-btn {
   padding: 12px 20px;
   display: flex;
   align-items: center;
@@ -54,4 +63,4 @@
 .logout-btn:hover {
   background-color: rgba(255, 77, 77, 0.25);
   color: #aad8ff;
-}
+} */
