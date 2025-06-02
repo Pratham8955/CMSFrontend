@@ -71,7 +71,22 @@
   background-color: #ccc;
   cursor: not-allowed;
 }
-
+ .edit-button {
+    background-color: #0d6efd;;
+  }
+  
+  .edit-button:hover {
+    background-color: #0b5ed7;;
+  }
+  
+  .delete-button {
+    background-color: #dc3545;
+  }
+  
+  .delete-button:hover {
+    background-color: #c82333;
+  }
+  
 /* Responsive adjustments */
 @media (max-width: 600px) {
   .admin-container {

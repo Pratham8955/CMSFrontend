@@ -4,11 +4,17 @@ import Swal from "sweetalert2";
 import Stateandcity from "../Admin/Stateandcity.json";
 import "../../css/Admin/Admision.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const API_BASE_URL = "https://localhost:7133/api";
 
 const Admision = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  // Detect if edit mode by checking if location.state?.student exists
+  const editStudent = location.state?.student;
+
   const [formData, setFormData] = useState({
     studentName: "",
     email: "",
@@ -37,22 +43,20 @@ const Admision = () => {
   const [selectedCity, setSelectedCity] = useState("");
   const [departments, setDepartments] = useState([]);
   const [semesters, setSemesters] = useState([]);
-  const [loading, setLoading] = useState(false); // Loader state
-  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+
 
   useEffect(() => {
-    // Load states from static JSON
+    // console.log("Edit student gender:", editStudent.gender);
     setStates(Object.keys(Stateandcity));
 
     const fetchInitialData = async () => {
       try {
-        // Fetch Departments
         const deptRes = await axios.get(`${API_BASE_URL}/Department/GetDepartment`);
         if (deptRes.data.success) {
           setDepartments(deptRes.data.department || deptRes.data.Department);
         }
 
-        // Fetch Semesters
         const semRes = await axios.get(`${API_BASE_URL}/CommonApi/GetSemester`);
         if (semRes.data.success) {
           setSemesters(semRes.data.semester || semRes.data.Semester);
@@ -63,7 +67,40 @@ const Admision = () => {
     };
 
     fetchInitialData();
-  }, []);
+
+    if (editStudent) {
+      // Pre-fill form data for edit, except files (which can't be prefilled)
+      setFormData({
+        studentName: editStudent.studentName || "",
+        email: editStudent.email || "",
+        dob: editStudent.dob ? editStudent.dob.split("T")[0] : "", // Format date if needed
+        gender: editStudent.gender || "",
+        address: editStudent.address || "",
+        city: editStudent.city || "",
+        state: editStudent.state || "",
+        phone: editStudent.phone || "",
+        deptId: editStudent.deptId || "",
+        currentSemester: editStudent.currentSemester || "",
+        StudentImg: null,
+        StudentImgPath: editStudent.studentImg || "",
+        tenthPassingYear: editStudent.tenthPassingYear || "",
+        tenthPercentage: editStudent.tenthPercentage || "",
+        tenthmarksheet: null,
+        tenthMarksheetPath: editStudent.tenthMarksheet || "",
+        twelfthSchool: editStudent.twelfthSchool || "",
+        twelfthPassingYear: editStudent.twelfthPassingYear || "",
+        twelfthPercentage: editStudent.twelfthPercentage || "",
+        twelfthMarksheet: null,
+        twelfthMarksheetPath: editStudent.twelfthMarksheet || "",
+        tenthSchool: editStudent.tenthSchool || ""
+      });
+
+      // Set selected state and cities dropdown accordingly
+      setSelectedState(editStudent.state || "");
+      setCities(editStudent.state ? Stateandcity[editStudent.state] || [] : []);
+      setSelectedCity(editStudent.city || "");
+    }
+  }, [editStudent]);
 
   const handleStateChange = (event) => {
     const state = event.target.value;
@@ -104,59 +141,78 @@ const Admision = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true); // Show loader on submit
+    setLoading(true);
 
     const formDataToSubmit = new FormData();
-    for (const key in formData) {
-      if (formData[key]) {
-        formDataToSubmit.append(key, formData[key]);
+
+    Object.entries(formData).forEach(([key, value]) => {
+      // Skip file fields and path fields (we'll handle them separately)
+      if (!['StudentImg', 'tenthmarksheet', 'twelfthMarksheet'].includes(key) &&
+        !key.endsWith('Path')) {
+        if (value !== null && value !== "") {
+          formDataToSubmit.append(key, value);
+        }
       }
+    });
+    // Handle student image
+    if (formData.StudentImg) {
+      formDataToSubmit.append('StudentImg', formData.StudentImg);
+    } else if (formData.StudentImgPath) {
+      formDataToSubmit.append('StudentImgPath', formData.StudentImgPath);
     }
 
-    try {
-      const response = await axios.post(
-        `${API_BASE_URL}/Register/register-student`,
-        formDataToSubmit,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
-      );
+    // Handle 10th marksheet
+    if (formData.tenthmarksheet) {
+      formDataToSubmit.append('tenthmarksheet', formData.tenthmarksheet);
+    } else if (formData.tenthMarksheetPath) {
+      formDataToSubmit.append('TenthMarksheetPath', formData.tenthMarksheetPath);
+    }
 
-      if (response.data.success) {
-        Swal.fire("Success", response.data.message, "success").then(() => {
-          // Optionally reset form or redirect here
-          setFormData({
-            studentName: "",
-            email: "",
-            dob: "",
-            gender: "",
-            address: "",
-            city: "",
-            state: "",
-            phone: "",
-            deptId: "",
-            currentSemester: "",
-            StudentImg: null,
-            tenthPassingYear: "",
-            tenthPercentage: "",
-            tenthmarksheet: null,
-            twelfthSchool: "",
-            twelfthPassingYear: "",
-            twelfthPercentage: "",
-            twelfthMarksheet: null,
-            tenthSchool: ""
-          });
-          setSelectedState("");
-          setSelectedCity("");
-          setCities([]);
+
+    // Handle 12th marksheet
+    if (formData.twelfthMarksheet) {
+      formDataToSubmit.append('twelfthMarksheet', formData.twelfthMarksheet);
+    } else if (formData.twelfthMarksheetPath) {
+      formDataToSubmit.append('TwelfthMarksheetPath', formData.twelfthMarksheetPath);
+    }
+
+
+    try {
+      let response;
+
+      if (editStudent && editStudent.studentId) {
+        // Edit mode - PUT request to update student (adjust endpoint if needed)
+        formDataToSubmit.append("studentId", editStudent.studentId); // pass id in form data if needed
+
+        response = await axios.put(
+          `${API_BASE_URL}/Student/updateStudents/${editStudent.studentId}`,
+          formDataToSubmit,
+          {
+            headers: { "Content-Type": "multipart/form-data" },
+          }
+        );
+      } else {
+        // Add mode - POST request to add student
+        response = await axios.post(
+          `${API_BASE_URL}/Register/register-student`,
+          formDataToSubmit,
+          {
+            headers: { "Content-Type": "multipart/form-data" },
+          }
+        );
+      }
+
+      if (response.status === 200 || response.status === 204) {
+        Swal.fire("Successfully updated", response.data.message, "success").then(() => {
+          navigate("/admin/students");
         });
       } else {
         Swal.fire("Error", response.data.message, "error");
       }
     } catch (error) {
-      Swal.fire("Error", "Registration failed!", "error");
+      Swal.fire("Error", "Operation failed!", "error");
     } finally {
-      setLoading(false); // Hide loader after submit completes
+      setLoading(false);
     }
   };
 
@@ -170,17 +226,19 @@ const Admision = () => {
       style={{ minHeight: "10vh", background: "linear-gradient(to right, #f8f9fa, #e3f2fd)" }}
     >
       {loading && (
-  <div className="admission-loader-overlay">
-    <div className="admission-loader"></div>
-  </div>
-)}
+        <div className="admission-loader-overlay">
+          <div className="admission-loader"></div>
+        </div>
+      )}
 
       <form
         onSubmit={handleSubmit}
         className="p-4 rounded shadow-sm border bg-white"
         style={{ width: "1100px" }}
       >
-        <h3 className="text-center mb-4 text-primary">🎓Student Registration</h3>
+        <h3 className="text-center mb-4 text-primary">
+          {editStudent ? "✏️ Edit Student Details" : "🎓 Student Registration"}
+        </h3>
 
         {/* Student Name and Phone */}
         <div className="row mb-3">
@@ -229,8 +287,13 @@ const Admision = () => {
               name="StudentImg"
               onChange={handleChange}
               className="form-control"
-              required
+              accept="image/*"
             />
+            {formData.StudentImgPath && !formData.StudentImg && (
+              <div className="mt-2">
+                <small>Current: {formData.StudentImgPath.split('/').pop()}</small>
+              </div>
+            )}
           </div>
         </div>
 
@@ -243,9 +306,9 @@ const Admision = () => {
               name="dob"
               value={formData.dob}
               onChange={handleChange}
+              max={maxDob}
               className="form-control"
               required
-              max={maxDob}
             />
           </div>
           <div className="col">
@@ -254,44 +317,44 @@ const Admision = () => {
               name="gender"
               value={formData.gender}
               onChange={handleChange}
-              className="form-control"
+              className="form-select"
               required
             >
               <option value="">Select Gender</option>
-              <option>Male</option>
-              <option>Female</option>
-              <option>Other</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+
             </select>
           </div>
         </div>
 
-        {/* Address */}
-        <div className="mb-3">
-          <label className="form-label">Address</label>
-          <input
-            type="text"
-            name="address"
-            value={formData.address}
-            onChange={handleChange}
-            className="form-control"
-            required
-          />
-        </div>
-
+        {/* Address, State, City */}
         <div className="row mb-3">
+          <div className="col">
+            <label className="form-label">Address</label>
+            <textarea
+              name="address"
+              value={formData.address}
+              onChange={handleChange}
+              className="form-control"
+              rows={2}
+              required
+            />
+          </div>
           <div className="col">
             <label className="form-label">State</label>
             <select
               name="state"
               value={selectedState}
               onChange={handleStateChange}
-              className="form-control"
+              className="form-select"
               required
             >
               <option value="">Select State</option>
-              {states.map((state) => (
-                <option key={state} value={state}>
-                  {state}
+              {states.map((stateName) => (
+                <option key={stateName} value={stateName}>
+                  {stateName}
                 </option>
               ))}
             </select>
@@ -302,21 +365,21 @@ const Admision = () => {
               name="city"
               value={selectedCity}
               onChange={handleCityChange}
-              className="form-control"
+              className="form-select"
               required
               disabled={!selectedState}
             >
               <option value="">Select City</option>
-              {cities.map((city) => (
-                <option key={city} value={city}>
-                  {city}
+              {cities.map((cityName) => (
+                <option key={cityName} value={cityName}>
+                  {cityName}
                 </option>
               ))}
             </select>
           </div>
         </div>
 
-        {/* Department Dropdown */}
+        {/* Department and Semester */}
         <div className="row mb-3">
           <div className="col">
             <label className="form-label">Department</label>
@@ -324,34 +387,32 @@ const Admision = () => {
               name="deptId"
               value={formData.deptId}
               onChange={handleChange}
-              className="form-control"
+              className="form-select"
               required
             >
               <option value="">Select Department</option>
-              {Array.isArray(departments) &&
-                departments.map((dept) => (
-                  <option key={dept.deptId} value={dept.deptId}>
-                    {dept.deptName}
-                  </option>
-                ))}
+              {departments.map((dept) => (
+                <option key={dept.deptId} value={dept.deptId}>
+                  {dept.deptName}
+                </option>
+              ))}
             </select>
           </div>
           <div className="col">
-            <label className="form-label">Semester</label>
+            <label className="form-label">Current Semester</label>
             <select
               name="currentSemester"
               value={formData.currentSemester}
               onChange={handleChange}
-              className="form-control"
+              className="form-select"
               required
             >
               <option value="">Select Semester</option>
-              {Array.isArray(semesters) &&
-                semesters.map((sem) => (
-                  <option key={sem.semId} value={sem.semId}>
-                    {sem.semName}
-                  </option>
-                ))}
+              {semesters.map((sem) => (
+                <option key={sem.semesterId} value={sem.semId}>
+                  {sem.semName}
+                </option>
+              ))}
             </select>
           </div>
         </div>
@@ -359,26 +420,30 @@ const Admision = () => {
         {/* 10th Details */}
         <div className="row mb-3">
           <div className="col">
-            <label className="form-label">10th School</label>
+            <label className="form-label">10th Marksheet</label>
             <input
-              type="text"
-              name="tenthSchool"
-              value={formData.tenthSchool}
+              type="file"
+              name="tenthmarksheet"
               onChange={handleChange}
               className="form-control"
+              accept=".pdf"
             />
+            {formData.tenthMarksheetPath && !formData.tenthmarksheet && (
+              <div className="mt-2">
+                <small>Current: {formData.tenthMarksheetPath.split('/').pop()}</small>
+              </div>
+            )}
           </div>
           <div className="col">
             <label className="form-label">10th Passing Year</label>
             <input
-              type="text"
+              type="number"
               name="tenthPassingYear"
               value={formData.tenthPassingYear}
               onChange={handleChange}
               className="form-control"
-              maxLength={4}
-              pattern="\d{4}"
-              title="Enter 4 digit year"
+              min="1900"
+              max={new Date().getFullYear()}
             />
           </div>
           <div className="col">
@@ -395,10 +460,11 @@ const Admision = () => {
             />
           </div>
           <div className="col">
-            <label className="form-label">10th Marksheet</label>
+            <label className="form-label">10th School</label>
             <input
-              type="file"
-              name="tenthmarksheet"
+              type="text"
+              name="tenthSchool"
+              value={formData.tenthSchool}
               onChange={handleChange}
               className="form-control"
             />
@@ -407,27 +473,32 @@ const Admision = () => {
 
         {/* 12th Details */}
         <div className="row mb-3">
+          {/* 12th Marksheet */}
           <div className="col">
-            <label className="form-label">12th School</label>
+            <label className="form-label">12th Marksheet</label>
             <input
-              type="text"
-              name="twelfthSchool"
-              value={formData.twelfthSchool}
+              type="file"
+              name="twelfthMarksheet"
               onChange={handleChange}
               className="form-control"
+              accept=".pdf"
             />
+            {formData.twelfthMarksheetPath && !formData.twelfthMarksheet && (
+              <div className="mt-2">
+                <small>Current: {formData.twelfthMarksheetPath.split('/').pop()}</small>
+              </div>
+            )}
           </div>
           <div className="col">
             <label className="form-label">12th Passing Year</label>
             <input
-              type="text"
+              type="number"
               name="twelfthPassingYear"
               value={formData.twelfthPassingYear}
               onChange={handleChange}
               className="form-control"
-              maxLength={4}
-              pattern="\d{4}"
-              title="Enter 4 digit year"
+              min="1900"
+              max={new Date().getFullYear()}
             />
           </div>
           <div className="col">
@@ -444,33 +515,36 @@ const Admision = () => {
             />
           </div>
           <div className="col">
-            <label className="form-label">12th Marksheet</label>
+            <label className="form-label">12th School</label>
             <input
-              type="file"
-              name="twelfthMarksheet"
+              type="text"
+              name="twelfthSchool"
+              value={formData.twelfthSchool}
               onChange={handleChange}
               className="form-control"
             />
           </div>
         </div>
 
-        {/* Submit button */}
-        <div className="d-grid">
-          <button type="submit" disabled={loading} className="btn btn-primary">
-  {loading ? (
-    <>
-      <span className="admission-loader me-2" aria-hidden="true"></span>
-      Submitting...
-    </>
-  ) : (
-    "Submit Admission"
-  )}
-</button>
-
+        <div className="text-center">
+          <button type="submit" className="btn btn-primary" disabled={loading}>
+            {editStudent ? "Update Student" : "Register Student"}
+          </button>
+          &nbsp;&nbsp;
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={() => navigate("/adminstudents")}
+          >
+            Cancel
+          </button>
         </div>
       </form>
     </div>
   );
 };
 
+
 export default Admision;
+
+// issue here

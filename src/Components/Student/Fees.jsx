@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
@@ -93,89 +93,96 @@ const Fees = () => {
     }
   }, [paymentStatus, student]);
 
-const generatePdf = (data) => {
-  if (!data) return;
-  const doc = new jsPDF();
+  const generatePdf = (data) => {
+    if (!data) return;
+    const doc = new jsPDF();
 
-  doc.setFontSize(16);
-  doc.setTextColor(41, 98, 255);
-  doc.text("ICT'S Home", 105, 20, null, null, "center");
+    doc.setFontSize(16);
+    doc.setTextColor(41, 98, 255);
+    doc.text("ICT'S Home", 105, 20, null, null, "center");
 
-  doc.setFontSize(11);
-  doc.setTextColor(0, 0, 0);
-  doc.text("University Campus, Udhna-Magdalla Road, SURAT - 395007", 105, 28, null, null, "center");
+    doc.setFontSize(11);
+    doc.setTextColor(0, 0, 0);
+    doc.text("University Campus, Udhna-Magdalla Road, SURAT - 395007", 105, 28, null, null, "center");
 
-  doc.setFontSize(14);
-  doc.text("RECEIPT", 105, 38, null, null, "center");
+    doc.setFontSize(14);
+    doc.text("RECEIPT", 105, 38, null, null, "center");
 
-  doc.setFontSize(11);
+    doc.setFontSize(11);
 
-  // Bold label, normal value
-  doc.setFont("helvetica", "bold");
-  doc.text("Transaction Id.:", 15, 50);
-  doc.setFont("helvetica", "normal");
-  doc.text(`${data.transactionId}`, 55, 50);
+    // Bold label, normal value
+    doc.setFont("helvetica", "bold");
+    doc.text("Transaction Id.:", 15, 50);
+    doc.setFont("helvetica", "normal");
+    doc.text(`${data.transactionId}`, 55, 50);
 
-  doc.setFont("helvetica", "bold");
-  doc.text("Date:", 155, 50);
-  doc.setFont("helvetica", "normal");
-  doc.text(`${new Date(data.paymentDate).toLocaleDateString()}`, 165, 50);
+    doc.setFont("helvetica", "bold");
+    doc.text("Date:", 155, 50);
+    doc.setFont("helvetica", "normal");
+    doc.text(`${new Date(data.paymentDate).toLocaleDateString()}`, 165, 50);
 
-  doc.setFont("helvetica", "bold");
-  doc.text("Received From:", 15, 60);
-  doc.setFont("helvetica", "normal");
-  doc.text(`${data.student_Name || "N/A"}`, 55, 60);
+    doc.setFont("helvetica", "bold");
+    doc.text("Received From:", 15, 60);
+    doc.setFont("helvetica", "normal");
+    doc.text(`${data.student_Name || "N/A"}`, 55, 60);
 
-  doc.setFont("helvetica", "bold");
-  doc.text("Particulars:", 15, 70);
-  doc.setFont("helvetica", "normal");
-  doc.text(`${data.departmentName}-${data.semesterName}`, 55, 70);
+    doc.setFont("helvetica", "bold");
+    doc.text("Particulars:", 15, 70);
+    doc.setFont("helvetica", "normal");
+    doc.text(`${data.departmentName}-${data.semesterName}`, 55, 70);
 
-  const { tuitionFees, labFees, collegeGroundFee, internalExam } = data.feeType;
-  const total = [
-    Number(tuitionFees),
-    Number(labFees),
-    Number(collegeGroundFee),
-    Number(internalExam),
-  ].reduce((a, b) => a + b, 0);
 
-  autoTable(doc, {
-    startY: 80,
-    head: [["Sr. No.", "Description", "Amount (Rs.)"]],
-    body: [
-      ["1", "Tuition Fee", tuitionFees],
-      ["2", "Laboratory Fee", labFees],
-      ["3", "Ground Fee", collegeGroundFee],
-      ["4", "Internal Examination", internalExam],
-    ],
-    styles: { halign: 'center' },
-    headStyles: {
-      fillColor: [200, 220, 255],
-      textColor: 0,
-      fontStyle: 'bold',
-    },
-    columnStyles: {
-      0: { halign: 'center' },
-      1: { halign: 'center' },
-      2: { halign: 'center' },
-    },
-  });
+    const paidAmount = Number(data.paidAmount);
 
-  // Add Total outside the table, aligned to the right
-  const finalY = doc.lastAutoTable.finalY + 10;
-  doc.setFont("helvetica", "bold");
-  doc.text("Total (Rs.):", 138, finalY);
-  doc.setFont("helvetica", "normal");
-  doc.text(`${total.toFixed(2)}`, 175, finalY, { align: "right" });
+    const percentTuition = 0.5;
+    const percentLab = 0.2;
+    const percentGround = 0.15;
+    const percentInternal = 0.15;
 
-  // Payment Mode
-  doc.setFont("helvetica", "bold");
-  doc.text("Mode of Payment :", 15, finalY + 10);
-  doc.setFont("helvetica", "normal");
-  doc.text("Online", 55, finalY + 10);
+    const paidTuitionFee = paidAmount * percentTuition;
+    const paidLabFees = paidAmount * percentLab;
+    const paidGroundFee = paidAmount * percentGround;
+    const paidInternalExam = paidAmount * percentInternal;
 
-  doc.save("Fee_Receipt.pdf");
-};
+    const totalPaid = paidTuitionFee + paidLabFees + paidGroundFee + paidInternalExam;
+
+    autoTable(doc, {
+      startY: 80,
+      head: [["Sr. No.", "Description", "Amount (Rs.)"]],
+      body: [
+        ["1", "Tuition Fee", paidTuitionFee],
+        ["2", "Laboratory Fee", paidLabFees],
+        ["3", "Ground Fee", paidGroundFee],
+        ["4", "Internal Examination", paidInternalExam],
+      ],
+      styles: { halign: 'center' },
+      headStyles: {
+        fillColor: [200, 220, 255],
+        textColor: 0,
+        fontStyle: 'bold',
+      },
+      columnStyles: {
+        0: { halign: 'center' },
+        1: { halign: 'center' },
+        2: { halign: 'center' },
+      },
+    });
+
+    // Add Total outside the table, aligned to the right
+    const finalY = doc.lastAutoTable.finalY + 10;
+    doc.setFont("helvetica", "bold");
+    doc.text("Total (Rs.):", 138, finalY);
+    doc.setFont("helvetica", "normal");
+    doc.text(`${totalPaid.toFixed(2)}`, 175, finalY, { align: "right" });
+
+    // Payment Mode
+    doc.setFont("helvetica", "bold");
+    doc.text("Mode of Payment :", 15, finalY + 10);
+    doc.setFont("helvetica", "normal");
+    doc.text("Online", 55, finalY + 10);
+
+    doc.save("Fee_Receipt.pdf");
+  };
 
 
   if (loading) return <div className="loading-message">Loading student details...</div>;
@@ -219,25 +226,34 @@ const generatePdf = (data) => {
                     <tbody>
                       <tr>
                         <td>1</td>
-                        <td>Tuition Fee</td>
-                        <td className="text-right">₹{paidFeeDetails.feeType.tuitionFees}</td>
+                        <td>Tuition Fee </td>
+                        <td className="text-right">
+                          ₹{(paidFeeDetails.paidAmount * 0.5).toFixed(2)}
+                        </td>
                       </tr>
                       <tr>
                         <td>2</td>
-                        <td>Laboratory Fee</td>
-                        <td className="text-right">₹{paidFeeDetails.feeType.labFees}</td>
+                        <td>Laboratory Fee </td>
+                        <td className="text-right">
+                          ₹{(paidFeeDetails.paidAmount * 0.2).toFixed(2)}
+                        </td>
                       </tr>
                       <tr>
                         <td>3</td>
-                        <td>Ground Fee</td>
-                        <td className="text-right">₹{paidFeeDetails.feeType.collegeGroundFee}</td>
+                        <td>Ground Fee </td>
+                        <td className="text-right">
+                          ₹{(paidFeeDetails.paidAmount * 0.15).toFixed(2)}
+                        </td>
                       </tr>
                       <tr>
                         <td>4</td>
                         <td>Internal Examination</td>
-                        <td className="text-right">₹{paidFeeDetails.feeType.internalExam}</td>
+                        <td className="text-right">
+                          ₹{(paidFeeDetails.paidAmount * 0.15).toFixed(2)}
+                        </td>
                       </tr>
                     </tbody>
+
                     <tfoot>
                       <tr>
                         <td colSpan="2" className="text-right">

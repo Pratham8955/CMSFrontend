@@ -21,8 +21,11 @@ const AdminFaculties = () => {
   const [showForm, setShowForm] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editingId, setEditingId] = useState(null);
-
   const [loading, setLoading] = useState(false);
+
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(5); // You can adjust this number
 
   useEffect(() => {
     fetchFaculties();
@@ -36,6 +39,7 @@ const AdminFaculties = () => {
       );
       if (res.data.success) {
         setFaculties(res.data.faculty || res.data.Faculty);
+        setCurrentPage(1); // Reset to first page when data changes
       } else {
         Swal.fire("Error", "Failed to load faculties.", "error");
       }
@@ -158,9 +162,7 @@ const AdminFaculties = () => {
       image: null,
     });
 
-    // Set existing image filename here (adjust property name if different)
     setExistingImageName(faculty.facultyImg || "");
-
     setEditingId(faculty.facultyId);
     setIsEditing(true);
     setShowForm(true);
@@ -196,9 +198,19 @@ const AdminFaculties = () => {
     }
   };
 
+  // Filter faculties based on selected department
   const filteredFaculties = faculties.filter(
     (faculty) => !selectedDept || faculty.deptId.toString() === selectedDept
   );
+
+  // Get current faculties for pagination
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentFaculties = filteredFaculties.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(filteredFaculties.length / itemsPerPage);
+
+  // Change page
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
     <div className="admin-container">
@@ -386,14 +398,14 @@ const AdminFaculties = () => {
           </tr>
         </thead>
         <tbody>
-          {filteredFaculties.length === 0 ? (
+          {currentFaculties.length === 0 ? (
             <tr>
               <td colSpan="8" style={{ textAlign: "center", padding: "20px" }}>
                 No faculty found
               </td>
             </tr>
           ) : (
-            filteredFaculties.map((faculty, index) => (
+            currentFaculties.map((faculty, index) => (
               <tr key={index}>
                 <td>{faculty.facultyName}</td>
                 <td>{faculty.email}</td>
@@ -425,6 +437,38 @@ const AdminFaculties = () => {
           )}
         </tbody>
       </table>
+
+      {/* Pagination controls */}
+      {filteredFaculties.length > itemsPerPage && (
+        <div className="pagination">
+          <button
+            onClick={() => paginate(currentPage > 1 ? currentPage - 1 : 1)}
+            disabled={currentPage === 1 || loading}
+            className="pagination-button"
+          >
+            Previous
+          </button>
+
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((number) => (
+            <button
+              key={number}
+              onClick={() => paginate(number)}
+              disabled={currentPage === number || loading}
+              className={`pagination-button ${currentPage === number ? 'active' : ''}`}
+            >
+              {number}
+            </button>
+          ))}
+
+          <button
+            onClick={() => paginate(currentPage < totalPages ? currentPage + 1 : totalPages)}
+            disabled={currentPage === totalPages || loading}
+            className="pagination-button"
+          >
+            Next
+          </button>
+        </div>
+      )}
     </div>
   );
 };

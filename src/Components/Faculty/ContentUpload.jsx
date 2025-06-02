@@ -14,6 +14,7 @@ const ContentUpload = () => {
 
   const [subjects, setSubjects] = useState([]);
   const [contents, setContents] = useState([]);
+  const [existingpdf, setexistingpdf] = useState("");
 
   useEffect(() => {
     axios.get(`https://localhost:7133/api/FacultySubject/GetFacultySubjectsForAssignedFaculty/${facultyId}`)
@@ -37,13 +38,14 @@ const ContentUpload = () => {
       });
   };
 
- const showForm = (mode = "add", existing = null) => {
-  let formData = {
-    subjectId: existing?.subjectId || '',
-    title: existing?.title || '',
-    description: existing?.description || '',
-    pdfFile: null
-  };
+  const showForm = (mode = "add", existing = null) => {
+    let formData = {
+      subjectId: existing?.subjectId || '',
+      title: existing?.title || '',
+      description: existing?.description || '',
+      pdfFile: null
+    };
+
 
     MySwal.fire({
       title: mode === "edit" ? 'Edit Course Content' : 'Add Course Content',
@@ -92,7 +94,7 @@ const ContentUpload = () => {
             <input
               type="file"
               accept=".pdf"
-              className="form-control"
+              className="form-control mb-2"
               onChange={(e) => {
                 const file = e.target.files[0];
                 if (file && file.type !== "application/pdf") {
@@ -102,7 +104,23 @@ const ContentUpload = () => {
                 }
               }}
             />
+            {mode === "edit" && existing?.filePath && (
+              // <a
+              //   href={`https://localhost:7133/${existing.filePath}`}
+              //   target="_blank"
+              //   rel="noopener noreferrer"
+              //   className="btn btn-sm btn-outline-primary"
+              // >
+              //   View Existing PDF
+              // </a>
+              <small className="form-text text-muted mt-1">
+                Using existing file: {existing.filePath.split("/").pop()}
+              </small>
+
+            )}
           </div>
+
+
         </div>
       ),
       showCancelButton: true,
@@ -118,7 +136,11 @@ const ContentUpload = () => {
         data.append('subjectId', formData.subjectId);
         data.append('title', formData.title);
         data.append('description', formData.description);
-        if (formData.pdfFile) data.append('pdfFile', formData.pdfFile);
+        if (formData.pdfFile) {
+          data.append("pdfFile", formData.pdfFile);
+        } else if (mode === "edit" && existing?.filePath) {
+          data.append('existingFilePath', existing.filePath);
+        }
 
         try {
           Swal.showLoading();
@@ -173,71 +195,71 @@ const ContentUpload = () => {
   };
 
   return (
-  <div className="d-flex justify-content-center">
-  <div className="container " style={{ maxWidth: '1100px', width: '100%' }}>
-    <div className="d-flex justify-content-between align-items-center mb-4">
-      <h2 className="fw-bold text-primary">Uploaded Course Contents</h2>
-      <button className="btn btn-success fw-semibold" onClick={() => showForm("add")}>
-        + Add
-      </button>
-    </div>
-
-    {contents.length === 0 ? (
-      <p className="text-center">No content uploaded yet.</p>
-    ) : (
-      <div className="card shadow-sm border-0 rounded-4 p-4">
-        <div className="table-responsive">
-          <table className="table table-bordered table-hover align-middle">
-            <thead className="table-primary text-center">
-              <tr>
-                <th>Title</th>
-                <th>Description</th>
-                <th>Subject</th>
-                <th>PDF</th>
-                <th>Upload Date</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {contents.map((content) => (
-                <tr key={content.contentId}>
-                  <td>{content.title}</td>
-                  <td>{content.description}</td>
-                  <td>{content.subjectName}</td>
-                  <td className="text-center">
-                    <a
-                      href={`https://localhost:7133/${content.filePath}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="btn btn-sm btn-outline-primary"
-                    >
-                      View PDF
-                    </a>
-                  </td>
-                  <td>{new Date(content.uploadDate).toLocaleDateString()}</td>
-                  <td className="text-center">
-                    <button
-                      className="btn btn-sm btn-warning me-2"
-                      onClick={() => showForm("edit", content)}
-                    >
-                      Edit
-                    </button>
-                    <button
-                      className="btn btn-sm btn-danger"
-                      onClick={() => handleDelete(content.contentId)}
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+    <div className="d-flex justify-content-center">
+      <div className="container " style={{ maxWidth: '1100px', width: '100%' }}>
+        <div className="d-flex justify-content-between align-items-center mb-4">
+          <h2 className="fw-bold text-primary">Uploaded Course Contents</h2>
+          <button className="btn btn-success fw-semibold" onClick={() => showForm("add")}>
+            + Add
+          </button>
         </div>
+
+        {contents.length === 0 ? (
+          <p className="text-center">No content uploaded yet.</p>
+        ) : (
+          <div className="card shadow-sm border-0 rounded-4 p-4">
+            <div className="table-responsive">
+              <table className="table table-bordered table-hover align-middle">
+                <thead className="table-primary text-center">
+                  <tr>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Subject</th>
+                    <th>PDF</th>
+                    <th>Upload Date</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {contents.map((content) => (
+                    <tr key={content.contentId}>
+                      <td>{content.title}</td>
+                      <td>{content.description}</td>
+                      <td>{content.subjectName}</td>
+                      <td className="text-center">
+                        <a
+                          href={`https://localhost:7133/${content.filePath}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="btn btn-sm btn-outline-primary"
+                        >
+                          View PDF
+                        </a>
+                      </td>
+                      <td>{new Date(content.uploadDate).toLocaleDateString()}</td>
+                      <td className="text-center">
+                        <button
+                          className="btn btn-sm btn-warning me-2"
+                          onClick={() => showForm("edit", content)}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          className="btn btn-sm btn-danger"
+                          onClick={() => handleDelete(content.contentId)}
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
       </div>
-    )}
-  </div>
-</div>
+    </div>
 
   );
 };

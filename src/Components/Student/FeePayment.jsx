@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import {jwtDecode} from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 import "../../css/Student/FeePayment.css"
 const FeePayment = () => {
   const [feeDetails, setFeeDetails] = useState(null);
@@ -60,7 +60,7 @@ const FeePayment = () => {
     const amountInPaise = feeDetails.defaultAmount * 100;
 
     const options = {
-      key: 'rzp_test_mKFFsoRNrHIPv0',
+      key: 'rzp_test_OQk3ZHzJNycYA8',
       currency: 'INR',
       amount: amountInPaise,
       name: 'College Fee Payment',
@@ -130,78 +130,42 @@ const FeePayment = () => {
           </div>
         ) : (
           <>
-  <h1 className="title text-center mb-4">Fee Payment</h1>
+            <h1 className="title text-center mb-4">Fee Payment</h1>
 
-  {/* <table className="table table-striped fee-table shadow-sm mb-4">
-    <thead className="table-dark">
-      <tr>
-        <th>Sr. No.</th>
-        <th>Description</th>
-        <th className="text-end">Amount (Rs.)</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>1</td>
-        <td>Tuition Fee</td>
-        <td className="text-end">₹{feeDetails.feeType?.tuitionFees}</td>
-      </tr>
-      <tr>
-        <td>2</td>
-        <td>Laboratory Fee</td>
-        <td className="text-end">₹{feeDetails.feeType?.labFees}</td>
-      </tr>
-      <tr>
-        <td>3</td>
-        <td>Ground Fee</td>
-        <td className="text-end">₹{feeDetails.feeType?.collegeGroundFee}</td>
-      </tr>
-      <tr>
-        <td>4</td>
-        <td>Internal Examination</td>
-        <td className="text-end">₹{feeDetails.feeType?.internalExam}</td>
-      </tr>
-      <tr className="total-row fw-bold">
-        <td colSpan="2" className="text-end">
-          Total (Rs.):
-        </td>
-        <td className="text-end">₹{feeDetails.defaultAmount}</td>
-      </tr>
-    </tbody>
-  </table> */}
 
-  <div className="payment-info mb-4">
-    
-    <p>
-      <strong>Department:</strong> {feeDetails.departmentName}
-    </p>
-    <p>
-      <strong>Semester:</strong> {feeDetails.semesterName}
-    </p>
-    <p>
-      <strong>Amount:</strong> ₹{feeDetails.defaultAmount}
-    </p>
-  </div>
 
-  <button
-    className="btn btn-gradient btn-lg w-100"
-    onClick={handlePayment}
-    disabled={processing}
-  >
-    {processing ? (
-      <>
-        <span
-          className="spinner-border spinner-border-sm me-2"
-          role="status"
-          aria-hidden="true"
-        ></span>
-        Processing...
-      </>
-    ) : (
-      'Pay Now'
-    )}
-  </button>
-</>
+            <div className="payment-info mb-4">
+
+              <p>
+                <strong>Department:</strong> {feeDetails.departmentName}
+              </p>
+              <p>
+                <strong>Semester:</strong> {feeDetails.semesterName}
+              </p>
+              <p>
+                <strong>Amount:</strong> ₹{feeDetails.defaultAmount}
+              </p>
+            </div>
+
+            <button
+              className="btn btn-gradient btn-lg w-100"
+              onClick={handlePayment}
+              disabled={processing}
+            >
+              {processing ? (
+                <>
+                  <span
+                    className="spinner-border spinner-border-sm me-2"
+                    role="status"
+                    aria-hidden="true"
+                  ></span>
+                  Processing...
+                </>
+              ) : (
+                'Pay Now'
+              )}
+            </button>
+          </>
 
         )}
       </div>

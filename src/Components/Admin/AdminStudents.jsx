@@ -1,16 +1,26 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 const AdminStudents = () => {
   const [students, setStudents] = useState([]);
   const [departments, setDepartments] = useState([]);
   const [selectedDept, setSelectedDept] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const studentsPerPage = 5;
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchStudents();
     fetchDepartments();
   }, []);
+
+  const handleEditClick = (student) => {
+    navigate("/admin/admision", { state: { student } });
+  };
 
   const fetchStudents = async () => {
     try {
@@ -36,107 +46,59 @@ const AdminStudents = () => {
     }
   };
 
+
+
   const styles = {
-    container: {
-      padding: "30px",
-      fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-      maxWidth: "1200px",
-      margin: "0 auto",
-    },
-    header: {
-      fontSize: "26px",
-      fontWeight: "600",
-      marginBottom: "10px",
-      textAlign: "center",
-      color: "#2c3e50",
-    },
-    buttonContainer: {
-      display: "flex",
-      flexWrap: "wrap",
-      gap: "10px",
-      marginBottom: "20px",
-      justifyContent: "center",
-    },
-    button: {
-      padding: "8px 16px",
-      border: "1px solid #3498db",
-      borderRadius: "6px",
-      backgroundColor: "#fff",
-      color: "#3498db",
-      cursor: "pointer",
-      fontWeight: "500",
-    },
-    activeButton: {
-      backgroundColor: "#3498db",
-      color: "#fff",
-    },
-    totalCount: {
-      textAlign: "center",
-      marginBottom: "10px",
-      fontSize: "16px",
-      color: "#555",
-    },
-    deptSection: {
-      marginBottom: "40px",
-    },
-    deptHeaderRow: {
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "space-between",
-      margin: "20px 0 10px",
-    },
-    deptName: {
-      fontSize: "20px",
-      fontWeight: "bold",
-      color: "#34495e",
-    },
-    studentCount: {
-      fontSize: "14px",
-      color: "#777",
-    },
-    table: {
-      width: "100%",
-      borderCollapse: "collapse",
-      boxShadow: "0 2px 10px rgba(0,0,0,0.08)",
-      borderRadius: "10px",
-      overflow: "hidden",
-    },
-    th: {
-      padding: "12px 16px",
-      backgroundColor: "#f0f0f0",
-      fontWeight: "600",
-      borderBottom: "1px solid #ddd",
-      textAlign: "left",
-    },
-    td: {
-      padding: "12px 16px",
-      borderBottom: "1px solid #eee",
-    },
-    noStudent: {
-      padding: "12px 16px",
-      fontStyle: "italic",
-      color: "#888",
-    },
+    container: { padding: "30px", fontFamily: "Segoe UI", maxWidth: "1200px", margin: "0 auto" },
+    header: { fontSize: "26px", fontWeight: "600", marginBottom: "10px", textAlign: "center", color: "#2c3e50" },
+    buttonContainer: { display: "flex", flexWrap: "wrap", gap: "10px", marginBottom: "20px", justifyContent: "center" },
+    button: { padding: "6px 12px", border: "1px solid #3498db", borderRadius: "6px", backgroundColor: "#fff", color: "#3498db", cursor: "pointer", fontWeight: "500" },
+    activeButton: { backgroundColor: "#3498db", color: "#fff" },
+    searchBar: { padding: "6px 10px", marginBottom: "10px", width: "200px", fontSize: "14px", border: "1px solid #ccc", borderRadius: "4px" },
+    actionButton: { padding: "4px 8px", marginRight: "5px", borderRadius: "4px", fontSize: "12px", cursor: "pointer" },
+    editButton: { backgroundColor: "#f1c40f", color: "#fff", border: "none" },
+    deleteButton: { backgroundColor: "#e74c3c", color: "#fff", border: "none" },
+    pagination: { display: "flex", justifyContent: "center", marginTop: "15px", gap: "5px" },
+    paginationBtn: { padding: "6px 10px", border: "1px solid #3498db", borderRadius: "4px", cursor: "pointer", backgroundColor: "#fff" },
+    activePage: { backgroundColor: "#3498db", color: "#fff" },
+    table: { width: "100%", borderCollapse: "collapse", boxShadow: "0 2px 10px rgba(0,0,0,0.08)", borderRadius: "10px", overflow: "hidden" },
+    th: { padding: "12px 16px", backgroundColor: "#f0f0f0", fontWeight: "600", borderBottom: "1px solid #ddd", textAlign: "left" },
+    td: { padding: "12px 16px", borderBottom: "1px solid #eee" },
   };
 
   const getDeptStudentCount = (deptId) =>
     students.filter((s) => s.deptId === deptId).length;
 
-  const filteredStudents = selectedDept
-    ? students.filter((s) => s.deptId === selectedDept)
-    : students;
+  const filteredStudents = students
+    .filter((s) => (selectedDept ? s.deptId === selectedDept : true))
+    .filter((s) => s.studentName.toLowerCase().includes(searchQuery.toLowerCase()));
+
+  const indexOfLast = currentPage * studentsPerPage;
+  const indexOfFirst = indexOfLast - studentsPerPage;
+  const currentStudents = filteredStudents.slice(indexOfFirst, indexOfLast);
+
+  const totalPages = Math.ceil(filteredStudents.length / studentsPerPage);
 
   return (
     <div style={styles.container}>
       <h2 style={styles.header}>Students Management</h2>
-      <div style={styles.totalCount}>Total Students: {students.length}</div>
+
+      <div style={{ textAlign: "center", marginBottom: "10px" }}>
+        <input
+          type="text"
+          placeholder="Search by name"
+          style={styles.searchBar}
+          value={searchQuery}
+          onChange={(e) => {
+            setSearchQuery(e.target.value);
+            setCurrentPage(1);
+          }}
+        />
+      </div>
 
       <div style={styles.buttonContainer}>
         <button
-          style={{
-            ...styles.button,
-            ...(selectedDept === null ? styles.activeButton : {}),
-          }}
+          style={{ ...styles.button, ...(selectedDept === null ? styles.activeButton : {}) }}
           onClick={() => setSelectedDept(null)}
         >
           All
@@ -148,7 +110,10 @@ const AdminStudents = () => {
               ...styles.button,
               ...(selectedDept === dept.deptId ? styles.activeButton : {}),
             }}
-            onClick={() => setSelectedDept(dept.deptId)}
+            onClick={() => {
+              setSelectedDept(dept.deptId);
+              setCurrentPage(1);
+            }}
           >
             {dept.deptName} ({getDeptStudentCount(dept.deptId)})
           </button>
@@ -157,87 +122,91 @@ const AdminStudents = () => {
 
       {loading ? (
         <p style={{ textAlign: "center" }}>Loading...</p>
-      ) : selectedDept ? (
-        <div style={styles.deptSection}>
-          <div style={styles.deptHeaderRow}>
-            <div style={styles.deptName}>
-              {departments.find((d) => d.deptId === selectedDept)?.deptName}
-            </div>
-            <div style={styles.studentCount}>
-              Students: {filteredStudents.length}
-            </div>
-          </div>
-          {filteredStudents.length > 0 ? (
-            <table style={styles.table}>
-              <thead>
-                <tr>
-                  <th style={styles.th}>Name</th>
-                  <th style={styles.th}>Email</th>
-                  <th style={styles.th}>DOB</th>
-                  <th style={styles.th}>Gender</th>
-                  <th style={styles.th}>Phone</th>
-                  <th style={styles.th}>Address</th>
-                  <th style={styles.th}>City</th>
-                  <th style={styles.th}>State</th>
-                  <th style={styles.th}>Semester</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredStudents.map((student, idx) => (
-                  <tr key={idx}>
+      ) : (
+        <>
+          <table style={styles.table}>
+            <thead>
+              <tr>
+                <th style={styles.th}>Name</th>
+                <th style={styles.th}>Email</th>
+                <th style={styles.th}>DOB</th>
+                <th style={styles.th}>Gender</th>
+                <th style={styles.th}>Phone</th>
+                <th style={styles.th}>Address</th>
+                <th style={styles.th}>City</th>
+                <th style={styles.th}>State</th>
+                <th style={styles.th}>Semester</th>
+                <th style={styles.th}>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {currentStudents.length > 0 ? (
+                currentStudents.map((student) => (
+                  <tr key={student.studentId}>
                     <td style={styles.td}>{student.studentName}</td>
                     <td style={styles.td}>{student.email}</td>
-                    <td style={styles.td}>
-                      {new Date(student.dob).toLocaleDateString()}
-                    </td>
+                    <td style={styles.td}>{new Date(student.dob).toLocaleDateString()}</td>
                     <td style={styles.td}>{student.gender}</td>
                     <td style={styles.td}>{student.phone}</td>
                     <td style={styles.td}>{student.address}</td>
                     <td style={styles.td}>{student.city}</td>
                     <td style={styles.td}>{student.state}</td>
                     <td style={styles.td}>{student.currentSemester}</td>
+                    <td style={styles.td}>
+                      <button
+                        style={{ ...styles.actionButton, ...styles.editButton }}
+                        onClick={() => handleEditClick(student)}
+                      >
+                        Edit
+                      </button>
+
+                    </td>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          ) : (
-            <div style={styles.noStudent}>No students found in this department.</div>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="10" style={styles.td}>
+                    No students found.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+
+          {totalPages > 1 && (
+            <div style={styles.pagination}>
+              <button
+                style={styles.paginationBtn}
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+              >
+                Previous
+              </button>
+
+              {[...Array(totalPages)].map((_, i) => (
+                <button
+                  key={i}
+                  style={{
+                    ...styles.paginationBtn,
+                    ...(currentPage === i + 1 ? styles.activePage : {}),
+                  }}
+                  onClick={() => setCurrentPage(i + 1)}
+                >
+                  {i + 1}
+                </button>
+              ))}
+
+              <button
+                style={styles.paginationBtn}
+                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                disabled={currentPage === totalPages}
+              >
+                Next
+              </button>
+            </div>
           )}
-        </div>
-      ) : (
-        // Show all students together in a single table (no dept headings)
-        <table style={styles.table}>
-          <thead>
-            <tr>
-              <th style={styles.th}>Name</th>
-              <th style={styles.th}>Email</th>
-              <th style={styles.th}>DOB</th>
-              <th style={styles.th}>Gender</th>
-              <th style={styles.th}>Phone</th>
-              <th style={styles.th}>Address</th>
-              <th style={styles.th}>City</th>
-              <th style={styles.th}>State</th>
-              <th style={styles.th}>Semester</th>
-            </tr>
-          </thead>
-          <tbody>
-            {students.map((student, idx) => (
-              <tr key={idx}>
-                <td style={styles.td}>{student.studentName}</td>
-                <td style={styles.td}>{student.email}</td>
-                <td style={styles.td}>
-                  {new Date(student.dob).toLocaleDateString()}
-                </td>
-                <td style={styles.td}>{student.gender}</td>
-                <td style={styles.td}>{student.phone}</td>
-                <td style={styles.td}>{student.address}</td>
-                <td style={styles.td}>{student.city}</td>
-                <td style={styles.td}>{student.state}</td>
-                <td style={styles.td}>{student.currentSemester}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+
+        </>
       )}
     </div>
   );

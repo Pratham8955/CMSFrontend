@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../../css/Student/StudentDashboard.css";
 
@@ -96,29 +96,29 @@ const StudentDashboard = () => {
 
       {/* Student Info Card */}
       {student && (
-       <div className="centered-card">
-  <div className="card mb-5 shadow-sm student-info-card d-flex flex-row align-items-center p-4 gap-4">
-    {student.studentImg ? (
-      <img
-        src={`https://localhost:7133/uploads/students/studentProfile/${student.studentImg}`}
-        alt="Student"
-        className="rounded-circle border border-secondary student-img"
-        loading="lazy"
-      />
-    ) : (
-      <div className="placeholder-img rounded-circle border border-secondary d-flex align-items-center justify-content-center fw-bold fs-4 text-white">
-        N/A
-      </div>
-    )}
-    <div>
-      <h4 className="mb-1 studentName">{student.studentName}</h4>
-      <p className="mb-1 text-muted">{student.email}</p>
-      <small className="text-secondary fw-semibold">
-        Department: {deptName || student.deptId}
-      </small>
-    </div>
-  </div>
-</div>
+        <div className="centered-card">
+          <div className="card mb-5 shadow-sm student-info-card d-flex flex-row align-items-center p-4 gap-4">
+            {student.studentImg ? (
+              <img
+                src={`https://localhost:7133/uploads/students/studentProfile/${student.studentImg}`}
+                alt="Student"
+                className="rounded-circle border border-secondary student-img"
+                loading="lazy"
+              />
+            ) : (
+              <div className="placeholder-img rounded-circle border border-secondary d-flex align-items-center justify-content-center fw-bold fs-4 text-white">
+                N/A
+              </div>
+            )}
+            <div>
+              <h4 className="mb-1 studentName">{student.studentName}</h4>
+              <p className="mb-1 text-muted">{student.email}</p>
+              <small className="text-secondary fw-semibold">
+                Department: {deptName || student.deptId}
+              </small>
+            </div>
+          </div>
+        </div>
 
       )}
 

@@ -33,7 +33,7 @@ const FeeStructureManagement = () => {
   }, []);
 
 
-   useEffect(() => {
+  useEffect(() => {
     const feeStructuresfortype = async () => {
       try {
         const response = await axios.get('https://localhost:7133/api/FeeStructure/getUnassignedFeeStructures');
@@ -48,43 +48,43 @@ const FeeStructureManagement = () => {
     feeStructuresfortype();
   }, []);
 
-const handleSubmit = async (e) => {
-    e.preventDefault();
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
 
-    if (!selectedFeeStructureId) {
-      setSubmitMessage('Please select a fee structure');
-      return;
-    }
+  //   if (!selectedFeeStructureId) {
+  //     setSubmitMessage('Please select a fee structure');
+  //     return;
+  //   }
 
-    setLoading(true);
-    setSubmitMessage('');
+  //   setLoading(true);
+  //   setSubmitMessage('');
 
-    try {
-      const payload = {
-        feeStructureId: parseInt(selectedFeeStructureId, 10)
-      };
+  //   try {
+  //     const payload = {
+  //       feeStructureId: parseInt(selectedFeeStructureId, 10)
+  //     };
 
-      const response = await axios.post(
-        'http://localhost:5291/api/StudentFeesType/addStudentFeeType',
-        payload
-      );
+  //     const response = await axios.post(
+  //       'http://localhost:5291/api/StudentFeesType/addStudentFeeType',
+  //       payload
+  //     );
 
-      if (response.data.success) {
-        setSubmitMessage('Fee added successfully!');
-        setSelectedFeeStructureId('');
-        setTimeout(() => {
-      setSubmitMessage('');
-    }, 3000);
-      } else {
-        setSubmitMessage('Failed to add fee: ' + response.data.message);
-      }
-    } catch (error) {
-      console.error('Submit error:', error);
-      setSubmitMessage('An error occurred while submitting.');
-    }
+  //     if (response.data.success) {
+  //       setSubmitMessage('Fee added successfully!');
+  //       setSelectedFeeStructureId('');
+  //       setTimeout(() => {
+  //         setSubmitMessage('');
+  //       }, 3000);
+  //     } else {
+  //       setSubmitMessage('Failed to add fee: ' + response.data.message);
+  //     }
+  //   } catch (error) {
+  //     console.error('Submit error:', error);
+  //     setSubmitMessage('An error occurred while submitting.');
+  //   }
 
-    setLoading(false);
-  };
+  //   setLoading(false);
+  // };
 
 
   const fetchDepartments = () => {
@@ -322,245 +322,245 @@ const handleSubmit = async (e) => {
                     >
                       <thead>
                         <tr style={{ backgroundColor: "#f5f5f5" }}>
-                      <th style={{ border: "1px solid #ddd", padding: "6px" }}>Semester</th>
-                      <th style={{ border: "1px solid #ddd", padding: "6px" }}>Amount (Rs)</th>
-                      <th style={{ border: "1px solid #ddd", padding: "6px" }}>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {deptFeeStructures.map((fs) => {
-                      const semName = semesters.find((s) => s.semId === fs.semId)?.semName || "Unknown";
-                      return (
-                        <tr key={fs.feeStructureId}>
-                          <td style={{ border: "1px solid #ddd", padding: "6px" }}>{semName}</td>
-                          <td style={{ border: "1px solid #ddd", padding: "6px" }}>
-                            Rs {fs.defaultAmount?.toFixed(2)}
-                          </td>
-                          <td style={{ border: "1px solid #ddd", padding: "6px" }}>
-                            <button
-                              className="admin-button edit-btn"
-                              onClick={() => openEditModal(fs)}
-                              style={{ marginRight: "5px", fontSize: "0.8rem", padding: "3px 6px" }}
-                            >
-                              Edit
-                            </button>
-                            <button
-                              className="admin-button delete-btn"
-                              onClick={() => handleDeleteFeeStructure(fs.feeStructureId)}
-                              style={{ fontSize: "0.8rem", padding: "3px 6px" }}
-                            >
-                              Delete
-                            </button>
-                          </td>
+                          <th style={{ border: "1px solid #ddd", padding: "6px" }}>Semester</th>
+                          <th style={{ border: "1px solid #ddd", padding: "6px" }}>Amount (Rs)</th>
+                          <th style={{ border: "1px solid #ddd", padding: "6px" }}>Actions</th>
                         </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
+                      </thead>
+                      <tbody>
+                        {deptFeeStructures.map((fs) => {
+                          const semName = semesters.find((s) => s.semId === fs.semId)?.semName || "Unknown";
+                          return (
+                            <tr key={fs.feeStructureId}>
+                              <td style={{ border: "1px solid #ddd", padding: "6px" }}>{semName}</td>
+                              <td style={{ border: "1px solid #ddd", padding: "6px" }}>
+                                Rs {fs.defaultAmount?.toFixed(2)}
+                              </td>
+                              <td style={{ border: "1px solid #ddd", padding: "6px" }}>
+                                <button
+                                  className="admin-button edit-btn"
+                                  onClick={() => openEditModal(fs)}
+                                  style={{ marginRight: "5px", fontSize: "0.8rem", padding: "3px 6px" }}
+                                >
+                                  Edit
+                                </button>
+                                <button
+                                  className="admin-button delete-btn"
+                                  onClick={() => handleDeleteFeeStructure(fs.feeStructureId)}
+                                  style={{ fontSize: "0.8rem", padding: "3px 6px" }}
+                                >
+                                  Delete
+                                </button>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  )}
+                </div>
               )}
             </div>
-          )}
-        </div>
-      );
-    })}
-  </div>
-
-  {/* Add Fee Structure Modal */}
-  {showAddModal && modalDept && (
-    <div
-      className="modal-overlay"
-      style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: "rgba(0,0,0,0.5)",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        zIndex: 1000,
-      }}
-      onClick={() => setShowAddModal(false)}
-    >
-      <div
-        className="modal-content"
-        onClick={(e) => e.stopPropagation()}
-        style={{
-          backgroundColor: "#fff",
-          padding: "20px",
-          borderRadius: "6px",
-          width: "350px",
-          boxShadow: "0 2px 10px rgba(0,0,0,0.3)",
-        }}
-      >
-        <h3>Add Fee Structure for {modalDept.deptName}</h3>
-        <div style={{ marginBottom: "10px" }}>
-          <label>Semester:</label>
-          <select
-            value={newSemId}
-            onChange={(e) => setNewSemId(e.target.value)}
-            style={{ width: "100%", padding: "6px" }}
-          >
-            <option value="">Select Semester</option>
-            {semesters.map((sem) => (
-              <option key={sem.semId} value={sem.semId}>
-                {sem.semName}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div style={{ marginBottom: "10px" }}>
-          <label>Amount (Rs):</label>
-          <input
-            type="number"
-            value={newAmount}
-            onChange={(e) => setNewAmount(e.target.value)}
-            style={{ width: "100%", padding: "6px" }}
-            min="0"
-            step="0.01"
-          />
-        </div>
-        <div style={{ textAlign: "right" }}>
-          <button
-            className="admin-button add-btn"
-            onClick={() => handleAddFeeStructure(modalDept.deptId)}
-            style={{ marginRight: "10px" }}
-          >
-            Add
-          </button>
-          <button className="admin-button delete-btn" onClick={() => setShowAddModal(false)}>
-            Cancel
-          </button>
-        </div>
+          );
+        })}
       </div>
-    </div>
-  )}
 
-  {/* Edit Fee Structure Modal */}
-  {showEditModal && editFeeStructure && (
-    <div
-      className="modal-overlay"
-      style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: "rgba(0,0,0,0.5)",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        zIndex: 1000,
-      }}
-      onClick={() => setShowEditModal(false)}
-    >
-      <div
-        className="modal-content"
-        onClick={(e) => e.stopPropagation()}
-        style={{
-          backgroundColor: "#fff",
-          padding: "20px",
-          borderRadius: "6px",
-          width: "350px",
-          boxShadow: "0 2px 10px rgba(0,0,0,0.3)",
-        }}
-      >
-        <h3>Edit Fee Structure</h3>
-        <div style={{ marginBottom: "10px" }}>
-          <label>Semester:</label>
-          <select
-            value={editSemId}
-            onChange={(e) => setEditSemId(e.target.value)}
-            style={{ width: "100%", padding: "6px" }}
-          >
-            <option value="">Select Semester</option>
-            {semesters.map((sem) => (
-              <option key={sem.semId} value={sem.semId}>
-                {sem.semName}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div style={{ marginBottom: "10px" }}>
-          <label>Amount (Rs):</label>
-          <input
-            type="number"
-            value={editAmount}
-            onChange={(e) => setEditAmount(e.target.value)}
-            style={{ width: "100%", padding: "6px" }}
-            min="0"
-            step="0.01"
-          />
-        </div>
-        <div style={{ textAlign: "right" }}>
-          <button
-            className="admin-button edit-btn"
-            onClick={handleUpdateFeeStructure}
-            style={{ marginRight: "10px" }}
-          >
-            Update
-          </button>
-          <button className="admin-button delete-btn" onClick={() => setShowEditModal(false)}>
-            Cancel
-          </button>
-        </div>
-      </div>
-    </div>
-    
-  
-  )} 
-<div className="p-4">
-  <div className="card shadow-sm p-4" style={{ maxWidth: '500px' }}>
-    <h3 className="mb-4">Add Fee Type</h3>
-    <form onSubmit={handleSubmit}>
-      <div className="mb-3">
-        <label htmlFor="feeStructureSelect" className="form-label">
-          Select Fee Structure
-        </label>
-        <select
-          id="feeStructureSelect"
-          className="form-select"
-          value={selectedFeeStructureId}
-          onChange={(e) => setSelectedFeeStructureId(e.target.value)}
+      {/* Add Fee Structure Modal */}
+      {showAddModal && modalDept && (
+        <div
+          className="modal-overlay"
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0,0,0,0.5)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 1000,
+          }}
+          onClick={() => setShowAddModal(false)}
         >
-          <option value="">-- Select --</option>
-          {feeStructuresfortype.map((fs) => (
-            <option key={fs.feeStructureId} value={fs.feeStructureId}>
-              {fs.feeStructureDescription}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <button
-        type="submit"
-        className="btn btn-primary"
-        disabled={loading}
-      >
-        {loading ? (
-          <>
-            <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-            Submitting...
-          </>
-        ) : (
-          'Add Fee'
-        )}
-      </button>
-
-      {submitMessage && (
-        <div className="alert alert-info mt-3" role="alert">
-          {submitMessage}
+          <div
+            className="modal-content"
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              backgroundColor: "#fff",
+              padding: "20px",
+              borderRadius: "6px",
+              width: "350px",
+              boxShadow: "0 2px 10px rgba(0,0,0,0.3)",
+            }}
+          >
+            <h3>Add Fee Structure for {modalDept.deptName}</h3>
+            <div style={{ marginBottom: "10px" }}>
+              <label>Semester:</label>
+              <select
+                value={newSemId}
+                onChange={(e) => setNewSemId(e.target.value)}
+                style={{ width: "100%", padding: "6px" }}
+              >
+                <option value="">Select Semester</option>
+                {semesters.map((sem) => (
+                  <option key={sem.semId} value={sem.semId}>
+                    {sem.semName}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div style={{ marginBottom: "10px" }}>
+              <label>Amount (Rs):</label>
+              <input
+                type="number"
+                value={newAmount}
+                onChange={(e) => setNewAmount(e.target.value)}
+                style={{ width: "100%", padding: "6px" }}
+                min="0"
+                step="0.01"
+              />
+            </div>
+            <div style={{ textAlign: "right" }}>
+              <button
+                className="admin-button add-btn"
+                onClick={() => handleAddFeeStructure(modalDept.deptId)}
+                style={{ marginRight: "10px" }}
+              >
+                Add
+              </button>
+              <button className="admin-button delete-btn" onClick={() => setShowAddModal(false)}>
+                Cancel
+              </button>
+            </div>
+          </div>
         </div>
       )}
-    </form>
-  </div>
-</div>
+
+      {/* Edit Fee Structure Modal */}
+      {showEditModal && editFeeStructure && (
+        <div
+          className="modal-overlay"
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0,0,0,0.5)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 1000,
+          }}
+          onClick={() => setShowEditModal(false)}
+        >
+          <div
+            className="modal-content"
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              backgroundColor: "#fff",
+              padding: "20px",
+              borderRadius: "6px",
+              width: "350px",
+              boxShadow: "0 2px 10px rgba(0,0,0,0.3)",
+            }}
+          >
+            <h3>Edit Fee Structure</h3>
+            <div style={{ marginBottom: "10px" }}>
+              <label>Semester:</label>
+              <select
+                value={editSemId}
+                onChange={(e) => setEditSemId(e.target.value)}
+                style={{ width: "100%", padding: "6px" }}
+              >
+                <option value="">Select Semester</option>
+                {semesters.map((sem) => (
+                  <option key={sem.semId} value={sem.semId}>
+                    {sem.semName}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div style={{ marginBottom: "10px" }}>
+              <label>Amount (Rs):</label>
+              <input
+                type="number"
+                value={editAmount}
+                onChange={(e) => setEditAmount(e.target.value)}
+                style={{ width: "100%", padding: "6px" }}
+                min="0"
+                step="0.01"
+              />
+            </div>
+            <div style={{ textAlign: "right" }}>
+              <button
+                className="admin-button edit-btn"
+                onClick={handleUpdateFeeStructure}
+                style={{ marginRight: "10px" }}
+              >
+                Update
+              </button>
+              <button className="admin-button delete-btn" onClick={() => setShowEditModal(false)}>
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
 
 
-</div>
+      )}
+      {/* <div className="p-4">
+        <div className="card shadow-sm p-4" style={{ maxWidth: '500px' }}>
+          <h3 className="mb-4">Add Fee Type</h3>
+          <form onSubmit={handleSubmit}>
+            <div className="mb-3">
+              <label htmlFor="feeStructureSelect" className="form-label">
+                Select Fee Structure
+              </label>
+              <select
+                id="feeStructureSelect"
+                className="form-select"
+                value={selectedFeeStructureId}
+                onChange={(e) => setSelectedFeeStructureId(e.target.value)}
+              >
+                <option value="">-- Select --</option>
+                {feeStructuresfortype.map((fs) => (
+                  <option key={fs.feeStructureId} value={fs.feeStructureId}>
+                    {fs.feeStructureDescription}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-);
+            <button
+              type="submit"
+              className="btn btn-primary"
+              disabled={loading}
+            >
+              {loading ? (
+                <>
+                  <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                  Submitting...
+                </>
+              ) : (
+                'Add Fee'
+              )}
+            </button>
+
+            {submitMessage && (
+              <div className="alert alert-info mt-3" role="alert">
+                {submitMessage}
+              </div>
+            )}
+          </form>
+        </div>
+      </div> */}
+
+
+    </div>
+
+  );
 };
 
 export default FeeStructureManagement;
