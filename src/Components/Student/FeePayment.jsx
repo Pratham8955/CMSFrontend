@@ -60,7 +60,7 @@ const FeePayment = () => {
     const amountInPaise = feeDetails.defaultAmount * 100;
 
     const options = {
-      key: 'rzp_test_OQk3ZHzJNycYA8',
+      key: 'rzp_test_Sh9HYbJ3Cyw97I',
       currency: 'INR',
       amount: amountInPaise,
       name: 'College Fee Payment',

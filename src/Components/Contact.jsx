@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import {
   FaMapMarkerAlt,
@@ -9,18 +9,48 @@ import {
   FaLinkedinIn,
 } from "react-icons/fa";
 import "../css/Contact.css";
+import axios from "axios";
+import { Toast } from "bootstrap";
 
 const ContactFullScreen = () => {
-  const handleSubmit = (e) => {
+  const [feedback, setfeedback] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
+    timestamp: ""
+  });
+
+  const getCurrentTimestamp = () => new Date().toISOString();
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    Swal.fire({
-      icon: "success",
-      title: "Message Sent",
-      text: "Thank you for contacting us. We will get back to you shortly!",
-      confirmButtonColor: "#0d6efd",
-    });
-    e.target.reset();
+    try {
+      const dataToSend = { ...feedback, timestamp: getCurrentTimestamp() };
+      const response = await axios.post('http://localhost:5291/api/Feedback/AddFeedback', dataToSend);
+      if (response.data.success) {
+        Swal.fire("Success", "Thanks for Contacting Us!", "success");
+        setfeedback({
+          name: "",
+          email: "",
+          subject: "",
+          message: "",
+          timestamp: ""
+        });
+      } else {
+        Swal.fire("Error", "Failed to Contact.", "error");
+      }
+    } catch (error) {
+      alert("Error: " + (error.response?.data?.message || error.message));
+    }
+  }
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setfeedback((prev) => ({
+      ...prev, [name]: value,
+    }));
   };
+
 
   return (
     <div className="contact-container">
@@ -40,40 +70,58 @@ const ContactFullScreen = () => {
             <div className="mb-3">
               <input
                 type="text"
+                name="name"
+                value={feedback.name}
+                onChange={handleChange}
                 className="form-control rounded-pill shadow-sm"
                 placeholder="Your Name"
                 required
               />
             </div>
+
             <div className="mb-3">
               <input
                 type="email"
+                name="email"
+                value={feedback.email}
+                onChange={handleChange}
                 className="form-control rounded-pill shadow-sm"
                 placeholder="Your Email"
                 required
               />
             </div>
+
             <div className="mb-3">
               <select
+                name="subject"
+                value={feedback.subject}
+                onChange={handleChange}
                 className="form-select rounded-pill shadow-sm"
                 required
                 defaultValue=""
               >
-                <option value="" disabled>Select Subject</option>
-                <option>Admission Inquiry</option>
-                <option>Course Details</option>
-                <option>Technical Support</option>
-                <option>Other</option>
+                <option value="" disabled>
+                  Select Subject
+                </option>
+                <option value="Admission Inquiry">Admission Inquiry</option>
+                <option value="Course Details">Course Details</option>
+                <option value="Technical Support">Technical Support</option>
+                <option value="Other">Other</option>
               </select>
             </div>
+
             <div className="mb-3">
               <textarea
+                name="message"
+                value={feedback.message}
+                onChange={handleChange}
                 className="form-control rounded shadow-sm"
                 rows="4"
                 placeholder="Write your message..."
                 required
               ></textarea>
             </div>
+
             <button
               type="submit"
               className="btn btn-primary w-100 rounded-pill shadow fw-semibold"
