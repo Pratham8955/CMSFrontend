@@ -10,6 +10,7 @@ import {
 } from "react-icons/fa";
 import Swal from "sweetalert2";
 import "../../css/Faculty/FacultyLayout.css"; // Reuse same layout CSS
+import logo from "../../assets/logo.png"; // Replace with your actual logo filename
 
 const StudentLayout = () => {
   const navigate = useNavigate();
@@ -48,7 +49,16 @@ const StudentLayout = () => {
       {/* Sidebar */}
       <nav className={`sidebar d-flex flex-column ${isSidebarOpen ? "open" : "collapsed"}`}>
         <div className="logo-area d-flex align-items-center justify-content-between px-3 py-2">
-          {isSidebarOpen && <h4 className="text-white m-0">Student Panel</h4>}
+         {isSidebarOpen && (
+            <div className="faculty-logo-wrapper d-flex align-items-center">
+              <img
+                src={logo}
+                alt="Faculty Logo"
+                className="faculty-logo"
+              />
+              <h5 className="text-white mb-0 ms-2">Student Panel</h5>
+            </div>
+          )}
           <button
             className="btn btn-link text-white p-0 toggle-btn"
             onClick={toggleSidebar}

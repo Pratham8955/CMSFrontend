@@ -1,6 +1,7 @@
 import React from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import "../css/Navbar.css";
+import logo from '../assets/logo.png';         
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -23,14 +24,20 @@ const Navbar = () => {
   return (
     <nav className="navbar navbar-expand-lg bg-white shadow-sm sticky-top">
       <div className="container-fluid">
-        {/* Logo */}
+        {/* Logo and Title */}
         <span
           className="navbar-brand fw-bold d-flex align-items-center text-dark"
           role="button"
           onClick={() => navigate("/")}
         >
-          <i className="bi bi-mortarboard-fill me-2 fs-4 text-warning"></i>
-          <span className="fs-5">ICT HOME</span>
+          <img
+            src={logo} 
+            alt="Logo"
+            height="40"
+            // width="40"
+            className="me-3"
+          />
+          <span className="fs-3">Capus Wave</span>
         </span>
 
         {/* Mobile Toggle */}

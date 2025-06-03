@@ -16,6 +16,21 @@
 .sidebar.collapsed {
   width: 70px;
 }
+.admin-logo-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.admin-logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: white;
+  object-fit: cover;
+  padding: 3px;
+  border: 2px solid #fff;
+}
+
 
 /* Logo area */
 .logo-area {

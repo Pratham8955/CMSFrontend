@@ -129,7 +129,7 @@ const Home = () => {
     <div className="home-container">
       <div className="home-content">
         <i className="bi bi-mortarboard-fill home-icon"></i>
-        <h1 className="home-title">Welcome to ICT HOME</h1>
+        <h1 className="home-title">Welcome to Campus Wave</h1>
         <p className="home-subtitle">
           Where excellence meets opportunity! At College, we are committed to nurturing talent,
           fostering innovation, and empowering students for a bright future.
@@ -158,7 +158,7 @@ const Home = () => {
       <div className="undergraduate-programs">
         <h3>Invest in Your Future</h3>
         <p>
-          Embark on your academic journey at ICT HOME and explore our diverse undergraduate and postgraduate programs! We offer:{' '}
+          Embark on your academic journey at Campus Wave and explore our diverse undergraduate and postgraduate programs! We offer:{' '}
           {loadingDepts
             ? 'Loading departments...'
             : departments.map((d, i) => (

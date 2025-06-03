@@ -6,6 +6,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "../css/StudentLogin.css";
 import studentImage from "../assets/LoginImg.png";
+import logo from "../assets/logo.png"; // Replace with your actual logo filename
 
 const API_BASE_URL = "https://localhost:7133/api";
 
@@ -58,7 +59,11 @@ const StudentLogin = () => {
 
             <div className="col-md-6 p-4 d-flex align-items-center justify-content-center">
               <form onSubmit={handleSubmit} className="student-login-form w-100">
-                <h2 className="text-center mb-4 text-primary fw-bold">🎓 Student Login</h2>
+                {/* Logo and heading */}
+                <h2 className="text-primary fw-bold d-flex align-items-center justify-content-center gap-2 mb-4">
+                  <img src={logo} alt="Logo" style={{ height: "40px" }} />
+                   Student Login
+                </h2>
 
                 <div className="form-group mb-3">
                   <input
@@ -95,7 +100,6 @@ const StudentLogin = () => {
                   ></i>
                 </div>
 
-                {/* Button and link on same row with 30px spacing */}
                 <div className="d-flex align-items-center" style={{ width: "60%" }}>
                   <button type="submit" className="btn student-login-button" disabled={loading}>
                     {loading ? "Please wait..." : "Sign In"}

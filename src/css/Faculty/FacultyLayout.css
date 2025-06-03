@@ -99,6 +99,20 @@
   margin-top: auto;
   border-top: 1px solid rgba(255, 255, 255, 0.15);
 }
+.faculty-logo-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.faculty-logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: white;
+  object-fit: cover;
+  padding: 3px;
+  border: 2px solid #fff;
+}
 
 .logout-btn:hover {
   background-color: rgba(255, 77, 77, 0.25);

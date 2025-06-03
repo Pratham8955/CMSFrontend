@@ -5,9 +5,7 @@ import Swal from "sweetalert2";
 import "../../css/Admin/AdminLayout.css";
 import 'sweetalert2/dist/sweetalert2.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-
-
-
+import logo from "../../assets/logo.png"; 
 const AdminLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -16,15 +14,15 @@ const AdminLayout = () => {
   const toggleSidebar = () => setSidebarOpen(!isSidebarOpen);
 
   const handleLogout = () => {
-   Swal.fire({
-  title: "Are you sure?",
-  text: "You will be logged out from the Admin Panel.",
-  icon: "warning",
-  showCancelButton: true,
-  confirmButtonColor: "#d33",
-  cancelButtonColor: "#3085d6",
-  confirmButtonText: "Yes, log me out",
-}).then((result) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You will be logged out from the Admin Panel.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, log me out",
+    }).then((result) => {
       if (result.isConfirmed) {
         localStorage.clear();
         navigate("/AdminandFacultyLogin");
@@ -48,7 +46,16 @@ const AdminLayout = () => {
       {/* Sidebar */}
       <nav className={`sidebar d-flex flex-column ${isSidebarOpen ? "open" : "collapsed"}`}>
         <div className="logo-area d-flex align-items-center justify-content-between px-3 py-2">
-          {isSidebarOpen && <h4 className="text-white m-0">Admin Panel</h4>}
+          {isSidebarOpen && (
+            <div className="admin-logo-wrapper d-flex align-items-center">
+              <img
+                src={logo}  
+                alt="Admin Logo"
+                className="admin-logo"
+              />
+              <h5 className="text-white mb-0 ms-2">Admin Panel</h5>
+            </div>
+          )}
           <button
             className="btn btn-link text-white p-0 toggle-btn"
             onClick={toggleSidebar}
@@ -67,7 +74,7 @@ const AdminLayout = () => {
               onClick={() => navigate(item.path)}
               title={isSidebarOpen ? "" : item.label}
             >
-              <button className=" nav-btn d-flex align-items-center w-100 text-start text-white">
+              <button className="nav-btn d-flex align-items-center w-100 text-start text-white">
                 <span className="me-3 icon fs-5">{item.icon}</span>
                 {isSidebarOpen && <span className="flex-grow-1">{item.label}</span>}
               </button>
@@ -80,7 +87,6 @@ const AdminLayout = () => {
             title={isSidebarOpen ? "" : "Logout"}
           >
             <button className="btn nav-btn d-flex align-items-center w-100 text-start text-danger fw-semibold p-3">
-
               <span className="me-3 icon fs-5"><i className="bi bi-box-arrow-right"></i></span>
               {isSidebarOpen && <span>Logout</span>}
             </button>
