@@ -25,7 +25,6 @@ const navigate = useNavigate();
         setNotifications(data);
         setLoading(false);
 
-        // Automatically open the first notification on entry (latest or first)
         if (data.length > 0) {
           setSelectedNotification(data[0]);
           setShowModal(true);
@@ -50,8 +49,8 @@ const navigate = useNavigate();
   };
 
  const handlePayNow = () => {
-    handleCloseModal(); // Close modal first
-    navigate("/student/fees"); // ✅ redirect to payment
+    handleCloseModal(); 
+    navigate("/student/fees"); 
   };
   const handleMarkAsUnread = async () => {
     try {
@@ -88,7 +87,6 @@ const navigate = useNavigate();
         </ul>
       )}
 
-      {/* Modal Popup */}
       <Modal show={showModal} onHide={handleCloseModal} centered>
         <Modal.Header closeButton>
           <Modal.Title>Notification</Modal.Title>
