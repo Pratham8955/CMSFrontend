@@ -5,8 +5,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "../../css/Student/StudentDashboard.css";
 
 const StudentDashboard = () => {
-  const [notifications, setNotifications] = useState([]);
-  const [showPopup, setShowPopup] = useState(false);
   const [student, setStudent] = useState(null);
   const [deptName, setDeptName] = useState("");
   const [faculties, setFaculties] = useState([]);
@@ -18,8 +16,6 @@ const StudentDashboard = () => {
     try {
       const decoded = jwtDecode(token);
       const studentId = decoded.StudentUserId;
-
-      // Fetch student info
       axios
         .get(`https://localhost:7133/api/Student/getStudentsById/${studentId}`)
         .then((res) => {
@@ -61,35 +57,14 @@ const StudentDashboard = () => {
       // Fetch notifications
       axios
         .get(`https://localhost:7133/api/Notifications/notifications/${studentId}`)
-        .then((res) => {
-          if (res.data.length > 0) {
-            setNotifications(res.data);
-            setShowPopup(true);
-          }
-        })
+        
         .catch(console.error);
     } catch (error) {
       console.error("Token decode error:", error);
     }
   }, []);
 
-  const closePopup = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) return;
-
-      const decoded = jwtDecode(token);
-      const studentId = decoded.StudentUserId;
-
-      await axios.post(
-        `https://localhost:7133/api/Notifications/markAllAsRead/${studentId}`
-      );
-    } catch (error) {
-      console.error("Failed to mark notifications as read:", error);
-    } finally {
-      setShowPopup(false);
-    }
-  };
+  
 
   return (
     <div className="container my-5">
@@ -154,28 +129,7 @@ const StudentDashboard = () => {
         </div>
       )}
 
-      {/* Notifications Popup */}
-      {showPopup && (
-        <div className="popup-overlay d-flex justify-content-center align-items-center">
-          <div className="card shadow p-4 popup-card">
-            <h4 className="mb-3">📢 Notifications</h4>
-            <ul className="list-group mb-3">
-              {notifications.map((note) => (
-                <li key={note.id} className="list-group-item">
-                  {note.message}
-                </li>
-              ))}
-            </ul>
-            <button
-              className="btn btn-primary w-100"
-              onClick={closePopup}
-              aria-label="Close notifications"
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      )}
+    
 
     </div>
   );

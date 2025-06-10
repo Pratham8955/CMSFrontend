@@ -7,6 +7,7 @@ import {
   FaTachometerAlt,
   FaMoneyBillAlt,
   FaBookOpen,
+  FaBell 
 } from "react-icons/fa";
 import Swal from "sweetalert2";
 import "../../css/Faculty/FacultyLayout.css"; // Reuse same layout CSS
@@ -42,6 +43,7 @@ const StudentLayout = () => {
     { label: "Profile", icon: FaUserGraduate, path: "/student/profile" },
     { label: "Fees", icon: FaMoneyBillAlt, path: "/student/fees" },
     { label: "Materials", icon: FaBookOpen, path: "/student/material" },
+    { label: "Notifications", icon:   FaBell, path: "/student/studentNotifications" },
   ];
 
   return (

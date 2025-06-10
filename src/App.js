@@ -41,6 +41,7 @@ import Profile from "./Components/Student/Profile";
 import StudentLayout from "./Components/Student/StudentLayout";
 import Fees from "./Components/Student/Fees";
 import FeePayment from "./Components/Student/FeePayment";
+import StudentNotifications from "./Components/Student/StudentNotifications";
 import FacultyLayout from "./Components/Faculty/FacultyLayout";
 import FacultyProfile from "./Components/Faculty/FacultyProfile";
 import AssignedSubjects from "./Components/Faculty/AssignedSubjects";
@@ -62,6 +63,7 @@ const AppWrapper = () => {
     "/student/fees",
     "/student/payment",
     "/student/material",
+    "/student/studentNotifications",
     "/faculty/facultydashboard",
     "/faculty/Fees-Status",
     "/faculty/profile",
@@ -117,6 +119,8 @@ const AppWrapper = () => {
           <Route path="fees" element={<FeePayment />} />
           <Route path="payment" element={<Fees />} />
           <Route path="material" element={<Material />} />
+          <Route path="studentNotifications" element={<StudentNotifications />} />
+
           <Route path="Studentdashboard" element={<Studentdashboard />} />
         </Route>
 
