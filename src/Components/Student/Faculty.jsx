@@ -2,7 +2,9 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
+import { FaEnvelope, FaUser, FaGoogle } from 'react-icons/fa';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import '../../css/Student/FacultyByStudent.css';
 
 const FacultyByStudent = () => {
   const [facultyList, setFacultyList] = useState([]);
@@ -26,7 +28,7 @@ const FacultyByStudent = () => {
         );
         setFacultyList(response.data.faculty);
       } catch (error) {
-        console.error("Error fetching faculty by student ID:", error);
+        console.error("Error fetching faculty:", error);
       } finally {
         setLoading(false);
       }
@@ -35,34 +37,40 @@ const FacultyByStudent = () => {
     fetchFaculty();
   }, [navigate]);
 
-  if (loading) return <p className="text-center mt-4">Loading...</p>;
-  if (!facultyList || facultyList.length === 0)
-    return <p className="text-center mt-4">No faculty found for this student.</p>;
+  const openGmailWithEmail = (email, name) => {
+    const subject = encodeURIComponent(`Hello ${name}`);
+    const body = encodeURIComponent(`Dear ${name},\n`);
+    const gmailURL = `https://mail.google.com/mail/?view=cm&fs=1&to=${email}&su=${subject}&body=${body}`;
+    window.open(gmailURL, '_blank');
+  };
+
+  if (loading) return <p className="text-center mt-5">Loading faculty details...</p>;
+  if (!facultyList.length) return <p className="text-center mt-5">No faculty found.</p>;
 
   return (
-    <div className="container mt-4">
-      <h3 className="mb-4 text-center">Faculty Details</h3>
-      <div className="row">
+    <div className="container py-5">
+      <h2 className="text-center text-primary mb-4 fw-semibold">My Faculty Members</h2>
+      <div className="row justify-content-center">
         {facultyList.map((faculty) => (
-          <div key={faculty.facultyId} className="col-md-4 mb-4">
+          <div key={faculty.facultyId} className="col-md-6 col-lg-4 mb-4">
             <div
-              className="card shadow-sm h-100"
-              style={{ cursor: 'pointer' }}
-              onClick={() =>
-                window.open(
-                  `https://mail.google.com/mail/u/0/?tab=rm&ogbl#inbox`,
-                  '_blank'
-                )
-              }
+              className="faculty-card card h-100 text-center border-0 shadow-sm"
+              onClick={() => openGmailWithEmail(faculty.email, faculty.facultyName)}
             >
               <div className="card-body">
-                <h5 className="card-title">{faculty.facultyName}</h5>
-                <p className="card-text">
-                  <strong>Email:</strong> {faculty.email}
+                <FaUser size={50} className="text-primary mb-3" />
+                <h5 className="card-title fw-bold">{faculty.facultyName}</h5>
+                <p className="card-text text-muted mb-1">
+                  <FaEnvelope className="me-2" />
+                  {faculty.email}
                 </p>
                 <p className="card-text">
                   <strong>Gender:</strong> {faculty.gender}
                 </p>
+                <button className="btn btn-primary mt-2 px-4 py-2 d-flex align-items-center mx-auto">
+                  <FaGoogle className="me-2" />
+                  Contact via Gmail
+                </button>
               </div>
             </div>
           </div>
