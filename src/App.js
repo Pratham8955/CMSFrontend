@@ -51,7 +51,7 @@ import FacultyForgetPass from "./Components/FacultyForgetPass";
 import Material from "./Components/Student/Material";
 import FeeStatus from "./Components/Faculty/FeeStatus";
 import Notifications from "./Components/Faculty/Notifications";
-// import StudentUpdate from "./Components/Admin/StudentUpdate";
+import Faculty from "./Components/Student/Faculty";
 
 // AppWrapper handles conditional Navbar/Footer
 const AppWrapper = () => {
@@ -63,6 +63,7 @@ const AppWrapper = () => {
     "/student/fees",
     "/student/payment",
     "/student/material",
+    "/student/faculty",
     "/student/studentNotifications",
     "/faculty/facultydashboard",
     "/faculty/Fees-Status",
@@ -119,6 +120,7 @@ const AppWrapper = () => {
           <Route path="fees" element={<FeePayment />} />
           <Route path="payment" element={<Fees />} />
           <Route path="material" element={<Material />} />
+          <Route path="faculty" element={<Faculty />} />
           <Route path="studentNotifications" element={<StudentNotifications />} />
 
           <Route path="Studentdashboard" element={<Studentdashboard />} />

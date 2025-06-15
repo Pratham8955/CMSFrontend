@@ -44,6 +44,7 @@ const StudentLayout = () => {
     { label: "Fees", icon: FaMoneyBillAlt, path: "/student/fees" },
     { label: "Materials", icon: FaBookOpen, path: "/student/material" },
     { label: "Notifications", icon:   FaBell, path: "/student/studentNotifications" },
+    { label: "Faculties", icon:   FaBell, path: "/student/faculty" },
   ];
 
   return (
