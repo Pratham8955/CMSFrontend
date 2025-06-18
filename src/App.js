@@ -34,6 +34,7 @@ import FacultyAssignment from "./Components/Admin/FacultyAssignment";
 import Admision from "./Components/Admin/Admision";
 import SubjectManagement from "./Components/Admin/SubjectManagement";
 import FeeStructureManagement from "./Components/Admin/FeeStructureManagement";
+import Feedback from "./Components/Admin/Feedback";
 // Protected Route Wrapper
 import ProtectedRoute from "./Components/ProtectedRoute";
 import Unauthorize from "./Components/Unauthorize";
@@ -76,6 +77,7 @@ const AppWrapper = () => {
     "/admin/faculties",
     "/admin/students",
     "/admin/faculty-assignment",
+    "/admin/feedback",
     "/studentForgetPassword",
     "/facultyForgetPassword",
     "/admin/admision/:studentId?",
@@ -121,7 +123,10 @@ const AppWrapper = () => {
           <Route path="payment" element={<Fees />} />
           <Route path="material" element={<Material />} />
           <Route path="faculty" element={<Faculty />} />
-          <Route path="studentNotifications" element={<StudentNotifications />} />
+          <Route
+            path="studentNotifications"
+            element={<StudentNotifications />}
+          />
 
           <Route path="Studentdashboard" element={<Studentdashboard />} />
         </Route>
@@ -165,6 +170,7 @@ const AppWrapper = () => {
           />
 
           <Route path="faculty-assignment" element={<FacultyAssignment />} />
+          <Route path="feedback" element={<Feedback />} />
         </Route>
       </Routes>
 

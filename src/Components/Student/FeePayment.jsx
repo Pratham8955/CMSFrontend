@@ -80,6 +80,11 @@ const FeePayment = () => {
             paymentData,
             { headers: { Authorization: `Bearer ${token}` } }
           );
+          await axios.post(
+            `https://localhost:7133/api/Notifications/markAllAsRead/${studentId}`,
+            {},
+            { headers: { Authorization: `Bearer ${token}` } }
+          );
           setPaymentSuccess(true);
         } catch (err) {
           alert('Payment was successful but saving it failed.');

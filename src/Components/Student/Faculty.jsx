@@ -38,7 +38,7 @@ const FacultyByStudent = () => {
   }, [navigate]);
 
   const openGmailWithEmail = (email, name) => {
-    const subject = encodeURIComponent(`Hello ${name}`);
+    const subject = encodeURIComponent(`Formal Inquiry`);
     const body = encodeURIComponent(`Dear ${name},\n`);
     const gmailURL = `https://mail.google.com/mail/?view=cm&fs=1&to=${email}&su=${subject}&body=${body}`;
     window.open(gmailURL, '_blank');

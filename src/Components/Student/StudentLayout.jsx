@@ -7,9 +7,10 @@ import {
   FaTachometerAlt,
   FaMoneyBillAlt,
   FaBookOpen,
-  FaBell 
+  FaBell
 } from "react-icons/fa";
 import Swal from "sweetalert2";
+import { BsPersonBadge } from "react-icons/bs";
 import "../../css/Faculty/FacultyLayout.css"; // Reuse same layout CSS
 import logo from "../../assets/logo.png"; // Replace with your actual logo filename
 
@@ -43,8 +44,8 @@ const StudentLayout = () => {
     { label: "Profile", icon: FaUserGraduate, path: "/student/profile" },
     { label: "Fees", icon: FaMoneyBillAlt, path: "/student/fees" },
     { label: "Materials", icon: FaBookOpen, path: "/student/material" },
-    { label: "Notifications", icon:   FaBell, path: "/student/studentNotifications" },
-    { label: "Faculties", icon:   FaBell, path: "/student/faculty" },
+    { label: "Notifications", icon: FaBell, path: "/student/studentNotifications" },
+    { label: "Faculties", icon: BsPersonBadge, path: "/student/faculty" },
   ];
 
   return (
@@ -52,7 +53,7 @@ const StudentLayout = () => {
       {/* Sidebar */}
       <nav className={`sidebar d-flex flex-column ${isSidebarOpen ? "open" : "collapsed"}`}>
         <div className="logo-area d-flex align-items-center justify-content-between px-3 py-2">
-         {isSidebarOpen && (
+          {isSidebarOpen && (
             <div className="faculty-logo-wrapper d-flex align-items-center">
               <img
                 src={logo}

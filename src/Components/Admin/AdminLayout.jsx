@@ -5,7 +5,7 @@ import Swal from "sweetalert2";
 import "../../css/Admin/AdminLayout.css";
 import 'sweetalert2/dist/sweetalert2.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import logo from "../../assets/logo.png"; 
+import logo from "../../assets/logo.png";
 const AdminLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -39,6 +39,8 @@ const AdminLayout = () => {
     { label: "Subject", icon: <i className="bi bi-book"></i>, path: "/admin/subjectManagement" },
     { label: "FeeStructure", icon: <i className="bi bi-currency-rupee"></i>, path: "/admin/feeStructureManagement" },
     { label: "Faculty Assignment", icon: <i className="bi bi-journal-bookmark"></i>, path: "/admin/faculty-assignment" },
+    { label: "Feedback", icon: <i className="bi bi-chat-dots"></i>, path: "/admin/feedback" },
+
   ];
 
   return (
@@ -49,7 +51,7 @@ const AdminLayout = () => {
           {isSidebarOpen && (
             <div className="admin-logo-wrapper d-flex align-items-center">
               <img
-                src={logo}  
+                src={logo}
                 alt="Admin Logo"
                 className="admin-logo"
               />
