@@ -2,60 +2,60 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { FaUserGraduate, FaBuilding, FaChalkboardTeacher } from "react-icons/fa";
 import "../../css/Admin/Dashboard.css";
+import { API_BASE_URL } from "../../config/api";
 
 const Dashboard = () => {
   const [studentCount, setStudentCount] = useState(0);
   const [departmentCount, setDepartmentCount] = useState(0);
-  const [facultyCount, setFacultyCount] = useState(0); // NEW
+  const [facultyCount, setFacultyCount] = useState(0);
 
   useEffect(() => {
     fetchStudentCount();
     fetchDepartmentCount();
     fetchFacultyCount();
   }, []);
-const fetchStudentCount = async () => {
-  try {
-    const res = await axios.get("https://localhost:7133/api/Student/GetStudents");
-    console.log("Student API Response:", res.data);  // <-- આ ઉમેરો
-    if (res.data.success && Array.isArray(res.data.student)) {
-      setStudentCount(res.data.student.length);
-    } else {
-      console.warn("Unexpected student data structure", res.data);
-    }
-  } catch (error) {
-    console.error(error);
-  }
-};
 
+  const fetchStudentCount = async () => {
+    try {
+      const res = await axios.get(`${API_BASE_URL}/Student/GetStudents`);
+      if (res.data.success && Array.isArray(res.data.student)) {
+        setStudentCount(res.data.student.length);
+      } else {
+        console.warn("Unexpected student data structure", res.data);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const fetchDepartmentCount = async () => {
-  try {
-    const res = await axios.get("https://localhost:7133/api/Department/GetDepartment");
-    if (res.data.success && Array.isArray(res.data.department)) {
-      setDepartmentCount(res.data.department.length);
-    } else {
-      console.warn("Unexpected department data structure", res.data);
+    try {
+      const res = await axios.get(`${API_BASE_URL}/Department/GetDepartment`);
+      if (res.data.success && Array.isArray(res.data.department)) {
+        setDepartmentCount(res.data.department.length);
+      } else {
+        console.warn("Unexpected department data structure", res.data);
+      }
+    } catch (error) {
+      console.error(error);
     }
-  } catch (error) {
-    console.error(error);
-  }
-};
+  };
 
-const fetchFacultyCount = async () => {
-  try {
-    const res = await axios.get("https://localhost:7133/api/Faculties/GetFaculties");
-    if (res.data.success && (Array.isArray(res.data.faculty) || Array.isArray(res.data.Faculty))) {
-      setFacultyCount(
-        (res.data.faculty && res.data.faculty.length) ||
-        (res.data.Faculty && res.data.Faculty.length) || 0
-      );
-    } else {
-      console.warn("Unexpected faculty data structure", res.data);
+  const fetchFacultyCount = async () => {
+    try {
+      const res = await axios.get(`${API_BASE_URL}/Faculties/GetFaculties`);
+      if (res.data.success && (Array.isArray(res.data.faculty) || Array.isArray(res.data.Faculty))) {
+        setFacultyCount(
+          (res.data.faculty && res.data.faculty.length) ||
+          (res.data.Faculty && res.data.Faculty.length) || 0
+        );
+      } else {
+        console.warn("Unexpected faculty data structure", res.data);
+      }
+    } catch (error) {
+      console.error(error);
     }
-  } catch (error) {
-    console.error(error);
-  }
-};
+  };
 
   // const fetchDepartmentCount = async () => {
   //   try {

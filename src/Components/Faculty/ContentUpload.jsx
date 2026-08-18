@@ -3,6 +3,7 @@ import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
+import { API_BASE_URL, BASE_URL } from "../../config/api";
 import "../../css/Faculty/ContentUpload.css";
 
 const MySwal = withReactContent(Swal);
@@ -14,10 +15,9 @@ const ContentUpload = () => {
 
   const [subjects, setSubjects] = useState([]);
   const [contents, setContents] = useState([]);
-  const [existingpdf, setexistingpdf] = useState("");
 
   useEffect(() => {
-    axios.get(`https://localhost:7133/api/FacultySubject/GetFacultySubjectsForAssignedFaculty/${facultyId}`)
+    axios.get(`${API_BASE_URL}/FacultySubject/GetFacultySubjectsForAssignedFaculty/${facultyId}`)
       .then(response => {
         if (response.data.success) {
           setSubjects(response.data.facultySubject);
@@ -29,7 +29,7 @@ const ContentUpload = () => {
   }, [facultyId]);
 
   const fetchContents = () => {
-    axios.get(`http://localhost:5291/api/CourseContent/GetByIdforFaculty/${facultyId}`)
+    axios.get(`${API_BASE_URL}/CourseContent/GetByIdforFaculty/${facultyId}`)
       .then(response => {
         setContents(response.data.content);
       })
@@ -45,7 +45,6 @@ const ContentUpload = () => {
       description: existing?.description || '',
       pdfFile: null
     };
-
 
     MySwal.fire({
       title: mode === "edit" ? 'Edit Course Content' : 'Add Course Content',
@@ -105,22 +104,11 @@ const ContentUpload = () => {
               }}
             />
             {mode === "edit" && existing?.filePath && (
-              // <a
-              //   href={`https://localhost:7133/${existing.filePath}`}
-              //   target="_blank"
-              //   rel="noopener noreferrer"
-              //   className="btn btn-sm btn-outline-primary"
-              // >
-              //   View Existing PDF
-              // </a>
               <small className="form-text text-muted mt-1">
                 Using existing file: {existing.filePath.split("/").pop()}
               </small>
-
             )}
           </div>
-
-
         </div>
       ),
       showCancelButton: true,
@@ -146,8 +134,8 @@ const ContentUpload = () => {
           Swal.showLoading();
 
           const url = mode === "edit"
-            ? `https://localhost:7133/api/CourseContent/${existing.contentId}`
-            : 'https://localhost:7133/api/CourseContent/upload-course-content';
+            ? `${API_BASE_URL}/CourseContent/${existing.contentId}`
+            : `${API_BASE_URL}/CourseContent/upload-course-content`;
 
           const method = mode === "edit" ? axios.put : axios.post;
 
@@ -180,7 +168,7 @@ const ContentUpload = () => {
 
     if (result.isConfirmed) {
       try {
-        const response = await axios.delete(`https://localhost:7133/api/CourseContent/${id}`);
+        const response = await axios.delete(`${API_BASE_URL}/CourseContent/${id}`);
         if (response.data.success) {
           Swal.fire('Deleted!', 'Content deleted successfully.', 'success');
           fetchContents();
@@ -196,7 +184,7 @@ const ContentUpload = () => {
 
   return (
     <div className="d-flex justify-content-center">
-      <div className="container " style={{ maxWidth: '1100px', width: '100%' }}>
+      <div className="container" style={{ maxWidth: '1100px', width: '100%' }}>
         <div className="d-flex justify-content-between align-items-center mb-4">
           <h2 className="fw-bold text-primary">Uploaded Course Contents</h2>
           <button className="btn btn-success fw-semibold" onClick={() => showForm("add")}>
@@ -228,7 +216,7 @@ const ContentUpload = () => {
                       <td>{content.subjectName}</td>
                       <td className="text-center">
                         <a
-                          href={`https://localhost:7133/${content.filePath}`}
+                          href={`${BASE_URL}/${content.filePath}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="btn btn-sm btn-outline-primary"
@@ -260,7 +248,6 @@ const ContentUpload = () => {
         )}
       </div>
     </div>
-
   );
 };
 

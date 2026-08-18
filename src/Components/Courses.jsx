@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { FaArrowLeft } from 'react-icons/fa';
 import '../css/Courses.css';
 import { NavLink, useLocation } from "react-router-dom";
+import { API_BASE_URL } from "../config/api";
 
 const Courses = () => {
   const [departments, setDepartments] = useState([]);
@@ -23,9 +24,9 @@ const Courses = () => {
 
   useEffect(() => {
     Promise.all([
-      fetch('https://localhost:7133/api/Department/GetDepartment').then(res => res.json()),
-      fetch('https://localhost:7133/api/Subject/GetSubjects').then(res => res.json()),
-      fetch('https://localhost:7133/api/FeeStructure/getFeeStructure').then(res => res.json())
+      fetch(`${API_BASE_URL}/Department/GetDepartment`).then(res => res.json()),
+      fetch(`${API_BASE_URL}/Subject/GetSubjects`).then(res => res.json()),
+      fetch(`${API_BASE_URL}/FeeStructure/getFeeStructure`).then(res => res.json())
     ]).then(([deptData, subjData, feeData]) => {
       if (deptData.success && subjData.success && feeData.success) {
         const depts = deptData.department || deptData.Department || [];

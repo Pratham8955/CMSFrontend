@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { API_BASE_URL } from '../config/api';
 
 const StudentForgetPass = () => {
   const navigate = useNavigate();
@@ -61,7 +62,7 @@ const StudentForgetPass = () => {
     setLoading(true);
     try {
       const response = await axios.post(
-        'https://localhost:7133/api/CommonApi/send-otp',  // changed URL for student
+        `${API_BASE_URL}/CommonApi/send-otp`,
         { email },
         { withCredentials: true }
       );
@@ -86,7 +87,7 @@ const StudentForgetPass = () => {
     setLoading(true);
     try {
       const response = await axios.post(
-        'https://localhost:7133/api/CommonApi/verify-otp', // changed URL for student
+        `${API_BASE_URL}/CommonApi/verify-otp`,
         { email, otp: otpString },
         { withCredentials: true }
       );
@@ -119,7 +120,7 @@ const StudentForgetPass = () => {
     setResetLoading(true);
     try {
       const response = await axios.post(
-        'https://localhost:7133/api/CommonApi/forgetPasswordStudent', // changed URL for student
+        `${API_BASE_URL}/CommonApi/forgetPasswordStudent`,
         {
           email,
           password: newPassword,

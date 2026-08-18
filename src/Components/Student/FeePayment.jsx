@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 import "../../css/Student/FeePayment.css"
+import { API_BASE_URL } from '../../config/api';
+
 const FeePayment = () => {
   const [feeDetails, setFeeDetails] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -26,14 +28,14 @@ const FeePayment = () => {
     const fetchFeeDetails = async () => {
       try {
         const response = await axios.get(
-          `https://localhost:7133/api/FeeStructure/GetExpectedFeeStructure/${studentId}`,
+          `${API_BASE_URL}/FeeStructure/GetExpectedFeeStructure/${studentId}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         const feeData = response.data;
         setFeeDetails(feeData);
 
         const statusResponse = await axios.get(
-          `https://localhost:7133/api/StudentFess/CheckPaymentStatus/${studentId}/${feeData.feeStructureId}`,
+          `${API_BASE_URL}/StudentFess/CheckPaymentStatus/${studentId}/${feeData.feeStructureId}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
@@ -76,12 +78,12 @@ const FeePayment = () => {
 
         try {
           await axios.post(
-            'https://localhost:7133/api/StudentFess/StudentFees',
+            `${API_BASE_URL}/StudentFess/StudentFees`,
             paymentData,
             { headers: { Authorization: `Bearer ${token}` } }
           );
           await axios.post(
-            `https://localhost:7133/api/Notifications/markAllAsRead/${studentId}`,
+            `${API_BASE_URL}/Notifications/markAllAsRead/${studentId}`,
             {},
             { headers: { Authorization: `Bearer ${token}` } }
           );

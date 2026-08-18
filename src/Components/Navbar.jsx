@@ -1,7 +1,7 @@
 import React from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import "../css/Navbar.css";
-import logo from '../assets/logo.png';         
+import logo from '../assets/logo.png';
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -31,13 +31,13 @@ const Navbar = () => {
           onClick={() => navigate("/")}
         >
           <img
-            src={logo} 
+            src={logo}
             alt="Logo"
             height="40"
             // width="40"
             className="me-3"
           />
-          <span className="fs-3">Capus Wave</span>
+          <span className="fs-3">Campus Wave</span>
         </span>
 
         {/* Mobile Toggle */}

@@ -5,8 +5,7 @@ import Stateandcity from "../Admin/Stateandcity.json";
 import "../../css/Admin/Admision.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useLocation, useNavigate } from "react-router-dom";
-
-const API_BASE_URL = "https://localhost:7133/api";
+import { API_BASE_URL } from "../../config/api";
 
 const Admision = () => {
   const location = useLocation();

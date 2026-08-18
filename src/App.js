@@ -18,7 +18,6 @@ import Navbar from "./Components/Navbar";
 import Courses from "./Components/Courses";
 import Contact from "./Components/Contact";
 import AboutUS from "./Components/AboutUS";
-import Footer from "./Components/Footer";
 
 // Dashboards
 import Studentdashboard from "./Components/Student/Studentdashboard";
@@ -173,8 +172,6 @@ const AppWrapper = () => {
           <Route path="feedback" element={<Feedback />} />
         </Route>
       </Routes>
-
-      {!shouldHideFooter && <Footer />}
     </>
   );
 };

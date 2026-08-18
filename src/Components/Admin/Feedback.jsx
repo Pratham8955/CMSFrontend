@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Table, Spinner } from "react-bootstrap";
+import { API_BASE_URL } from "../../config/api";
 
 const Feedback = () => {
     const [feedbackList, setFeedbackList] = useState([]);
@@ -9,7 +10,7 @@ const Feedback = () => {
     useEffect(() => {
         const fetchFeedback = async () => {
             try {
-                const response = await axios.get("http://localhost:5291/api/Feedback/GetFeedBack");
+                const response = await axios.get(`${API_BASE_URL}/Feedback/GetFeedBack`);
                 if (response.data.success) {
                     setFeedbackList(response.data.feedback);
                 }

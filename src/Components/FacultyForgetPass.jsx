@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { API_BASE_URL } from '../config/api';
 
 const FacultyForgetPass = () => {
   const navigate = useNavigate();
@@ -63,7 +64,7 @@ const FacultyForgetPass = () => {
     setLoading(true);
     try {
       const response = await axios.post(
-        'https://localhost:7133/api/CommonApi/send-otp',
+        `${API_BASE_URL}/CommonApi/send-otp`,
         { email },
         { withCredentials: true }
       );
@@ -88,7 +89,7 @@ const FacultyForgetPass = () => {
     setLoading(true);
     try {
       const response = await axios.post(
-        'https://localhost:7133/api/CommonApi/verify-otp',
+        `${API_BASE_URL}/CommonApi/verify-otp`,
         { email, otp: otpString },
         { withCredentials: true }
       );
@@ -121,13 +122,13 @@ const FacultyForgetPass = () => {
     setResetLoading(true);
     try {
       const response = await axios.post(
-        'https://localhost:7133/api/CommonApi/forgetPasswordFaculty',
+        `${API_BASE_URL}/CommonApi/forgetPasswordFaculty`,
         {
           email,
           password: newPassword,
         }
       );
-     toast.success(response.data.message || 'Password updated successfully');
+      toast.success(response.data.message || 'Password updated successfully');
 
       setTimeout(() => {
         navigate('/AdminandFacultyLogin');

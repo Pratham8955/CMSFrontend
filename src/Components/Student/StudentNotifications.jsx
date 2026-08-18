@@ -3,13 +3,14 @@ import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Modal, Button, Spinner } from "react-bootstrap";
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router-dom";
+import { API_BASE_URL } from "../../config/api";
 const StudentNotifications = () => {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedNotification, setSelectedNotification] = useState(null);
   const [showModal, setShowModal] = useState(false);
-const navigate = useNavigate(); 
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
@@ -19,7 +20,7 @@ const navigate = useNavigate();
         const studentId = decoded.StudentUserId;
 
         const response = await axios.get(
-          `https://localhost:7133/api/Notifications/notifications/${studentId}`
+          `${API_BASE_URL}/Notifications/notifications/${studentId}`
         );
         const data = response.data;
         setNotifications(data);
@@ -48,14 +49,18 @@ const navigate = useNavigate();
     setSelectedNotification(null);
   };
 
- const handlePayNow = () => {
-    handleCloseModal(); 
-    navigate("/student/fees"); 
+  const handlePayNow = () => {
+    handleCloseModal();
+    navigate("/student/fees");
   };
   const handleMarkAsUnread = async () => {
     try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+      const decoded = jwtDecode(token);
+      const studentId = decoded.StudentUserId;
       await axios.post(
-        `https://localhost:7133/api/Notifications/markAsUnread/${selectedNotification.id}`
+        `${API_BASE_URL}/Notifications/markAllAsRead/${studentId}`
       );
       alert("Marked as unread!");
       handleCloseModal();

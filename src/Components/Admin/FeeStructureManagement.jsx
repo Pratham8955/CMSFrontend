@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import axios from "axios";
-import "../../css/Admin/FeeStructureManagement.css"
+import "../../css/Admin/FeeStructureManagement.css";
+import { API_BASE_URL } from "../../config/api";
+
 const FeeStructureManagement = () => {
   const [departments, setDepartments] = useState([]);
   const [semesters, setSemesters] = useState([]);
@@ -36,7 +38,7 @@ const FeeStructureManagement = () => {
   useEffect(() => {
     const feeStructuresfortype = async () => {
       try {
-        const response = await axios.get('https://localhost:7133/api/FeeStructure/getUnassignedFeeStructures');
+        const response = await axios.get(`${API_BASE_URL}/FeeStructure/getUnassignedFeeStructures`);
         if (response.data.success) {
           setFeeStructuresfortype(response.data.data);
         }
@@ -88,7 +90,7 @@ const FeeStructureManagement = () => {
 
 
   const fetchDepartments = () => {
-    fetch("https://localhost:7133/api/Department/GetDepartment")
+    fetch(`${API_BASE_URL}/Department/GetDepartment`)
       .then((res) => res.json())
       .then((data) => {
         if (data.success && data.department) {
@@ -105,7 +107,7 @@ const FeeStructureManagement = () => {
   };
 
   const fetchSemesters = () => {
-    fetch("https://localhost:7133/api/CommonApi/GetSemester")
+    fetch(`${API_BASE_URL}/CommonApi/GetSemester`)
       .then((res) => res.json())
       .then((data) => {
         if (data.success && data.semester) {
@@ -122,7 +124,7 @@ const FeeStructureManagement = () => {
   };
 
   const fetchFeeStructures = () => {
-    fetch("https://localhost:7133/api/FeeStructure/getFeeStructure")
+    fetch(`${API_BASE_URL}/FeeStructure/getFeeStructure`)
       .then((res) => res.json())
       .then((data) => {
         if (data.success && data.feeStruct) {
@@ -151,7 +153,7 @@ const FeeStructureManagement = () => {
       feeStructureDescription: "",
     };
 
-    fetch("https://localhost:7133/api/FeeStructure/addFeeStructure", {
+    fetch(`${API_BASE_URL}/FeeStructure/addFeeStructure`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
@@ -182,7 +184,7 @@ const FeeStructureManagement = () => {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch(`https://localhost:7133/api/FeeStructure/deleteFeeStructure/${feeStructureId}`, {
+        fetch(`${API_BASE_URL}/FeeStructure/deleteFeeStructure/${feeStructureId}`, {
           method: "DELETE",
         })
           .then((res) => {
@@ -226,7 +228,7 @@ const FeeStructureManagement = () => {
       feeStructureId: editFeeStructure.feeStructureId,
     };
 
-    fetch(`https://localhost:7133/api/FeeStructure/updateFeeStructure/${editFeeStructure.feeStructureId}`, {
+    fetch(`${API_BASE_URL}/FeeStructure/updateFeeStructure/${editFeeStructure.feeStructureId}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),

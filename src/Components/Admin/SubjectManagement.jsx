@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import "../../css/AdminDepartments.css";
+import { API_BASE_URL } from "../../config/api";
 
 const SubjectManagement = () => {
   const [departments, setDepartments] = useState([]);
@@ -33,7 +34,7 @@ const SubjectManagement = () => {
   }, []);
 
   const fetchDepartments = () => {
-    fetch("https://localhost:7133/api/Department/GetDepartment")
+    fetch(`${API_BASE_URL}/Department/GetDepartment`)
       .then((res) => res.json())
       .then((data) => {
         if (data.success && data.department) {
@@ -50,7 +51,7 @@ const SubjectManagement = () => {
   };
 
   const fetchSemesters = () => {
-    fetch("https://localhost:7133/api/CommonApi/GetSemester")
+    fetch(`${API_BASE_URL}/CommonApi/GetSemester`)
       .then((res) => res.json())
       .then((data) => {
         if (data.success && data.semester) {
@@ -67,7 +68,7 @@ const SubjectManagement = () => {
   };
 
   const fetchSubjects = () => {
-    fetch("https://localhost:7133/api/Subject/GetSubjects")
+    fetch(`${API_BASE_URL}/Subject/GetSubjects`)
       .then((res) => res.json())
       .then((data) => {
         if (data.success && data.subject) {
@@ -100,7 +101,7 @@ const SubjectManagement = () => {
       semId: parseInt(newSemId, 10),
     };
 
-    fetch("https://localhost:7133/api/Subject/AddSubjects", {
+    fetch(`${API_BASE_URL}/Subject/AddSubjects`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(subjectData),
@@ -133,7 +134,7 @@ const SubjectManagement = () => {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch(`https://localhost:7133/api/Subject/DeleteSubject/${id}`, {
+        fetch(`${API_BASE_URL}/Subject/DeleteSubject/${id}`, {
           method: "DELETE",
         })
           .then((res) => {
@@ -181,7 +182,7 @@ const SubjectManagement = () => {
       semId: parseInt(editSemId, 10),
     };
 
-    fetch(`https://localhost:7133/api/Subject/UpdateSubject/${editSubjectId}`, {
+    fetch(`${API_BASE_URL}/Subject/UpdateSubject/${editSubjectId}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(updatedSubject),

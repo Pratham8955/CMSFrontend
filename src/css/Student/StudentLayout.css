@@ -1,17 +1,33 @@
+.student-layout {
+  height: 100vh;
+  max-height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+}
+
 .sidebar-new {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   width: 260px;
+  min-width: 260px;
+  max-width: 260px;
+  flex-shrink: 0;
   background: linear-gradient(135deg, #003366, #001f4d);
   box-shadow: 2px 0 8px rgba(0, 26, 77, 0.6);
-  transition: width 0.3s ease;
-  min-height: 100vh;
+  transition: width 0.3s ease, min-width 0.3s ease, max-width 0.3s ease;
+  height: 100vh;
+  max-height: 100vh;
   z-index: 1000;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .sidebar-new.collapsed {
   width: 70px;
+  min-width: 70px;
+  max-width: 70px;
 }
 
 .nav-menu {
@@ -50,17 +66,3 @@
 .logout-btn:hover {
   background-color: rgba(255, 77, 77, 0.25);
 }
-
-/* .logout-btn {
-  padding: 12px 20px;
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  border-top: 1px solid rgba(255, 255, 255, 0.15);
-  color: white;
-}
-
-.logout-btn:hover {
-  background-color: rgba(255, 77, 77, 0.25);
-  color: #aad8ff;
-} */

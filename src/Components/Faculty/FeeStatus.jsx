@@ -3,6 +3,7 @@ import axios from "axios";
 import {jwtDecode} from "jwt-decode";
 import "../../css/Faculty/FeeStatus.css";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { API_BASE_URL } from "../../config/api";
 
 const FeeStatus = () => {
   const [feeData, setFeeData] = useState([]);
@@ -23,7 +24,7 @@ const FeeStatus = () => {
         const facultyId = decoded.FacultyUserId;
 
         const deptResponse = await axios.get(
-          `https://localhost:7133/api/Department/GetDepartmentByFacultyId/${facultyId}`
+          `${API_BASE_URL}/Department/GetDepartmentByFacultyId/${facultyId}`
         );
 
         if (!deptResponse.data.success || !deptResponse.data.department.length) {
@@ -35,7 +36,7 @@ const FeeStatus = () => {
         const departmentId = deptResponse.data.department[0].deptId;
 
         const paymentResponse = await axios.get(
-          `https://localhost:7133/api/StudentFess/allpaymentsByDep/${departmentId}`
+          `${API_BASE_URL}/StudentFess/allpaymentsByDep/${departmentId}`
         );
 
         if (paymentResponse.data.success) {

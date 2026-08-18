@@ -1,0 +1,51 @@
+/* Notification.css - Faculty Notification Styling */
+
+.notification-container {
+  width: 100%;
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 0 16px;
+}
+
+.notification-header {
+  font-size: 1.75rem;
+  color: #0f172a;
+}
+
+.notification-card {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.06);
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+}
+
+.notification-card-header {
+  background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+  color: #ffffff;
+  padding: 20px 24px;
+}
+
+.notification-card-header h4 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.notification-card-body {
+  padding: 28px 24px;
+}
+
+.notify-btn {
+  padding: 10px 24px;
+  font-weight: 600;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.loading-text {
+  color: #64748b;
+  font-weight: 500;
+}

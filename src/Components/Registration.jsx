@@ -4,8 +4,8 @@ import Swal from "sweetalert2";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useNavigate } from "react-router-dom";
 import Registrationimg from "../assets/Registrationimg.png";
+import { API_BASE_URL } from "../config/api";
 
-const API_BASE_URL = "https://localhost:7133/api";
 const STATE_API_URL = "https://api.countrystatecity.in/v1/countries/IN/states";
 const CITY_API_URL = "https://api.countrystatecity.in/v1/countries/IN/states";
 const API_KEY = "T29vSlpCbVFpd1FsN3hoOURUVHFkTXkzZnJjT2VpMzBkWTdTYWljbA==";

@@ -3,6 +3,7 @@ import '../css/Home.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import { NavLink, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import { API_BASE_URL, BASE_URL } from "../config/api";
 
 const Home = () => {
   const [departments, setDepartments] = useState([]);
@@ -19,7 +20,7 @@ const Home = () => {
 
   // Fetch departments
   useEffect(() => {
-    fetch('https://localhost:7133/api/Department/GetDepartment')
+    fetch(`${API_BASE_URL}/Department/GetDepartment`)
       .then(res => res.json())
       .then(data => {
         if (data.success && data.department) {
@@ -37,7 +38,7 @@ const Home = () => {
 
   // Fetch students
   useEffect(() => {
-    fetch('https://localhost:7133/api/Student/GetStudents')
+    fetch(`${API_BASE_URL}/Student/GetStudents`)
       .then(res => res.json())
       .then(data => {
         if (data.success && data.student) {
@@ -55,7 +56,7 @@ const Home = () => {
 
   // Fetch faculties
   useEffect(() => {
-    fetch('https://localhost:7133/api/Faculties/GetFaculties')
+    fetch(`${API_BASE_URL}/Faculties/GetFaculties`)
       .then(res => res.json())
       .then(data => {
         if (data.success && data.faculty) {
@@ -241,7 +242,7 @@ const Home = () => {
                   }}
                 >
                   <img
-                    src={`https://localhost:7133/Uploads/Faculty/${f.facultyImg}`}
+                    src={`${BASE_URL}/Uploads/Faculty/${f.facultyImg}`}
                     alt={f.facultyName}
                     style={{ width: 150, height: 150, objectFit: 'cover', borderRadius: '50%', marginBottom: 10 }}
                   />

@@ -1,11 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import axios from 'axios';
-import '../../css/Faculty/FacultyDashboard.css';
 import { useNavigate } from 'react-router-dom';
+import {
+  FaChalkboardTeacher,
+  FaUserGraduate,
+  FaMoneyCheckAlt,
+  FaExclamationCircle,
+  FaUserCircle,
+  FaBookOpen,
+  FaFileUpload,
+  FaReceipt,
+  FaBell,
+  FaArrowRight
+} from 'react-icons/fa';
+import '../../css/Faculty/FacultyDashboard.css';
+import { API_BASE_URL } from '../../config/api';
 
 const FacultyDashboard = () => {
   const [counts, setCounts] = useState(null);
+  const [deptInfo, setDeptInfo] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -17,12 +31,14 @@ const FacultyDashboard = () => {
           const decoded = jwtDecode(token);
           const facultyId = decoded.FacultyUserId;
 
-          const depRes = await axios.get(`https://localhost:7133/api/Department/GetDepartmentByFacultyId/${facultyId}`);
+          const depRes = await axios.get(`${API_BASE_URL}/Department/GetDepartmentByFacultyId/${facultyId}`);
           const departments = depRes.data.department;
 
           if (departments && departments.length > 0) {
-            const deptId = departments[0].deptId;
-            const countRes = await axios.get(`https://localhost:7133/api/CommonApi/departmentCounts/${deptId}`);
+            const currentDept = departments[0];
+            setDeptInfo(currentDept);
+            const deptId = currentDept.deptId;
+            const countRes = await axios.get(`${API_BASE_URL}/CommonApi/departmentCounts/${deptId}`);
             setCounts(countRes.data);
           } else {
             console.error("No department found for this faculty.");
@@ -35,7 +51,7 @@ const FacultyDashboard = () => {
           setLoading(false);
         }
       } else {
-        navigate('/faculty/login'); 
+        navigate('/AdminandFacultyLogin'); 
         setLoading(false);
       }
     };
@@ -43,72 +59,144 @@ const FacultyDashboard = () => {
     fetchCounts();
   }, [navigate]);
 
-  const handleCardClick = (redirect) => {
-    if (redirect) {
-      navigate(redirect);
-    }
-  };
-
   return (
-    <div className="dashboard-container">
-      <h1 className="text-center mb-4">Faculty Dashboard Overview</h1>
+    <div className="faculty-dash-page">
+      {/* Header Banner */}
+      <div className="faculty-dash-banner">
+        <div className="banner-text">
+          <span className="banner-pill">Faculty Head of Department</span>
+          <h2>Department Overview & Analytics</h2>
+          <p>
+            Department: <strong>{deptInfo?.deptName || "Academic Department"}</strong> — Real-time student & fee tracking
+          </p>
+        </div>
+      </div>
 
       {loading ? (
-        <div className="d-flex justify-content-center">
+        <div className="d-flex flex-column align-items-center justify-content-center py-5">
           <div className="spinner-border text-primary" role="status">
             <span className="visually-hidden">Loading...</span>
           </div>
+          <p className="text-muted mt-3">Loading department analytics...</p>
         </div>
       ) : counts ? (
-        <>
-          <div className="dashboard-cards">
-            {[
-              { title: "Faculty Count", value: counts.countFaculty, icon: "👩‍🏫" },
-              { title: "Student Count", value: counts.countStudent, icon: "🎓" },
-              { title: "Paid Students", value: counts.paidCount, icon: "💰" },
-              { title: "Unpaid Students", value: counts.unpaidCount, icon: "⚠️" },
-            ].map((item, index) => (
-              <div
-                className="dashboard-card"
-                key={index}
-                onClick={() => handleCardClick(item.redirect)}
-                style={{ cursor: item.redirect ? 'pointer' : 'default' }}
-              >
-                <div className="card-content">
-                  <h4>{item.title}</h4>
-                  <h2>{item.value !== undefined ? item.value : ""}</h2>
-                </div>
-                <div className="card-icon">{item.icon}</div>
+        <div className="faculty-dash-body">
+          {/* Top Metric Cards */}
+          <div className="metrics-grid">
+            <div className="metric-card card-faculty">
+              <div className="metric-icon-box">
+                <FaChalkboardTeacher />
               </div>
-            ))}
+              <div className="metric-info">
+                <span className="metric-label">Total Faculty</span>
+                <h3 className="metric-value">{counts.countFaculty ?? 0}</h3>
+                <span className="metric-subtext">Department educators</span>
+              </div>
+            </div>
+
+            <div className="metric-card card-students">
+              <div className="metric-icon-box">
+                <FaUserGraduate />
+              </div>
+              <div className="metric-info">
+                <span className="metric-label">Total Students</span>
+                <h3 className="metric-value">{counts.countStudent ?? 0}</h3>
+                <span className="metric-subtext">Enrolled students</span>
+              </div>
+            </div>
+
+            <div className="metric-card card-paid">
+              <div className="metric-icon-box">
+                <FaMoneyCheckAlt />
+              </div>
+              <div className="metric-info">
+                <span className="metric-label">Paid Students</span>
+                <h3 className="metric-value">{counts.paidCount ?? 0}</h3>
+                <span className="metric-subtext text-success">Fees cleared</span>
+              </div>
+            </div>
+
+            <div className="metric-card card-unpaid">
+              <div className="metric-icon-box">
+                <FaExclamationCircle />
+              </div>
+              <div className="metric-info">
+                <span className="metric-label">Pending Fees</span>
+                <h3 className="metric-value">{counts.unpaidCount ?? 0}</h3>
+                <span className="metric-subtext text-warning">Dues pending</span>
+              </div>
+            </div>
           </div>
 
-          <div className="dashboard-cards dashboardcard2">
-            {[
-              { icon: "🧑‍💼", redirect: "/faculty/profile", title: "View My Profile" },
-              { icon: "📘", redirect: "/faculty/AssignedSubjects", title: "View Subjects" },
-              { icon: "📁", redirect: "/faculty/AssignedSubjects", title: "View Content" },
-              { icon: "🧾", redirect: "/faculty/Fees-Status", title: "Fees Records" },
-              { icon: "🔔", redirect: "/faculty/notification", title: "Notification" },
-            ].map((item, index) => (
-              <div
-                className="dashboard-card dashboard-card2"
-                key={index}
-                onClick={() => handleCardClick(item.redirect)}
-                style={{ cursor: item.redirect ? 'pointer' : 'default' }}
-              >
-                <div className="card-content">
-                  <div className="card-icon">{item.icon}</div>
-                  <h4>{item.title}</h4>
-                  <h2>{item.value !== undefined ? item.value : ""}</h2>
-                </div>
-              </div>
-            ))}
+          {/* Quick Navigation Cards */}
+          <div className="dash-section-header mt-4 mb-3">
+            <h4>Quick Department Actions</h4>
+            <p className="text-muted m-0">Access tools and management modules directly</p>
           </div>
-        </>
+
+          <div className="actions-grid">
+            {[
+              {
+                icon: FaUserCircle,
+                color: "blue",
+                title: "My Profile",
+                desc: "View personal & employment records",
+                path: "/faculty/profile"
+              },
+              {
+                icon: FaBookOpen,
+                color: "indigo",
+                title: "Assigned Subjects",
+                desc: "Manage syllabus & teaching subjects",
+                path: "/faculty/AssignedSubjects"
+              },
+              {
+                icon: FaFileUpload,
+                color: "emerald",
+                title: "Course Materials",
+                desc: "Upload notes & study resources",
+                path: "/faculty/ContentUpload"
+              },
+              {
+                icon: FaReceipt,
+                color: "amber",
+                title: "Fee Status",
+                desc: "View department payment ledger",
+                path: "/faculty/Fees-Status"
+              },
+              {
+                icon: FaBell,
+                color: "rose",
+                title: "Send Reminders",
+                desc: "Broadcast fee alerts to students",
+                path: "/faculty/notification"
+              }
+            ].map((item, idx) => {
+              const IconComp = item.icon;
+              return (
+                <div
+                  key={idx}
+                  className={`action-module-card color-${item.color}`}
+                  onClick={() => navigate(item.path)}
+                >
+                  <div className="action-icon-circle">
+                    <IconComp />
+                  </div>
+                  <div className="action-details">
+                    <h5>{item.title}</h5>
+                    <p>{item.desc}</p>
+                  </div>
+                  <div className="action-arrow">
+                    <FaArrowRight />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
       ) : (
-        <div className="alert alert-danger mt-4 text-center">
-          ⚠️ Unable to load count data. Please try again later.
+        <div className="alert alert-danger text-center">
+          ⚠️ Unable to load dashboard analytics.
         </div>
       )}
     </div>

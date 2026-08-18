@@ -11,6 +11,7 @@ import {
 import "../css/Contact.css";
 import axios from "axios";
 import { Toast } from "bootstrap";
+import { API_BASE_URL } from "../config/api";
 
 const ContactFullScreen = () => {
   const [feedback, setfeedback] = useState({
@@ -27,7 +28,7 @@ const ContactFullScreen = () => {
     e.preventDefault();
     try {
       const dataToSend = { ...feedback, timestamp: getCurrentTimestamp() };
-      const response = await axios.post('http://localhost:5291/api/Feedback/AddFeedback', dataToSend);
+      const response = await axios.post(`${API_BASE_URL}/Feedback/AddFeedback`, dataToSend);
       if (response.data.success) {
         Swal.fire("Success", "Thanks for Contacting Us!", "success");
         setfeedback({

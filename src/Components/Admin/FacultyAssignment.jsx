@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import '../../css/FacultyAssignment.css';
+import { API_BASE_URL } from '../../config/api';
 
 const FacultyAssignment = () => {
   const [departments, setDepartments] = useState([]);
@@ -17,12 +18,12 @@ const FacultyAssignment = () => {
   const [editingId, setEditingId] = useState(null);
 
   useEffect(() => {
-    axios.get('https://localhost:7133/api/Department/GetDepartment')
+    axios.get(`${API_BASE_URL}/Department/GetDepartment`)
       .then(res => {
         if (res.data.success) setDepartments(res.data.department);
       });
 
-    axios.get('https://localhost:7133/api/CommonApi/GetSemester')
+    axios.get(`${API_BASE_URL}/CommonApi/GetSemester`)
       .then(res => {
         if (res.data.success) setSemesters(res.data.semester);
       });
@@ -32,7 +33,7 @@ const FacultyAssignment = () => {
 
   useEffect(() => {
     if (selectedDepartment) {
-      axios.get(`https://localhost:7133/api/FacultySubject/GetFacultyByDepartment/${selectedDepartment}`)
+      axios.get(`${API_BASE_URL}/FacultySubject/GetFacultyByDepartment/${selectedDepartment}`)
         .then(res => {
           if (res.data.success) setFaculties(res.data.faculty);
         });
@@ -43,7 +44,7 @@ const FacultyAssignment = () => {
 
   useEffect(() => {
     if (selectedDepartment && selectedSemester) {
-      axios.get(`https://localhost:7133/api/FacultySubject/GetSubjectsByDepartmentAndSemester/${selectedDepartment}/${selectedSemester}`)
+      axios.get(`${API_BASE_URL}/FacultySubject/GetSubjectsByDepartmentAndSemester/${selectedDepartment}/${selectedSemester}`)
         .then(res => {
           if (res.data.success) setSubjects(res.data.subjects);
           else setSubjects([]);
@@ -54,7 +55,7 @@ const FacultyAssignment = () => {
   }, [selectedDepartment, selectedSemester]);
 
   const fetchAssignments = () => {
-    axios.get('https://localhost:7133/api/FacultySubject/GetFacultySubjects')
+    axios.get(`${API_BASE_URL}/FacultySubject/GetFacultySubjects`)
       .then(res => {
         if (res.data.success) setAssignments(res.data.facultySubject);
       });
@@ -99,8 +100,8 @@ const FacultyAssignment = () => {
     }).then(result => {
       if (result.isConfirmed) {
         const apiUrl = editingId
-          ? `https://localhost:7133/api/FacultySubject/UpdateFacultySubject/${editingId}`
-          : 'https://localhost:7133/api/FacultySubject/AssignFacultySubject';
+          ? `${API_BASE_URL}/FacultySubject/UpdateFacultySubject/${editingId}`
+          : `${API_BASE_URL}/FacultySubject/AssignFacultySubject`;
 
         const apiCall = editingId
           ? axios.post(apiUrl, payload)
@@ -143,7 +144,7 @@ const FacultyAssignment = () => {
       cancelButtonText: 'Cancel',
     }).then((result) => {
       if (result.isConfirmed) {
-        axios.delete(`https://localhost:7133/api/FacultySubject/DeleteFacultySubject/${assignmentId}`)
+        axios.delete(`${API_BASE_URL}/FacultySubject/DeleteFacultySubject/${assignmentId}`)
           .then(res => {
             if (res.status === 204) {
               Swal.fire('Deleted!', 'The assignment has been deleted.', 'success');

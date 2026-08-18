@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import axios from 'axios';
 import "../../css/Student/Material.css";
+import { API_BASE_URL, BASE_URL } from '../../config/api';
 
 const Material = () => {
   const [subjects, setSubjects] = useState([]);
@@ -18,12 +19,12 @@ const Material = () => {
       const id = decoded.StudentUserId;
       setStudentId(id);
 
-      const res = await axios.get(`https://localhost:7133/api/Student/getStudentsById/${id}`);
+      const res = await axios.get(`${API_BASE_URL}/Student/getStudentsById/${id}`);
       const student = res.data.student[0];
 
       if (student) {
         const subjectsRes = await axios.get(
-          `https://localhost:7133/api/Subject/GetSubjectsByStudent/${student.deptId}/${student.currentSemester}`
+          `${API_BASE_URL}/Subject/GetSubjectsByStudent/${student.deptId}/${student.currentSemester}`
         );
         setSubjects(subjectsRes.data.subject || []);
       }
@@ -33,7 +34,7 @@ const Material = () => {
   }, []);
 
   const fetchContents = async () => {
-    const res = await axios.get(`https://localhost:7133/api/CourseContent/GetByIdforstudent/${studentId}`);
+    const res = await axios.get(`${API_BASE_URL}/CourseContent/GetByIdforstudent/${studentId}`);
     setCourseContents(res.data.content || []);
   };
 
@@ -43,7 +44,7 @@ const Material = () => {
   };
 
   const getSubjectContents = (id) => courseContents.filter((c) => c.subjectId === id);
-  const getFullUrl = (path) => `https://localhost:7133/${path}`;
+  const getFullUrl = (path) => `${BASE_URL}/${path}`;
 
   return (
     <div className="container py-5">

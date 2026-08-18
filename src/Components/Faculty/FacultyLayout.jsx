@@ -15,6 +15,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import "../../css/Faculty/FacultyLayout.css";
 import logo from "../../assets/logo.png"; 
+import { API_BASE_URL } from "../../config/api";
 
 const FacultyLayout = () => {
   const navigate = useNavigate();
@@ -53,7 +54,7 @@ const FacultyLayout = () => {
         const facultyId = Number(decoded.FacultyUserId);
 
         const response = await axios.get(
-          `https://localhost:7133/api/Department/GetDepartmentByFacultyId/${facultyId}`
+          `${API_BASE_URL}/Department/GetDepartmentByFacultyId/${facultyId}`
         );
         const department = response.data?.department?.[0];
         if (department?.headOfDept === facultyId) {
@@ -145,7 +146,7 @@ const FacultyLayout = () => {
       </nav>
 
       {/* Main Content */}
-      <main className="flex-grow-1 p-4 bg-light min-vh-100">
+      <main className="flex-grow-1 p-4 bg-light admin-main-content">
         <Outlet />
       </main>
     </div>

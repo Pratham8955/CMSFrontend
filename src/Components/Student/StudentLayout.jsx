@@ -109,7 +109,7 @@ const StudentLayout = () => {
       </nav>
 
       {/* Main Content */}
-      <main className="flex-grow-1 p-4 bg-light min-vh-100">
+      <main className="flex-grow-1 p-4 bg-light admin-main-content">
         <Outlet />
       </main>
     </div>

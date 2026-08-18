@@ -5,6 +5,7 @@ import { jwtDecode } from 'jwt-decode';
 import { FaEnvelope, FaUser, FaGoogle } from 'react-icons/fa';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../css/Student/FacultyByStudent.css';
+import { API_BASE_URL } from '../../config/api';
 
 const FacultyByStudent = () => {
   const [facultyList, setFacultyList] = useState([]);
@@ -24,7 +25,7 @@ const FacultyByStudent = () => {
     const fetchFaculty = async () => {
       try {
         const response = await axios.get(
-          `https://localhost:7133/api/Faculties/GetFacultyBystudentId/${studentId}`
+          `${API_BASE_URL}/Faculties/GetFacultyBystudentId/${studentId}`
         );
         setFacultyList(response.data.faculty);
       } catch (error) {

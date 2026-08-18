@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
-import "../css/StudentLogin.css"; // Use the same CSS
+import "../css/StudentLogin.css";
 import facultyImage from "../assets/facultylogin.png";
-
-const API_BASE_URL = "https://localhost:7133/api";
+import logo from "../assets/logo.png";
+import { API_BASE_URL } from "../config/api";
 
 const AdminandFacultyLogin = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -27,91 +27,155 @@ const AdminandFacultyLogin = () => {
       if (response.data.success) {
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("roleId", response.data.roleId);
-        Swal.fire("Success", "Login successful!", "success");
+        Swal.fire({
+          icon: "success",
+          title: "Login Successful",
+          text: "Welcome back!",
+          timer: 1500,
+          showConfirmButton: false,
+        });
 
-        // Redirect based on roleId
+        // Redirect based on roleId (1: Admin, 2: Faculty)
         if (response.data.roleId === 1) {
-          navigate("../admin/AdminDashboard");
+          navigate("/admin/AdminDashboard");
         } else if (response.data.roleId === 2) {
-          navigate("../Faculty/FacultyDashboard");
+          navigate("/faculty/facultydashboard");
+        } else {
+          navigate("/");
         }
       } else {
-        Swal.fire("Error", response.data.message, "error");
+        Swal.fire({
+          icon: "error",
+          title: "Login Failed",
+          text: response.data.message || "Invalid credentials",
+        });
       }
     } catch (error) {
-      Swal.fire("Error", "Invalid credentials!", "error");
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: error.response?.data?.message || "Invalid email or password. Please try again.",
+      });
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="container-fluid min-vh-100 d-flex align-items-center justify-content-center position-relative student-login-container">
-      {loading && (
-        <div className="loading-overlay">
-          <div className="spinner-border text-primary" role="status" style={{ width: "3rem", height: "3rem" }}>
-            <span className="visually-hidden">Loading...</span>
+    <div className="auth-page-container">
+      <div className="auth-card">
+        <div className="row g-0">
+          {/* Left Illustration Column */}
+          <div className="col-md-6 auth-illustration-col">
+            <img
+              src={facultyImage}
+              alt="Faculty & Admin Portal"
+              className="auth-illustration-img"
+            />
+            <div className="text-center mt-3 d-none d-md-block">
+              <h5 className="fw-bold text-primary mb-1">Campus Wave</h5>
+              <p className="text-muted small mb-0">Faculty & Administration Management Portal</p>
+            </div>
           </div>
-        </div>
-      )}
 
-      <div className="row w-100 justify-content-center">
-        <div className="col-lg-10 col-xl-8">
-          <div className="row shadow rounded-4 overflow-hidden bg-white">
-            <div className="col-md-6 d-none d-md-flex align-items-center justify-content-center bg-light">
-              <img src={facultyImage} alt="Faculty" className="student-login-img" />
+          {/* Right Form Column */}
+          <div className="col-md-6 auth-form-col">
+            <div className="auth-header">
+              {logo && <img src={logo} alt="Campus Wave Logo" className="auth-logo" />}
+              <h2 className="auth-title">
+                <i className="bi bi-person-badge-fill text-primary"></i> Faculty & Admin Login
+              </h2>
+              <p className="auth-subtitle">Sign in to manage courses, students & administration</p>
             </div>
 
-            <div className="col-md-6 p-4 d-flex align-items-center justify-content-center">
-              <form onSubmit={handleSubmit} className="admin-login-form w-100">
-                <h2 className="text-center mb-4 text-primary fw-bold">👨‍🏫 Admin / Faculty Login</h2>
-
-                <div className="form-group mb-3">
+            <form onSubmit={handleSubmit}>
+              {/* Email Field */}
+              <div className="auth-form-group">
+                <label className="auth-label" htmlFor="faculty-email">Email Address</label>
+                <div className="auth-input-wrapper">
+                  <i className="bi bi-envelope-at auth-input-icon"></i>
                   <input
+                    id="faculty-email"
                     type="email"
                     name="email"
-                    placeholder="Email"
+                    placeholder="staff@campuswave.edu"
                     value={formData.email}
                     onChange={handleChange}
-                    className="form-control student-login-input"
+                    className="auth-input"
                     required
+                    autoComplete="email"
                   />
                 </div>
+              </div>
 
-                <div className="form-group mb-4 position-relative">
+              {/* Password Field */}
+              <div className="auth-form-group">
+                <label className="auth-label" htmlFor="faculty-password">Password</label>
+                <div className="auth-input-wrapper">
+                  <i className="bi bi-shield-lock auth-input-icon"></i>
                   <input
+                    id="faculty-password"
                     type={showPassword ? "text" : "password"}
                     name="password"
-                    placeholder="Password"
+                    placeholder="••••••••"
                     value={formData.password}
                     onChange={handleChange}
-                    className="form-control student-login-input pe-5"
+                    className="auth-input pe-5"
                     required
+                    autoComplete="current-password"
                   />
-                  <i
-                    className={`bi ${showPassword ? "bi-eye-slash-fill" : "bi-eye-fill"} position-absolute`}
+                  <button
+                    type="button"
+                    className="auth-password-toggle"
                     onClick={() => setShowPassword(!showPassword)}
-                    style={{
-                      right: "15px",
-                      top: "50%",
-                      transform: "translateY(-50%)",
-                      cursor: "pointer",
-                      color: "#6c757d"
-                    }}
-                  ></i>
-                </div>
-
-                <div className="d-flex align-items-center" style={{ width: "60%" }}>
-                  <button type="submit" className="btn student-login-button" disabled={loading}>
-                    {loading ? "Please wait..." : "Sign In"}
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                  >
+                    <i className={`bi ${showPassword ? "bi-eye-slash-fill" : "bi-eye-fill"}`}></i>
                   </button>
-
-                  <a href="/facultyForgetPassword" className="forgot-password-link">
-                    Forgot password?
-                  </a>
                 </div>
-              </form>
-            </div>
+              </div>
+
+              {/* Forgot Password Row */}
+              <div className="auth-action-row">
+                <Link to="/facultyForgetPassword" className="auth-forgot-link">
+                  Forgot password?
+                </Link>
+              </div>
+
+              {/* Submit Button */}
+              <button
+                type="submit"
+                className="auth-submit-btn"
+                disabled={loading}
+              >
+                {loading ? (
+                  <>
+                    <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    <span>Signing in...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>Sign In</span>
+                    <i className="bi bi-arrow-right-short fs-5"></i>
+                  </>
+                )}
+              </button>
+
+              {/* Switch to Student & Back to Home */}
+              <div className="auth-switch-box">
+                <div>
+                  Are you a student?
+                  <Link to="/Login" className="auth-switch-link">
+                    Student Login
+                  </Link>
+                </div>
+                <div className="mt-2">
+                  <Link to="/" className="text-muted small text-decoration-none">
+                    <i className="bi bi-arrow-left me-1"></i>Back to Home
+                  </Link>
+                </div>
+              </div>
+            </form>
           </div>
         </div>
       </div>

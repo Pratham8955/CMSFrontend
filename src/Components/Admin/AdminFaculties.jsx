@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import "../../css/AdminFaculties.css";
+import { API_BASE_URL } from "../../config/api";
 
 const AdminFaculties = () => {
   const [faculties, setFaculties] = useState([]);
@@ -35,7 +36,7 @@ const AdminFaculties = () => {
   const fetchFaculties = async () => {
     try {
       const res = await axios.get(
-        "https://localhost:7133/api/Faculties/GetFaculties"
+        `${API_BASE_URL}/Faculties/GetFaculties`
       );
       if (res.data.success) {
         setFaculties(res.data.faculty || res.data.Faculty);
@@ -52,7 +53,7 @@ const AdminFaculties = () => {
   const fetchDepartments = async () => {
     try {
       const res = await axios.get(
-        "https://localhost:7133/api/Department/GetDepartment"
+        `${API_BASE_URL}/Department/GetDepartment`
       );
       if (res.data.success) {
         setDepartments(res.data.department || []);
@@ -97,7 +98,7 @@ const AdminFaculties = () => {
 
       if (isEditing) {
         const res = await axios.post(
-          `https://localhost:7133/api/Faculties/UpdateFaculty/${editingId}`,
+          `${API_BASE_URL}/Faculties/UpdateFaculty/${editingId}`,
           data
         );
 
@@ -108,7 +109,7 @@ const AdminFaculties = () => {
         }
       } else {
         const res = await axios.post(
-          "https://localhost:7133/api/Faculties/AddFaculty",
+          `${API_BASE_URL}/Faculties/AddFaculty`,
           data
         );
 
@@ -182,7 +183,7 @@ const AdminFaculties = () => {
 
     try {
       const res = await axios.delete(
-        `https://localhost:7133/api/Faculties/DeleteFaculty`,
+        `${API_BASE_URL}/Faculties/DeleteFaculty`,
         { params: { id: facultyId } }
       );
 

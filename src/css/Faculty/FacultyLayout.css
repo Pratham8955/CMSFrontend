@@ -1,30 +1,68 @@
-.sidebar {
+/* FacultyLayout.css - Compact, fitted layout */
+
+.faculty-layout {
+  height: 100vh;
+  max-height: 100vh;
+  width: 100%;
+  overflow: hidden;
   display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  width: 260px;
+}
+
+.sidebar {
+  height: 100vh;
+  max-height: 100vh;
+  width: 240px;
+  min-width: 240px;
+  max-width: 240px;
+  flex-shrink: 0;
   background: linear-gradient(135deg, #003366, #001f4d);
   box-shadow: 2px 0 8px rgba(0, 26, 77, 0.6);
-  transition: width 0.3s ease;
+  transition: width 0.3s ease, min-width 0.3s ease, max-width 0.3s ease;
+  display: flex;
+  flex-direction: column;
   position: relative;
   z-index: 1000;
   color: white;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .sidebar.collapsed {
-  width: 70px;
+  width: 64px;
+  min-width: 64px;
+  max-width: 64px;
 }
 
 .logo-area {
-  padding: 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
   display: flex;
   align-items: center;
   justify-content: space-between;
+  min-height: 56px;
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.faculty-logo-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 175px;
+  overflow: hidden;
+}
+
+.faculty-logo {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 4px;
+  flex-shrink: 0;
 }
 
 .toggle-btn {
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   cursor: pointer;
   transition: transform 0.3s ease;
   color: white;
@@ -35,86 +73,78 @@
   transform: rotate(90deg);
 }
 
-.nav {
-  flex-grow: 1; /* take remaining vertical space */
+.sidebar .nav {
+  flex-grow: 1;
   display: flex;
   flex-direction: column;
-  padding: 10px 0;
-  gap: 10px; /* space between nav items */
-  overflow-y: auto; /* scroll if too many items */
+  margin-bottom: 0;
+  padding: 6px;
 }
 
-.nav ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.nav-item {
+.sidebar .nav-item {
   cursor: pointer;
-  transition: background-color 0.25s ease, transform 0.15s ease;
-  border-radius: 4px;
+  margin-bottom: 2px;
+  transition: background-color 0.2s ease, transform 0.15s ease;
+  position: relative;
+  border-radius: 6px;
 }
 
-.nav-item:hover {
+.sidebar .nav-item:hover {
   background-color: rgba(170, 216, 255, 0.15);
-  transform: translateX(5px);
+  transform: translateX(3px);
 }
 
-.nav-btn {
+.sidebar .nav-item.active-link,
+.sidebar .nav-item.active-link:hover {
+  background-color: rgba(170, 216, 255, 0.25);
+  font-weight: 600;
+  color: #aad8ff !important;
+}
+
+.sidebar .nav-btn {
   background: transparent;
   border: none;
-  padding: 10px 15px;
-  font-size: 1rem;
+  font-size: 0.88rem;
   color: white;
   text-align: left;
   display: flex;
   align-items: center;
-  gap: 10px;
   width: 100%;
-  transition: color 0.3s ease;
+  padding: 7px 11px;
+  transition: color 0.2s ease;
+  border-radius: 6px;
+  white-space: nowrap;
 }
 
-.nav-btn:hover {
+.sidebar .nav-btn:hover {
   color: #aad8ff;
   text-decoration: none;
 }
 
-.nav-btn:focus {
+.sidebar .nav-btn:focus {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.5);
 }
 
-.icon {
-  min-width: 28px;
+.sidebar .icon {
+  min-width: 24px;
+  font-size: 1rem;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.logout-btn {
+.sidebar .logout-btn {
   margin-top: auto;
   border-top: 1px solid rgba(255, 255, 255, 0.15);
-}
-.faculty-logo-wrapper {
-  display: flex;
-  align-items: center;
+  padding-top: 4px;
+  margin-bottom: 4px;
 }
 
-.faculty-logo {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background-color: white;
-  object-fit: cover;
-  padding: 3px;
-  border: 2px solid #fff;
+.sidebar .logout-btn .nav-btn {
+  padding: 7px 11px !important;
 }
 
-.logout-btn:hover {
+.sidebar .logout-btn:hover {
   background-color: rgba(255, 77, 77, 0.25);
 }
 
@@ -124,52 +154,29 @@
 
 .sidebar.collapsed .nav-btn {
   justify-content: center;
-  padding: 12px 0;
+  padding: 9px 0;
 }
 
-.sidebar.collapsed .logo-area h4 {
-  font-size: 1rem;
-  text-align: center;
-  margin: 0 auto;
-  white-space: nowrap;
-}
-
-/* Tooltip for collapsed sidebar nav items */
-.sidebar.collapsed .nav-item:hover::after {
-  content: attr(title);
-  position: fixed;
-  left: 80px;
-  background-color: #001f4d;
-  color: white;
-  padding: 6px 12px;
-  border-radius: 5px;
-  white-space: nowrap;
-  font-size: 0.85rem;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.6);
-  z-index: 1100;
-  top: 50%;
-  transform: translateY(-50%);
-  pointer-events: none;
-  opacity: 0.95;
-}
-
-/* Main content area */
-main {
-  flex: 1;
-  background-color: #f8f9fa;
-  padding: 20px;
+.admin-main-content {
+  flex: 1 1 0;
+  min-width: 0;
+  height: 100vh;
+  max-height: 100vh;
   overflow-y: auto;
+  overflow-x: hidden;
+  background-color: #f8f9fa;
+  padding: 16px 20px;
+  box-sizing: border-box;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .sidebar {
     position: fixed;
+    z-index: 1050;
     height: 100vh;
     left: 0;
     top: 0;
     transform: translateX(0);
-    z-index: 1050;
   }
 
   .sidebar.collapsed {

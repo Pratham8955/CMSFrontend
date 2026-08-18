@@ -1,148 +1,292 @@
-/* Wrapper */
-.student-login-container {
-  background-color: #f8f9fa;
-  padding: 40px 0;
+/* Auth / Login Page Styles - Non-scrollable viewport fit */
+.auth-page-container {
+  height: calc(100vh - 64px);
+  min-height: calc(100vh - 64px);
+  max-height: calc(100vh - 64px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%);
+  padding: 16px 20px;
+  box-sizing: border-box;
+  overflow: hidden;
+  position: relative;
+  font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
 }
 
-/* Image */
-.student-login-img {
+/* Card Wrapper */
+.auth-card {
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08), 0 5px 15px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+  border: 1px solid rgba(226, 232, 240, 0.8);
   width: 100%;
-  max-width: 500px;
+  max-width: 880px;
+  max-height: calc(100vh - 90px);
+  margin: auto;
+}
+
+/* Left Illustration Column */
+.auth-illustration-col {
+  background: linear-gradient(180deg, #f8fafc 0%, #eff6ff 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 20px;
+  border-right: 1px solid #f1f5f9;
+  position: relative;
+}
+
+.auth-illustration-img {
+  width: 100%;
+  max-width: 290px;
   height: auto;
+  max-height: 250px;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.04));
+  transition: transform 0.3s ease;
+}
+
+.auth-illustration-img:hover {
+  transform: translateY(-3px);
+}
+
+/* Right Form Column */
+.auth-form-col {
+  padding: 24px 34px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.auth-header {
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.auth-header .auth-logo {
+  height: 38px;
+  width: auto;
+  margin-bottom: 6px;
   object-fit: contain;
 }
 
-/* Form card */
-.student-login-form {
-  border-radius: 20px;
-  padding: 40px 30px;
+.auth-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
-/* Inputs */
-.student-login-input {
-  padding: 12px 15px;
-  font-size: 16px;
-  border-radius: 12px;
-  background-color: #f1f3f5;
-  border: 1px solid #ced4da;
-  transition: all 0.3s;
+.auth-subtitle {
+  font-size: 13px;
+  color: #64748b;
+  margin-bottom: 0;
 }
 
-.student-login-input:focus {
-  border-color: #052864;
-  box-shadow: 0 0 0 0.2rem rgba(122, 146, 184, 0.25);
+/* Form Groups & Inputs */
+.auth-form-group {
+  margin-bottom: 12px;
+  position: relative;
 }
 
-/* Button */
-.student-login-button {
-  background-color: #4285f4;
-  color: #fff;
-  font-size: 16px;
-  padding: 12px 24px;
-  border-radius: 12px;
+.auth-label {
+  display: block;
+  font-size: 12px;
   font-weight: 600;
-  width: auto;
-  min-width: 250px;
-  border: none;
-  transition: background-color 0.3s ease;
+  color: #475569;
+  margin-bottom: 4px;
 }
 
-.student-login-button:hover {
-  background-color: #3367d6;
+.auth-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
 }
 
-/* Forgot password link */
-.forgot-password-link {
-  margin-left: 30px;
-  color: #218deb;
-  font-size: 0.9rem;
-  text-decoration: none;
-  white-space: nowrap;
+.auth-input-icon {
+  position: absolute;
+  left: 14px;
+  color: #94a3b8;
+  font-size: 16px;
+  pointer-events: none;
+  transition: color 0.2s ease;
+}
+
+.auth-input {
+  width: 100%;
+  padding: 9px 14px 9px 40px;
+  font-size: 14px;
+  border-radius: 10px;
+  background-color: #f8fafc;
+  border: 1.5px solid #e2e8f0;
+  color: #1e293b;
+  transition: all 0.25s ease;
+}
+
+.auth-input::placeholder {
+  color: #94a3b8;
+}
+
+.auth-input:focus {
+  background-color: #ffffff;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+  outline: none;
+}
+
+.auth-input:focus ~ .auth-input-icon {
+  color: #2563eb;
+}
+
+.auth-password-toggle {
+  position: absolute;
+  right: 14px;
+  color: #94a3b8;
   cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+  user-select: none;
+  background: transparent;
+  border: none;
+  padding: 0;
 }
 
-.forgot-password-link:hover {
+.auth-password-toggle:hover {
+  color: #334155;
+}
+
+/* Extra row: forgot password */
+.auth-action-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-bottom: 14px;
+}
+
+.auth-forgot-link {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: #2563eb;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.auth-forgot-link:hover {
+  color: #1d4ed8;
   text-decoration: underline;
 }
-.student-login-form h2 {
-  font-size: 30px !important; /* Tamne jem size joie te ahiya mokli sako cho */
+
+/* Submit Button */
+.auth-submit-btn {
+  width: 100%;
+  padding: 10px 20px;
+  font-size: 14.5px;
+  font-weight: 600;
+  color: #ffffff;
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 3px 10px rgba(37, 99, 235, 0.22);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
 }
 
-/* Spinner overlay */
-.loading-overlay {
+.auth-submit-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+  box-shadow: 0 5px 14px rgba(37, 99, 235, 0.3);
+  transform: translateY(-1px);
+}
+
+.auth-submit-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.auth-submit-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Switcher / Alternative Links inside Card */
+.auth-switch-box {
+  margin-top: 14px;
+  padding-top: 10px;
+  border-top: 1px solid #f1f5f9;
+  text-align: center;
+  font-size: 13px;
+  color: #64748b;
+}
+
+.auth-switch-link {
+  color: #2563eb;
+  font-weight: 600;
+  text-decoration: none;
+  margin-left: 4px;
+  transition: color 0.2s ease;
+}
+
+.auth-switch-link:hover {
+  color: #1d4ed8;
+  text-decoration: underline;
+}
+
+/* Loading Overlay */
+.auth-loading-overlay {
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 10;
-  width: 100%;
-  height: 100%;
-  background: rgba(255, 255, 255, 0.8);
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(4px);
+  z-index: 20;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* Responsive styles */
+/* Responsive adjustments */
 @media (max-width: 991.98px) {
-  /* Smaller padding on form */
-  .student-login-form {
-    padding: 30px 20px;
-  }
-
-  /* Adjust button and link container width */
-  .d-flex.align-items-center {
-    width: 100% !important;
-    flex-wrap: wrap;
-    gap: 15px;
-  }
-
-  /* Shrink min-width of button */
-  .student-login-button {
-    min-width: 150px;
-    flex-grow: 1;
-  }
-
-  /* Forgot password link spacing and wrapping */
-  .forgot-password-link {
-    margin-left: 0;
-    white-space: normal;
-    flex-grow: 1;
-    text-align: center;
+  .auth-form-col {
+    padding: 24px 22px;
   }
 }
 
-@media (max-width: 575.98px) {
-  /* Stack image and form vertically */
-  .row.shadow.rounded-4.overflow-hidden.bg-white {
-    flex-direction: column;
+@media (max-width: 767.98px) {
+  .auth-page-container {
+    height: auto;
+    min-height: calc(100vh - 64px);
+    max-height: none;
+    overflow-y: auto;
+    padding: 20px 12px;
   }
 
-  /* Hide image on very small screens to save space */
-  .col-md-6.d-none.d-md-flex {
+  .auth-card {
+    max-height: none;
+  }
+
+  .auth-illustration-col {
     display: none !important;
   }
 
-  /* Form full width */
-  .col-md-6.p-4 {
-    flex: 0 0 100%;
-    max-width: 100%;
-    padding: 20px 15px;
+  .auth-form-col {
+    padding: 24px 18px;
   }
 
-  /* Reduce form padding */
-  .student-login-form {
-    padding: 20px 15px;
-  }
-
-  /* Inputs font size smaller */
-  .student-login-input {
-    font-size: 14px;
-    padding: 10px 12px;
-  }
-
-  /* Button font size smaller */
-  .student-login-button {
-    font-size: 14px;
-    padding: 10px 20px;
+  .auth-title {
+    font-size: 20px;
   }
 }

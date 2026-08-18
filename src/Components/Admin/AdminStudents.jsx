@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
+import { API_BASE_URL } from "../../config/api";
 
 const AdminStudents = () => {
   const [students, setStudents] = useState([]);
@@ -24,7 +25,7 @@ const AdminStudents = () => {
 
   const fetchStudents = async () => {
     try {
-      const res = await axios.get("https://localhost:7133/api/Student/GetStudents");
+      const res = await axios.get(`${API_BASE_URL}/Student/GetStudents`);
       if (res.data.success) {
         setStudents(res.data.student);
       }
@@ -37,7 +38,7 @@ const AdminStudents = () => {
 
   const fetchDepartments = async () => {
     try {
-      const res = await axios.get("https://localhost:7133/api/Department/GetDepartment");
+      const res = await axios.get(`${API_BASE_URL}/Department/GetDepartment`);
       if (res.data.success) {
         setDepartments(res.data.department || []);
       }

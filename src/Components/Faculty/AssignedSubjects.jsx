@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import {jwtDecode} from "jwt-decode"; // fixed import
-import "../../css/Faculty/AssignedSubjects.css"
+import { jwtDecode } from "jwt-decode";
+import "../../css/Faculty/AssignedSubjects.css";
+import { API_BASE_URL } from "../../config/api";
+
 const AssignedSubjects = () => {
   const [subjects, setSubjects] = useState([]);
   const token = localStorage.getItem("token");
@@ -9,7 +11,7 @@ const AssignedSubjects = () => {
   const facultytId = decoded.FacultyUserId;
 
   useEffect(() => {
-    axios.get(`https://localhost:7133/api/FacultySubject/GetFacultySubjectsForAssignedFaculty/${facultytId}`)
+    axios.get(`${API_BASE_URL}/FacultySubject/GetFacultySubjectsForAssignedFaculty/${facultytId}`)
       .then(response => {
         if (response.data.success) {
           setSubjects(response.data.facultySubject);

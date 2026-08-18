@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import "../../css/AdminDepartments.css";
+import { API_BASE_URL } from "../../config/api";
 
 const AdminDepartments = () => {
   const [departments, setDepartments] = useState([]);
@@ -24,7 +25,7 @@ const AdminDepartments = () => {
 
   const fetchDepartments = () => {
     axios
-      .get("https://localhost:7133/api/Department/GetDepartment")
+      .get(`${API_BASE_URL}/Department/GetDepartment`)
       .then((res) => {
         if (res.data.success) {
           setDepartments(res.data.department || []);
@@ -40,7 +41,7 @@ const AdminDepartments = () => {
 
   const fetchFaculties = () => {
     axios
-      .get("https://localhost:7133/api/Faculties/GetFaculties")
+      .get(`${API_BASE_URL}/Faculties/GetFaculties`)
       .then((res) => {
         if (res.data?.success && Array.isArray(res.data.faculty)) {
           setFacultyList(res.data.faculty);
@@ -54,7 +55,7 @@ const AdminDepartments = () => {
   const fetchFacultiesByDepartment = async (deptId) => {
       try {
         const response = await axios.get(
-          `https://localhost:7133/api/CommonApi/GetFacultyByDepartment/${deptId}`
+          `${API_BASE_URL}/CommonApi/GetFacultyByDepartment/${deptId}`
         );
         setFacultyListforEdit(response.data.faculty || []);
       } catch (error) {
@@ -107,7 +108,7 @@ const AdminDepartments = () => {
       if (editingId !== null) {
         // Update department
         const res = await axios.post(
-          `https://localhost:7133/api/Department/UpdateDepartment/${editingId}`,
+          `${API_BASE_URL}/Department/UpdateDepartment/${editingId}`,
           data
         );
         if (res.data.success || res.status === 204) {
@@ -118,7 +119,7 @@ const AdminDepartments = () => {
       } else {
         // Add department
         const res = await axios.post(
-          "https://localhost:7133/api/Department/AddDepartment",
+          `${API_BASE_URL}/Department/AddDepartment`,
           { deptId: 0, ...data }
         );
         if (res.data.success) {
@@ -151,7 +152,7 @@ const AdminDepartments = () => {
 
     try {
       const res = await axios.delete(
-        `https://localhost:7133/api/Department/DeleteDepartment`,
+        `${API_BASE_URL}/Department/DeleteDepartment`,
         { params: { id: deptId } }
       );
       if (res.data.success) {
